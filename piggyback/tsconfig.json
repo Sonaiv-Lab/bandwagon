@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.json",
+  "files": ["./src/app.ts"],
+  "include": ["src/**/*", "scripts/**/*"],
+  "compilerOptions": {
+    "baseUrl": "../",
+    "strict": true,
+    "strictNullChecks": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "outDir": "dist",
+    "paths": {
+      "#/*": ["./piggyback/src/*"]
+    }
+  }
+}

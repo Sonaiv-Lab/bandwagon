@@ -1,0 +1,66 @@
+import { z } from 'zod';
+import { Scheme as KindCodeScheme } from '#/variables/kindCode';
+
+const DatetimeScheme = z.string().datetime({ offset: true });
+
+const CPBLGameId = z.string(); // TODO check with correct id regex
+const PlayerId = z.string();
+const TeamId = z.string();
+const Url = z.string().url();
+const gameSeason = z.enum([
+  '', // 短期賽，沒有分季
+  '0', // 單一賽季
+  '1', // 上半季
+  '2', // 下半季
+]);
+
+const GameResultScheme = z.enum([
+  'pending', // 未結束,
+  'ended', // 結束,
+  'postponed', // 延賽,
+  'suspended', // 保留比賽
+]);
+
+type GameResult = z.infer<typeof GameResultScheme>;
+
+type LinkResource = {
+  type: 'link';
+  src: z.infer<typeof Url>;
+};
+
+export const GameScheme = z.object({
+  id: CPBLGameId,
+  year: z.string(),
+  gameKindCode: KindCodeScheme,
+  gameSeason: gameSeason,
+  gameSeriesNo: z.number(),
+  isGameStop: z.boolean(),
+  startDatetime: DatetimeScheme,
+  endDatetime: DatetimeScheme.nullable(),
+  durationSeconds: z.number(),
+  result: GameResultScheme,
+  homeScore: z.number(),
+  visitingScore: z.number(),
+  reserveDate: DatetimeScheme.nullable(),
+  homeTeamCode: TeamId,
+  homeTeamName: z.string(),
+  homeTeamIconUrl: Url,
+  visitingTeamCode: TeamId,
+  visitingTeamName: z.string(),
+  visitingTeamIconUrl: Url,
+  mvpPlayerId: PlayerId.or(z.literal('')),
+  mvpPlayerName: z.string(),
+  mvpCount: z.number().nullable(),
+  visitingPitcherId: PlayerId.or(z.literal('')),
+  visitingPitcherName: z.string(),
+  homePitcherId: PlayerId.or(z.literal('')),
+  homePitcherName: z.string(),
+  winningPitcherId: PlayerId,
+  winningPitcherName: z.string(),
+  loserPitcherId: PlayerId.or(z.literal('')),
+  loserPitcherName: z.string(),
+  closerId: PlayerId.or(z.literal('')),
+  closerName: z.string(),
+});
+
+export type Game = z.infer<typeof GameScheme>;

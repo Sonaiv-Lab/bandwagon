@@ -1,0 +1,25 @@
+{
+  "name": "bandwagon",
+  "version": "0.0.1",
+  "description": "App for the taiwan baseball bandwagon fan",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.9.0",
+  "scripts": {
+    "run:piggyback": "pnpm --filter @bandwagon/piggyback dev",
+    "docker:piggyback": "docker build . --target piggyback --tag"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "zod": "^3.24.2"
+  },
+  "engines": {
+    "pnpm": ">=10",
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "typescript": "^5.8.3"
+  }
+}

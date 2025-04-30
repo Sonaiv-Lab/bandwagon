@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": [],
+    "baseUrl": "../",
+    "strict": true,
+    "strictNullChecks": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext"
+  }
+}

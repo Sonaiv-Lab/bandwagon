@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    // baseUrl the root path of non-relative module name
+    "strict": true,
+    "strictNullChecks": true,
+
+    // come from https://tsx.is/typescript#recommendation
+    "moduleDetection": "force",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    //
+    "paths": {
+      "@bandwagon/utils/*": ["./utils/*"]
+    }
+  }
+}
