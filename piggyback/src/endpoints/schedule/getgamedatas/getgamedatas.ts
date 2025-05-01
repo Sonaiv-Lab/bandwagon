@@ -102,11 +102,7 @@ const fetchRawGames = async () => {
 
     return gameData;
   } catch (err) {
-    if (err instanceof ZodError) {
-      console.log(err);
-    } else {
-      console.log(err);
-    }
+    throw err;
   }
 };
 
@@ -177,7 +173,7 @@ const toGameData = (data: TGamesData): Game => {
     visitingScore: data.VisitingScore,
     // team info
     homeTeamCode: data.HomeTeamCode,
-    homeTeamName: data.HomePitcherName,
+    homeTeamName: data.HomeTeamName,
     homeTeamIconUrl: transformCPBLIconUrl(data.HomeClubSmallImgPath),
     visitingTeamCode: data.VisitingTeamCode,
     visitingTeamName: data.VisitingTeamName,

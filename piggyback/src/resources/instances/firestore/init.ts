@@ -21,8 +21,8 @@ const initLocal = () => {
   });
 };
 
-const initCloud = () => {
-  console.log(`init cloudstore with cloud default`);
+const initGCP = () => {
+  console.log(`init cloudstore with GCP cloud default`);
   initializeApp({
     credential: applicationDefault(),
   });
@@ -32,11 +32,11 @@ const initCloud = () => {
 
 // init the firestore with correspond way by environment variable
 const init = () => {
-  const deployEnv = env.DEPLOYMENT_ENVIRONMENT;
+  const deployEnv = env.DEPLOY_ENV;
 
-  const initFuncs: Partial<Record<Env['DEPLOYMENT_ENVIRONMENT'], () => void>> = {
+  const initFuncs: Partial<Record<Env['DEPLOY_ENV'], () => void>> = {
     local: initLocal,
-    cloud: initCloud,
+    gcp: initGCP,
   };
 
   const initFunc = initFuncs[deployEnv];

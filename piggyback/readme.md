@@ -268,9 +268,7 @@ local 的 docker 要有不同的設定
 => local docker 利用 volumn bind mount 來掛載 .cert
 
 
-## 
-
-issue
+## issue
 
 ```
 browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1169/chrome-linux/headless_shell

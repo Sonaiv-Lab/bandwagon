@@ -1,27 +1,29 @@
 import { getGamesData } from '#/endpoints/schedule/getgamedatas';
-import { upsertGame } from "#/resources/game";
+import { upsertGame } from '#/resources/game';
 import { getFirestore } from '#/resources/instances/firestore';
-import { CronJob } from "cron";
-
+import { CronJob } from 'cron';
+import logger from '#/utils/logger';
 
 const makeGamesData = async () => {
   try {
-    const fireStore = getFirestore();
-    
+    logger.info('=== makeGamesData start ===');
+    const fireStore = await getFirestore();
+
     const gamesData = await getGamesData();
 
     const upserts = gamesData.map((game) => {
-      return upsertGame(fireStore, game)
-    })
+      return upsertGame(fireStore, game);
+    });
 
     await Promise.allSettled(upserts);
-
-    console.log('makeGamesData: done');
   } catch (err) {
-    console.log(err);
-    
+    if (err instanceof Error) {
+      logger.error(`makeGamesData: ${err.message}`);
+    }
+  } finally {
+    logger.info('=== makeGamesData end ===');
   }
-}
+};
 
 const main = async () => {
   const makeGamesDataJob = new CronJob(
@@ -34,7 +36,7 @@ const main = async () => {
     true,
     'Asia/Taipei'
   );
-  makeGamesData();  
+  makeGamesData();
 };
 
 main();
