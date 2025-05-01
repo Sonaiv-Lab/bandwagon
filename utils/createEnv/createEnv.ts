@@ -12,12 +12,13 @@ const getEnvStringScheme = (name: string) =>
 const EnvSchemes = z.object({
   FIRESTORE_CERT_LOCAL: getEnvStringScheme('FIRESTORE_CERT_LOCAL').optional(),
   FIRESTORE_ID: getEnvStringScheme('FIRESTORE_ID'),
-  DEPLOYMENT_ENVIRONMENT: z.enum(['local', 'cloud'], {
-    message: `env prop not defined: ${'RUNTIME_ENVIRONMENT'}`,
+  DEPLOY_ENV: z.enum(['local', 'gcp'], {
+    message: `env prop not defined: ${'DEPLOY_ENV'}`,
   }),
   RUNTIME_ENVIRONMENT: z.enum(['node', 'cloud'], {
     message: `env prop not defined: ${'RUNTIME_ENVIRONMENT'}`,
   }),
+  NODE_ENV: z.enum(['dev', 'prod']),
 });
 
 type Env = z.infer<typeof EnvSchemes>;

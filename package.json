@@ -8,7 +8,8 @@
   "packageManager": "pnpm@10.9.0",
   "scripts": {
     "run:piggyback": "pnpm --filter @bandwagon/piggyback dev",
-    "docker:piggyback": "docker build . --target piggyback --tag"
+    "docker:build:piggyback": "docker build . --target piggyback --tag bandwagon/piggyback:latest",
+    "docker:run-local:piggyback": "docker run --env NODE_ENV=dev -v ./.cert:/.cert bandwagon/piggyback"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
