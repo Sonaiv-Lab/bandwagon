@@ -33,6 +33,7 @@ FROM base AS piggyback
 # Be careful in using outer utility
 COPY --from=build /piggyback /piggyback
 WORKDIR /piggyback
+RUN pnpm pre-playwright
 # CMD [ "tail", "-f", "/dev/null" ]
 # CMD [ "pnpm", "scripts:secret" ]
 CMD [ "pnpm", "start:docker" ]

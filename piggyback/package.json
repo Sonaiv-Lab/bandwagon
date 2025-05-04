@@ -12,7 +12,7 @@
     "start:dev": "tsx --tsconfig ./tsconfig.json ./src/app.ts ",
     "start:builded": "node ./dist/app.mjs",
     "pre-playwright": "pnpm exec playwright install-deps chromium && pnpm exec playwright install chromium",
-    "start:docker": "pnpm scripts:secret && pnpm run pre-playwright && pnpm start:builded",
+    "start:docker": "pnpm scripts:secret && pnpm start:builded",
     "dev": "pnpm start:dev",
     "dev:builded": "pnpm build:node && pnpm run start:builded",
     "ts-check": "tsc --project ./tsconfig.json --noEmit",
