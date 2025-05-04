@@ -30,12 +30,14 @@ const main = async () => {
     '0 0 * * 2-7',
     makeGamesData,
     () => {
-      console.log('makeGamesData: done');
+      console.log('Running a job at 00:00 at Asia/Taipei timezone');
       // todo, make a log in future
     },
     true,
     'Asia/Taipei'
   );
+
+  // run once when start
   makeGamesData();
 };
 

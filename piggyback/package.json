@@ -25,6 +25,7 @@
   "dependencies": {
     "@bandwagon/utils": "workspace:*",
     "@google-cloud/firestore": "^7.11.0",
+    "@google-cloud/logging-winston": "^6.0.0",
     "@google-cloud/secret-manager": "^6.0.1",
     "commander": "^13.1.0",
     "cron": "^4.3.0",

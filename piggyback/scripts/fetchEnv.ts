@@ -1,12 +1,11 @@
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
-import { GoogleAuth } from "google-auth-library";
+import { GoogleAuth } from 'google-auth-library';
 
 import { z, ZodError } from 'zod';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { argv } from "node:process";
+import { argv } from 'node:process';
 
-import logger from "#/utils/logger";
-
+import logger from '#/utils/logger';
 
 // This should be set in secret manger
 const SECRET_NAME = {
@@ -14,9 +13,11 @@ const SECRET_NAME = {
   dev: 'bandwagon-piggyback-dev',
 };
 
-const envSchema = z.enum(['prod', 'dev'], {message: 'env only pord | dev, set NODE_ENV for these value'});
-const pathSchema = z.string({message: 'invalid path'});
-const certPathSchema = z.string({message: 'invalid cert path'}).nullable();
+const envSchema = z.enum(['prod', 'dev'], {
+  message: 'env only pord | dev, set NODE_ENV for these value',
+});
+const pathSchema = z.string({ message: 'invalid path' });
+const certPathSchema = z.string({ message: 'invalid cert path' }).nullable();
 const credentialSchema = z.object({
   private_key: z.string(),
   client_email: z.string(),
@@ -25,16 +26,15 @@ const credentialSchema = z.object({
 
 const getProjectId = async () => {
   try {
-
     const auth = new GoogleAuth({
-      scopes: 'https://www.googleapis.com/auth/cloud-platform'
+      scopes: 'https://www.googleapis.com/auth/cloud-platform',
     });
     const projectId = await auth.getProjectId();
-    return projectId
+    return projectId;
   } catch {
     return undefined;
   }
-}
+};
 
 // TODO if some days feeling boring, check this https://www.npmjs.com/package/@clack/prompts
 const main = async (
@@ -64,7 +64,6 @@ const main = async (
       >;
 
       credentialSchema.parse(credentials);
-
 
       projectId = credentials.project_id;
 
