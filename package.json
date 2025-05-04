@@ -9,7 +9,7 @@
   "scripts": {
     "run:piggyback": "pnpm --filter @bandwagon/piggyback dev",
     "docker:build:piggyback": "docker build . --target piggyback --tag bandwagon/piggyback:latest",
-    "docker:run-local:piggyback": "docker run --env NODE_ENV=dev -v ./.cert:/.cert bandwagon/piggyback"
+    "docker:run-local:piggyback": "docker run --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/piggyback"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
