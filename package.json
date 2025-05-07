@@ -17,7 +17,7 @@
   },
   "engines": {
     "pnpm": ">=10",
-    "node": ">=20"
+    "node": ">=22"
   },
   "devDependencies": {
     "@types/node": "^22.14.1",

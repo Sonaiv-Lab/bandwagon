@@ -20,7 +20,7 @@
     "scripts:secret": "node ./dist/scripts/fetchEnv.mjs"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "dependencies": {
     "@bandwagon/utils": "workspace:*",
