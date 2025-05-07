@@ -1,5 +1,7 @@
 packages: 
   - 'piggyback'
+  - 'dugout'
+  - 'jumbotron'
   - 'utils'
 # cause in pnpm v10, pnpm need add this option to use `pnpm deploy` command
 injectWorkspacePackages: true

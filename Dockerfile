@@ -1,6 +1,6 @@
 # --- the stage "base" only set the base setting ---
 # use node:20 docker image as base
-FROM --platform=linux/amd64 node:20 AS base
+FROM --platform=linux/amd64 node:22 AS base
 
 # set the environment variable 
 ENV PNPM_HOME="/pnpm"
@@ -19,13 +19,10 @@ WORKDIR /usr/src/app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run -r build
 
-
-
 # use pnpm deploy command, to install node_module independently to target dir
-RUN pnpm deploy --filter=*piggyback --prod /piggyback
-RUN pnpm --filter "*piggyback" run build
-# RUN pnpm deploy --filter=app2 --prod /prod/app2
-
+# if utils be used in project, it need to be deploy too
+RUN pnpm --filter=*piggyback --prod deploy  /piggyback
+RUN pnpm --filter=*dugout --prod deploy /dugout
 
 # --- the stage "piggyback" only run the project piggyback
 FROM base AS piggyback
@@ -38,10 +35,10 @@ RUN pnpm pre-playwright
 # CMD [ "pnpm", "scripts:secret" ]
 CMD [ "pnpm", "start:docker" ]
 
-# FROM base AS app2
-# COPY --from=build /prod/app2 /prod/app2
-# WORKDIR /prod/app2
-# EXPOSE 8001
-# CMD [ "pnpm", "start" ]
+FROM base AS dugout
+COPY --from=build /dugout /dugout
+WORKDIR /dugout
+EXPOSE 8080
+CMD [ "pnpm", "start:docker" ]
 
 

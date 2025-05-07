@@ -1,0 +1,30 @@
+{
+  "name": "@bandwagon/dugout",
+  "version": "0.0.1",
+  "description": "The ", 
+  "private": true,
+  "packageManager": "pnpm@10.9.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build:node": "tsup-node ./src/app.ts",
+    "build:scripts": "tsup-node ./scripts/* --outDir dist/scripts",
+    "dev": "tsx watch src/app.ts",
+    "build": "rm -rf ./dist && pnpm build:node && pnpm build:scripts",
+    "start:builded": "node dist/app.mjs",
+    "start:docker": "pnpm scripts:secret && pnpm start:builded",
+    "scripts:secret": "node ./dist/scripts/fetchEnv.mjs"
+  },
+  "dependencies": {
+    "@bandwagon/utils": "workspace:*",
+    "@hono/node-server": "^1.14.1",
+    "hono": "^4.7.8",
+    "google-auth-library": "^9.15.1",
+    "@google-cloud/secret-manager": "^6.0.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0"
+  }
+}

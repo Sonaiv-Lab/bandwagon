@@ -9,7 +9,9 @@
   "scripts": {
     "run:piggyback": "pnpm --filter @bandwagon/piggyback dev",
     "docker:build:piggyback": "docker build . --target piggyback --tag bandwagon/piggyback:latest",
-    "docker:run-local:piggyback": "docker run --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/piggyback"
+    "docker:run-local:piggyback": "docker run --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/piggyback",
+    "docker:build:dugout": "docker build . --target dugout --tag bandwagon/dugout:latest",
+    "docker:run-local:dugout": "docker run -p 8080:8080 --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/dugout"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
@@ -21,6 +23,8 @@
   },
   "devDependencies": {
     "@types/node": "^22.14.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "tsx": "^4.19.3",
+    "tsup": "^8.4.0"
   }
 }

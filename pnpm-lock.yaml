@@ -19,9 +19,42 @@ importers:
       '@types/node':
         specifier: ^22.14.1
         version: 22.14.1
+      tsup:
+        specifier: ^8.4.0
+        version: 8.4.0(tsx@4.19.3)(typescript@5.8.3)
+      tsx:
+        specifier: ^4.19.3
+        version: 4.19.3
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
+
+  dugout:
+    dependencies:
+      '@bandwagon/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@google-cloud/secret-manager':
+        specifier: ^6.0.1
+        version: 6.0.1
+      '@hono/node-server':
+        specifier: ^1.14.1
+        version: 1.14.1(hono@4.7.8)
+      google-auth-library:
+        specifier: ^9.15.1
+        version: 9.15.1
+      hono:
+        specifier: ^4.7.8
+        version: 4.7.8
+      zod:
+        specifier: ^3.24.2
+        version: 3.24.3
+    devDependencies:
+      tsup:
+        specifier: ^8.4.0
+        version: 8.4.0(tsx@4.19.3)(typescript@5.8.3)
+
+  jumbotron: {}
 
   piggyback:
     dependencies:
@@ -64,9 +97,6 @@ importers:
       playwright:
         specifier: ^1.51.1
         version: 1.52.0
-      tsx:
-        specifier: ^4.19.3
-        version: 4.19.3
       undici:
         specifier: ^7.8.0
         version: 7.8.0
@@ -90,7 +120,17 @@ importers:
         specifier: ^8.4.0
         version: 8.4.0(tsx@4.19.3)(typescript@5.8.3)
 
-  utils: {}
+  utils:
+    dependencies:
+      '@google-cloud/secret-manager':
+        specifier: ^6.0.1
+        version: 6.0.1
+      google-auth-library:
+        specifier: ^9.15.1
+        version: 9.15.1
+      zod:
+        specifier: ^3.24.2
+        version: 3.24.3
 
 packages:
 
@@ -342,6 +382,12 @@ packages:
     resolution: {integrity: sha512-oS0FyK8eGNBJC6aB/qsS4LOxCYQlBniNzp6W8IdjlRVRGs0FOK9dS84OV+kXGaZf8Ozeos8fbUMJUGGzSpOCzQ==}
     engines: {node: '>=6'}
     hasBin: true
+
+  '@hono/node-server@1.14.1':
+    resolution: {integrity: sha512-vmbuM+HPinjWzPe7FFPWMMQMsbKE9gDPhaH0FFdqbGpkT5lp++tcWDTxwBl5EgS5y6JVgIaCdjeHRfQ4XRBRjQ==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -970,6 +1016,10 @@ packages:
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
+
+  hono@4.7.8:
+    resolution: {integrity: sha512-PCibtFdxa7/Ldud9yddl1G81GjYaeMYYTq4ywSaNsYbB1Lug4mwtOMJf2WXykL0pntYwmpRJeOI3NmoDgD+Jxw==}
+    engines: {node: '>=16.9.0'}
 
   html-entities@2.6.0:
     resolution: {integrity: sha512-kig+rMn/QOVRvr7c86gQ8lWXq+Hkv6CbAH1hLu+RG338StTpE8Z0b44SDVaqVu7HGKf27frdmUYEs9hTUX/cLQ==}
@@ -1836,6 +1886,10 @@ snapshots:
       protobufjs: 7.5.0
       yargs: 17.7.2
 
+  '@hono/node-server@1.14.1(hono@4.7.8)':
+    dependencies:
+      hono: 4.7.8
+
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -2509,6 +2563,8 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  hono@4.7.8: {}
 
   html-entities@2.6.0: {}
 
