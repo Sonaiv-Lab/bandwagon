@@ -8,7 +8,6 @@
     "build:node": "tsup-node ./src/app.ts",
     "build:scripts": "tsup-node ./scripts/* --outDir dist/scripts",
     "build": "rm -rf ./dist && pnpm build:node && pnpm build:scripts",
-    "docker": "echo \"todo\"",
     "start:dev": "tsx --tsconfig ./tsconfig.json ./src/app.ts ",
     "start:builded": "node ./dist/app.mjs",
     "pre-playwright": "pnpm exec playwright install-deps chromium && pnpm exec playwright install chromium",
@@ -17,7 +16,8 @@
     "dev:builded": "pnpm build:node && pnpm run start:builded",
     "ts-check": "tsc --project ./tsconfig.json --noEmit",
     "node": "tsx --tsconfig ./tsconfig.json",
-    "scripts:secret": "node ./dist/scripts/fetchEnv.mjs"
+    "scripts:secret": "node ./dist/scripts/fetchEnv.mjs",
+    "scripts:secret:local": "NODE_ENV=dev node ./dist/scripts/fetchEnv.mjs"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -36,7 +36,6 @@
     "microdiff": "^1.5.0",
     "object-to-formdata": "^4.5.1",
     "playwright": "^1.51.1",
-    "tsx": "^4.19.3",
     "undici": "^7.8.0",
     "winston": "^3.17.0",
     "zod": "^3.24.2"
