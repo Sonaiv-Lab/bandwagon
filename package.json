@@ -11,7 +11,8 @@
     "docker:build:piggyback": "docker build . --target piggyback --tag bandwagon/piggyback:latest",
     "docker:run-local:piggyback": "docker run --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/piggyback",
     "docker:build:dugout": "docker build . --target dugout --tag bandwagon/dugout:latest",
-    "docker:run-local:dugout": "docker run -p 8080:8080 --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/dugout"
+    "docker:run-local:dugout": "docker run -p 8080:8080 --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/dugout",
+    "cert": "mkcert localhost 127.0.0.1"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
