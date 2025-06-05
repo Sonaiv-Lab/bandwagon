@@ -2,7 +2,7 @@ import { getGamesData } from '#/endpoints/schedule/getgamedatas';
 import { upsertGame } from '#/resources/game';
 import { getFirestore } from '#/resources/db/firestore';
 import { CronJob } from 'cron';
-import logger from '#/utils/logger';
+import logger from '#/runtime/logger';
 
 const makeGamesData = async () => {
   try {

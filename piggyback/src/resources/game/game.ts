@@ -1,7 +1,7 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import type { Firestore } from '@google-cloud/firestore';
 import type { Game } from './types';
-import logger from '#/utils/logger';
+import logger from '#/runtime/logger';
 
 type GameDoc = {
   updatedAt: FieldValue;

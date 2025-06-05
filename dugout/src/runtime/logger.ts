@@ -1,7 +1,7 @@
 import winston from 'winston';
 import { LoggingWinston } from '@google-cloud/logging-winston';
 import type { Options } from '@google-cloud/logging-winston';
-import env from '#/utils/env';
+import env from '#/runtime/env';
 import {
   createConsoleTransport,
   createFileTransPort,
