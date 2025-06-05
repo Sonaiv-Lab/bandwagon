@@ -1,31 +1,11 @@
-import { getFirestore, Firestore } from 'firebase-admin/firestore';
-import init from './init';
+import { getFirestore } from 'firebase-admin/firestore';
 import env from '#/utils/env';
-import { DateTime, Zone } from "luxon";
-
-init();
-
-const ping = async (firestore: Firestore) => {
-  const timeStr = DateTime.now().setZone('Asia/Taipei').toISO()!
-
-  await firestore
-    .collection('meta')
-    .doc('healthcheck')
-    .collection('ping')
-    .doc(timeStr)
-    .set({ project: 'piggypack' });
-
-  await firestore
-    .collection('meta')
-    .doc('healthcheck')
-    .collection('ping')
-    .doc(timeStr)
-    .get();
-};
+import { ping, initByEnv} from '@bandwagon/utils/firestore';
 
 const get = async () => {
+  await initByEnv(env)
   const fireStore = getFirestore(env.FIRESTORE_ID);
-  await ping(fireStore);
+  await ping(fireStore, 'piggyback')
 
   return fireStore;
 };

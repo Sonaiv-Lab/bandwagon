@@ -7,6 +7,4 @@ const env = (() => {
   return createEnv(env);
 })();
 
-console.log(env);
-
 export default env;
