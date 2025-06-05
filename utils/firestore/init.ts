@@ -3,8 +3,8 @@
 import { initializeApp, applicationDefault, cert } from 'firebase-admin/app';
 import { getLocalCert } from '../getLocalCert';
 
-export const initFirestoreWithLocalCert = async (localCertPath: string) => {
-  const localCert = await getLocalCert(localCertPath);
+export const initFirestoreWithLocalCert = (localCertPath: string) => {
+  const localCert = getLocalCert(localCertPath);
   console.log(`init cloudstore with local cert from ${localCertPath}`);
 
   return initializeApp({

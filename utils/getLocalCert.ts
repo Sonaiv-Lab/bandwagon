@@ -1,11 +1,9 @@
 import { assertNodeRuntime } from './runtime';
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
-export const getLocalCert = async (localCertPath: string) => {
+export const getLocalCert = (localCertPath: string) => {
   assertNodeRuntime();
-
-  const { readFileSync } = await import('node:fs');
-  const { resolve } = await import('node:path');
-
   const certPath = resolve(process.cwd(), localCertPath);
   console.log(`parse local cert: ${certPath}`);
 

@@ -1,22 +1,18 @@
 import { Env } from '../createEnv';
 import { initFirestoreWithGcpVM, initFirestoreWithLocalCert } from './init';
 
-let FirebaseApp;
-
 // init the firestore with correspond way by environment variable
-const initByEnv = async (env: Env) => {
-  if (!!FirebaseApp) return;
-
+const initByEnv = (env: Env) => {
   const deployEnv = env.DEPLOY_ENV;
 
   const initFuncs = {
-    local: async () => {
+    local: () => {
       if (!env.FIRESTORE_CERT_LOCAL) {
         throw new Error(
           'not local env or missing FIRESTORE_CERT_LOCAL env var'
         );
       }
-      return await initFirestoreWithLocalCert(env.FIRESTORE_CERT_LOCAL);
+      return initFirestoreWithLocalCert(env.FIRESTORE_CERT_LOCAL);
     },
     gcp: initFirestoreWithGcpVM,
   };
@@ -27,7 +23,7 @@ const initByEnv = async (env: Env) => {
     throw new Error('firestore init error: env not support');
   }
 
-  return await initFunc();
+  return initFunc();
 };
 
 export default initByEnv;

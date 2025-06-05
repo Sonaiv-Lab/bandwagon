@@ -3,7 +3,7 @@ import env from '#/utils/env';
 import { ping, initByEnv} from '@bandwagon/utils/firestore';
 
 const get = async () => {
-  await initByEnv(env)
+  initByEnv(env)
   const fireStore = getFirestore(env.FIRESTORE_ID);
   await ping(fireStore, 'piggyback')
 
