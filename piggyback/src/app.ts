@@ -1,6 +1,6 @@
 import { getGamesData } from '#/endpoints/schedule/getgamedatas';
 import { upsertGame } from '#/resources/game';
-import { getFirestore } from '#/resources/instances/firestore';
+import { getFirestore } from '#/resources/db/firestore';
 import { CronJob } from 'cron';
 import logger from '#/utils/logger';
 

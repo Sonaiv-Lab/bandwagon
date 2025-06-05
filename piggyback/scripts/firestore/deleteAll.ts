@@ -1,16 +1,15 @@
-import { getFirestore } from "#/resources/instances/firestore";
+import { getFirestore } from '#/resources/db/firestore';
 
 const run = async () => {
-  const store = getFirestore()
+  const store = getFirestore();
 
-  const ref = store.collection('games')
-  const allGames = await ref.get()
+  const ref = store.collection('games');
+  const allGames = await ref.get();
 
-  allGames.forEach(doc => {
-    ref.doc(doc.id).delete()
+  allGames.forEach((doc) => {
+    ref.doc(doc.id).delete();
     // console.log(doc.id, '=>', doc.data());
   });
+};
 
-}
-
-run()
+run();
