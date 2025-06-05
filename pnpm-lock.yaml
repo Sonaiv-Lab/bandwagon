@@ -34,6 +34,9 @@ importers:
       '@bandwagon/utils':
         specifier: workspace:*
         version: link:../utils
+      '@google-cloud/logging-winston':
+        specifier: ^6.0.0
+        version: 6.0.0(winston@3.17.0)
       '@google-cloud/secret-manager':
         specifier: ^6.0.1
         version: 6.0.1
@@ -46,6 +49,9 @@ importers:
       hono:
         specifier: ^4.7.8
         version: 4.7.8
+      winston:
+        specifier: ^3.17.0
+        version: 3.17.0
       zod:
         specifier: ^3.24.2
         version: 3.24.3
@@ -232,9 +238,15 @@ importers:
 
   utils:
     dependencies:
+      '@google-cloud/logging-winston':
+        specifier: ^6.0.0
+        version: 6.0.0(winston@3.17.0)
       '@google-cloud/secret-manager':
         specifier: ^6.0.1
         version: 6.0.1
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
       firebase-admin:
         specifier: ^13.2.0
         version: 13.2.0
@@ -244,6 +256,9 @@ importers:
       luxon:
         specifier: ^3.6.1
         version: 3.6.1
+      winston:
+        specifier: ^3.17.0
+        version: 3.17.0
       zod:
         specifier: ^3.24.2
         version: 3.24.3
