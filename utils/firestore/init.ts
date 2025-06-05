@@ -1,28 +1,20 @@
 // this file is only for node environment
 
 import { initializeApp, applicationDefault, cert } from 'firebase-admin/app';
-import { assertNodeRuntime } from '../runtime';
+import { getLocalCert } from '../getLocalCert';
 
 export const initFirestoreWithLocalCert = async (localCertPath: string) => {
-  assertNodeRuntime();
-
-  const { readFileSync } = await import('node:fs');
-  const { resolve } = await import('node:path');
-
-  const certPath = resolve(process.cwd(), localCertPath);
-  console.log(`init cloudstore with local cert from ${certPath}`);
-
-  const certFile = readFileSync(certPath, 'utf-8');
-
-  const certJSON = JSON.parse(certFile);
+  const localCert = await getLocalCert(localCertPath);
+  console.log(`init cloudstore with local cert from ${localCertPath}`);
 
   return initializeApp({
-    credential: cert(certJSON),
+    credential: cert(localCert),
   });
 };
 
 export const initFirestoreWithGcpVM = () => {
   console.log(`init cloudstore with GCP cloud default`);
+
   return initializeApp({
     credential: applicationDefault(),
   });
