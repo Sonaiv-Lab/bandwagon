@@ -1,5 +1,5 @@
 import type { Firestore } from 'firebase-admin/firestore';
-import { DateTime, Zone } from 'luxon';
+import { DateTime } from 'luxon';
 
 
 export const ping = async (firestore: Firestore, project: string) => {

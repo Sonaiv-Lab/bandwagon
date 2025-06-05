@@ -1,2 +1,2 @@
 export * from './ping';
-export { default as initByEnv } from './initByEnv';
+export * from './init';
