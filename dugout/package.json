@@ -1,5 +1,6 @@
 {
   "name": "@bandwagon/dugout",
+  "project_name": "dugout",
   "version": "0.0.1",
   "description": "The ", 
   "private": true,

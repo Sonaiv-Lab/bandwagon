@@ -1,5 +1,6 @@
 {
   "name": "@bandwagon/piggyback",
+  "project_name": "piggyback",
   "version": "0.0.1",
   "description": "The data resource of bandwagon app",
   "private": true,

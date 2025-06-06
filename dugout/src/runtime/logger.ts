@@ -2,6 +2,7 @@ import winston from 'winston';
 import { LoggingWinston } from '@google-cloud/logging-winston';
 import type { Options } from '@google-cloud/logging-winston';
 import env from '#/runtime/env';
+import { VERSION, NAME } from '#/runtime/config';
 import {
   createConsoleTransport,
   createFileTransPort,
@@ -10,11 +11,10 @@ import {
 
 const gcpLoggingConfig: Options = {
   serviceContext: {
-    service: 'bandwagon/dugout',
-    // TODO, get version from package.json in build time
-    version: '0.0.1',
+    service: NAME,
+    version: VERSION,
   },
-  prefix: 'bandwagon/dugout/dev',
+  prefix: `${NAME}:${env.DEPLOY_ENV}:${env.NODE_ENV}`,
 };
 
 const logger = winston.createLogger({

@@ -11,6 +11,7 @@
     "target": "ESNext",
     "outDir": "dist",
     "paths": {
+      "#/package.json": ["./dugout/package.json"],
       "#/*": ["./dugout/src/*"]
     }
   }

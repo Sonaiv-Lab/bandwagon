@@ -1,5 +1,6 @@
 {
-  "name": "bandwagon",
+  "name": "@bandwagon/jumbotron",
+  "project_name": "jumbotron",
   "version": "0.0.1",
   "private": true,
   "scripts": {
