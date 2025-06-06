@@ -43,6 +43,9 @@ importers:
       '@hono/node-server':
         specifier: ^1.14.1
         version: 1.14.1(hono@4.7.8)
+      firebase-admin:
+        specifier: ^13.2.0
+        version: 13.2.0
       google-auth-library:
         specifier: ^9.15.1
         version: 9.15.1
