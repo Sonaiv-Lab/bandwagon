@@ -1,4 +1,4 @@
-import { injectNodeEnv, createEnv } from '@bandwagon/utils/env';
+import { injectNodeEnv, createEnv } from '@bandwagon/shared/env';
 
 const env = (() => {
   // first, inject the environment variable by NODE_ENV

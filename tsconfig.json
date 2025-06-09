@@ -11,7 +11,7 @@
     "resolveJsonModule": true,
     //
     "paths": {
-      "@bandwagon/utils/*": ["./utils/*"]
+      "@bandwagon/shared/*": ["./shared/*"]
     }
   }
 }

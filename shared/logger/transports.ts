@@ -1,8 +1,8 @@
 import winston, { format } from 'winston';
 import { LoggingWinston } from '@google-cloud/logging-winston';
 import type { Options } from '@google-cloud/logging-winston';
-import { getLocalCert } from '@bandwagon/utils/getLocalCert';
-import { type Env } from '@bandwagon/utils/env';
+import { getLocalCert } from '@bandwagon/shared/getLocalCert';
+import { type Env } from 'shared/env';
 
 const { combine, timestamp, prettyPrint, printf } = format;
 
@@ -14,15 +14,15 @@ const myFormat = printf(({ level, message, label, timestamp }) => {
 
 const textFormat = combine(timestamp(), prettyPrint(), myFormat);
 
-const createConsoleTransport = () => new winston.transports.Console({ format: textFormat })
-
+const createConsoleTransport = () =>
+  new winston.transports.Console({ format: textFormat });
 
 const createFileTransPort = (filename: string = '.log/logs') => {
   return new winston.transports.File({
     filename,
     format: textFormat,
   });
-}
+};
 
 const createGCPTransport = (env: Env, gcpLoggingConfig: Options) => {
   const deployEnv = env.DEPLOY_ENV;

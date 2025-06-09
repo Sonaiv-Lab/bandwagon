@@ -2,12 +2,12 @@ import winston from 'winston';
 import { LoggingWinston } from '@google-cloud/logging-winston';
 import type { Options } from '@google-cloud/logging-winston';
 import env from '#/runtime/env';
-import { VERSION, NAME } from "#/runtime/config";
+import { VERSION, NAME } from '#/runtime/config';
 import {
   createConsoleTransport,
   createFileTransPort,
   createGCPTransport,
-} from '@bandwagon/utils/logger';
+} from '@bandwagon/shared/logger';
 
 const gcpLoggingConfig: Options = {
   serviceContext: {

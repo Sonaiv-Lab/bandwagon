@@ -1,6 +1,6 @@
 import { getFirestore } from 'firebase-admin/firestore';
 import env from '#/runtime/env';
-import { ping, initByEnv } from '@bandwagon/utils/firestore';
+import { ping, initByEnv } from '@bandwagon/shared/firestore';
 import type { Firestore } from '@google-cloud/firestore';
 
 const get = async () => {

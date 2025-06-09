@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
-import { assertNodeRuntime } from "@bandwagon/utils/runtime";
+import { assertNodeRuntime } from '@bandwagon/shared/runtime';
 
-const ENV_PATH = ['.env.local', '.env']
+const ENV_PATH = ['.env.local', '.env'];
 
 const injectNodeEnv = (path: string[] = ENV_PATH) => {
-  assertNodeRuntime()
+  assertNodeRuntime();
 
   dotenv.config({ path });
 

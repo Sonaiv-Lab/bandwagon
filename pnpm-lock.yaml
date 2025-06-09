@@ -31,9 +31,9 @@ importers:
 
   dugout:
     dependencies:
-      '@bandwagon/utils':
+      '@bandwagon/shared':
         specifier: workspace:*
-        version: link:../utils
+        version: link:../shared
       '@google-cloud/logging-winston':
         specifier: ^6.0.0
         version: 6.0.0(winston@3.17.0)
@@ -74,6 +74,9 @@ importers:
 
   jumbotron:
     dependencies:
+      '@bandwagon/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@gorhom/bottom-sheet':
         specifier: ^5.1.5
         version: 5.1.5(@types/react@19.1.4)(react-native-gesture-handler@2.25.0(react-native@0.79.2(@babel/core@7.27.1)(@react-native-community/cli@18.0.0(typescript@5.0.4))(@types/react@19.1.4)(react@19.0.0))(react@19.0.0))(react-native-reanimated@3.18.0(@babel/core@7.27.1)(react-native@0.79.2(@babel/core@7.27.1)(@react-native-community/cli@18.0.0(typescript@5.0.4))(@types/react@19.1.4)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.27.1)(@react-native-community/cli@18.0.0(typescript@5.0.4))(@types/react@19.1.4)(react@19.0.0))(react@19.0.0)
@@ -186,9 +189,9 @@ importers:
 
   piggyback:
     dependencies:
-      '@bandwagon/utils':
+      '@bandwagon/shared':
         specifier: workspace:*
-        version: link:../utils
+        version: link:../shared
       '@google-cloud/firestore':
         specifier: ^7.11.0
         version: 7.11.0
@@ -248,7 +251,7 @@ importers:
         specifier: ^8.4.0
         version: 8.4.0(tsx@4.19.3)(typescript@5.8.3)(yaml@2.8.0)
 
-  utils:
+  shared:
     dependencies:
       '@google-cloud/logging-winston':
         specifier: ^6.0.0
@@ -7008,7 +7011,9 @@ snapshots:
       metro-runtime: 0.82.3
     transitivePeerDependencies:
       - '@babel/core'
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@react-native/normalize-colors@0.79.2': {}
 

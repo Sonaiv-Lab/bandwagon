@@ -7,7 +7,7 @@ import {
   createConsoleTransport,
   createFileTransPort,
   createGCPTransport,
-} from '@bandwagon/utils/logger';
+} from '@bandwagon/shared/logger';
 
 const gcpLoggingConfig: Options = {
   serviceContext: {

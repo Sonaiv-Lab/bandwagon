@@ -18,7 +18,7 @@
     "scripts:secret": "node ./dist/scripts/fetchEnv.mjs"
   },
   "dependencies": {
-    "@bandwagon/utils": "workspace:*",
+    "@bandwagon/shared": "workspace:*",
     "@google-cloud/logging-winston": "^6.0.0",
     "@google-cloud/secret-manager": "^6.0.1",
     "@hono/node-server": "^1.14.1",

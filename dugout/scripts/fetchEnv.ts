@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { argv } from 'node:process';
 
-import fetchEnv, { envSchema } from '@bandwagon/utils/fetchEnv';
-import type { Cert, Target } from '@bandwagon/utils/fetchEnv';
+import fetchEnv, { envSchema } from '@bandwagon/shared/fetchEnv';
+import type { Cert, Target } from '@bandwagon/shared/fetchEnv';
 
 const SECRET_NAME = {
   prod: 'bandwagon-piggyback',
