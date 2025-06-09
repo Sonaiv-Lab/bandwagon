@@ -9,7 +9,7 @@
     "build:node": "tsup-node ./src/app.ts",
     "build:scripts": "tsup-node ./scripts/* --outDir dist/scripts",
     "build": "rm -rf ./dist && pnpm build:node && pnpm build:scripts",
-    "start:dev": "tsx --tsconfig ./tsconfig.json ./src/app.ts ",
+    "start:dev": "NODE_ENV=dev tsx --tsconfig ./tsconfig.json ./src/app.ts ",
     "start:builded": "node ./dist/app.mjs",
     "pre-playwright": "pnpm exec playwright install-deps chromium && pnpm exec playwright install chromium",
     "start:docker": "pnpm scripts:secret && pnpm start:builded",
