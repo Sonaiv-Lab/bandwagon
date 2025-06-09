@@ -30,6 +30,7 @@ type LinkResource = {
 
 export const GameScheme = z.object({
   id: CPBLGameId,
+  gameNo: z.number(),
   year: z.string(),
   gameKindCode: KindCodeScheme,
   gameSeason: gameSeason,

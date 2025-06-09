@@ -43,15 +43,24 @@ importers:
       '@hono/node-server':
         specifier: ^1.14.1
         version: 1.14.1(hono@4.7.8)
+      '@types/luxon':
+        specifier: ^3.6.2
+        version: 3.6.2
       firebase-admin:
         specifier: ^13.2.0
         version: 13.2.0
+      fp-ts:
+        specifier: ^2.16.10
+        version: 2.16.10
       google-auth-library:
         specifier: ^9.15.1
         version: 9.15.1
       hono:
         specifier: ^4.7.8
         version: 4.7.8
+      luxon:
+        specifier: ^3.6.1
+        version: 3.6.1
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -3042,6 +3051,9 @@ packages:
   formdata-polyfill@4.0.10:
     resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
     engines: {node: '>=12.20.0'}
+
+  fp-ts@2.16.10:
+    resolution: {integrity: sha512-vuROzbNVfCmUkZSUbnWSltR1sbheyQbTzug7LB/46fEa1c0EucLeBaCEUE0gF3ZGUGBt9lVUiziGOhhj6K1ORA==}
 
   fresh@0.5.2:
     resolution: {integrity: sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==}
@@ -6996,9 +7008,7 @@ snapshots:
       metro-runtime: 0.82.3
     transitivePeerDependencies:
       - '@babel/core'
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   '@react-native/normalize-colors@0.79.2': {}
 
@@ -8720,6 +8730,8 @@ snapshots:
   formdata-polyfill@4.0.10:
     dependencies:
       fetch-blob: 3.2.0
+
+  fp-ts@2.16.10: {}
 
   fresh@0.5.2: {}
 

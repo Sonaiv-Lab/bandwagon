@@ -157,6 +157,7 @@ const GameResultMap: Record<TGamesData['GameResult'], Game['result']> = {
 const toGameData = (data: TGamesData): Game => {
   const game: Game = {
     id: createCPBLId(data),
+    gameNo: data.GameSno,
     year: data.Year,
     gameKindCode: data.KindCode,
     gameSeason: data.GameSeasonCode,

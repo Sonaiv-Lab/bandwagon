@@ -1,11 +1,17 @@
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
+import { serve } from '@hono/node-server';
+import { Hono } from 'hono';
+import logger from './runtime/logger';
+import { getFirestore } from './db/firestore';
+import { schedule, games } from "#/modules";
 
-const app = new Hono()
+const app = new Hono();
 
-app.get('/ping', (c) => {
-  return c.text('ping')
-})
+app.get('/ping', async (c) => {
+  return c.text('ping');
+});
+
+app.route('/schedule', schedule)
+app.route('/games', games)
 
 serve(
   {
@@ -13,6 +19,6 @@ serve(
     port: 8080,
   },
   (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
+    logger.info(`Server is running on http://localhost:${info.port}`);
   }
 );

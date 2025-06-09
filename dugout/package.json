@@ -2,7 +2,7 @@
   "name": "@bandwagon/dugout",
   "project_name": "dugout",
   "version": "0.0.1",
-  "description": "The ", 
+  "description": "The ",
   "private": true,
   "packageManager": "pnpm@10.9.0",
   "engines": {
@@ -11,7 +11,7 @@
   "scripts": {
     "build:node": "tsup-node ./src/app.ts",
     "build:scripts": "tsup-node ./scripts/* --outDir dist/scripts",
-    "dev": "tsx watch src/app.ts",
+    "dev": "NODE_ENV=dev tsx --tsconfig ./tsconfig.json ./src/app.ts",
     "build": "rm -rf ./dist && pnpm build:node && pnpm build:scripts",
     "start:builded": "node dist/app.mjs",
     "start:docker": "pnpm scripts:secret && pnpm start:builded",
@@ -19,12 +19,15 @@
   },
   "dependencies": {
     "@bandwagon/utils": "workspace:*",
-    "@hono/node-server": "^1.14.1",
-    "hono": "^4.7.8",
-    "google-auth-library": "^9.15.1",
-    "@google-cloud/secret-manager": "^6.0.1",
     "@google-cloud/logging-winston": "^6.0.0",
+    "@google-cloud/secret-manager": "^6.0.1",
+    "@hono/node-server": "^1.14.1",
+    "@types/luxon": "^3.6.2",
     "firebase-admin": "^13.2.0",
+    "fp-ts": "^2.16.10",
+    "google-auth-library": "^9.15.1",
+    "hono": "^4.7.8",
+    "luxon": "^3.6.1",
     "winston": "^3.17.0",
     "zod": "^3.24.2"
   },
