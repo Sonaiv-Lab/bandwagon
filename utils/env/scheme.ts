@@ -18,7 +18,10 @@ export const EnvSchemes = z.object({
   RUNTIME_ENVIRONMENT: z.enum(['node', 'cloud'], {
     message: `env prop not defined: ${'RUNTIME_ENVIRONMENT'}`,
   }),
-  NODE_ENV: z.enum(['dev', 'prod']),
+  // NODE_ENV is the initialize environment variable that manual set by scripts or VM config. not in .env file
+  NODE_ENV: z.enum(['dev', 'prod'], {
+    message: `env prop not defined: ${'NODE_ENV'}`,
+  }),
 });
 
 export type Env = z.infer<typeof EnvSchemes>;
