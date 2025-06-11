@@ -7,3 +7,6 @@ packages:
 injectWorkspacePackages: true
 syncInjectedDepsAfterScripts:
  - build
+# prevent the monorepo use other package's dependencies, it works only in local file structure but make the error when trim out other package's installed module
+# but the interesting point it, it doesn't work when pnpm install, checkout this issue: https://github.com/pnpm/pnpm/issues/6893
+strictPeerDependencies: true

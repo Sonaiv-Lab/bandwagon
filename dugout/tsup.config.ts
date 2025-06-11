@@ -7,7 +7,8 @@ import { defineConfig } from 'tsup'
 */
 export default defineConfig({
   name: 'dugout:node',
-  noExternal: ['@bandwagon'],
+  // its so important to not treat fp-ts as noExternal, it would put fp-ts in to builded file instead as dependencies to package import parse error in node env. make it align with tsx in dev mode
+  noExternal: ['@bandwagon', 'fp-ts'],
   target: 'node20',
   format: 'esm',
   platform: 'node',

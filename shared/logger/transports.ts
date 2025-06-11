@@ -1,8 +1,8 @@
 import winston, { format } from 'winston';
 import { LoggingWinston } from '@google-cloud/logging-winston';
 import type { Options } from '@google-cloud/logging-winston';
-import { getLocalCert } from '@bandwagon/shared/getLocalCert';
-import { type Env } from 'shared/env';
+import { getLocalCert } from '../getLocalCert';
+import { type Env } from '../env';
 
 const { combine, timestamp, prettyPrint, printf } = format;
 

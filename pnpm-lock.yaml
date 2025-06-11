@@ -46,6 +46,9 @@ importers:
       '@types/luxon':
         specifier: ^3.6.2
         version: 3.6.2
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
       firebase-admin:
         specifier: ^13.2.0
         version: 13.2.0
