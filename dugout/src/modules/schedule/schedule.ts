@@ -3,6 +3,7 @@ import { getFirestore } from '#/db/firestore';
 import { pipe } from 'fp-ts/function';
 import { DateTime } from 'luxon';
 import * as A from 'fp-ts/Array';
+import * as O from 'fp-ts/Option';
 import * as RR from 'fp-ts/ReadonlyRecord';
 
 const scheduleRoute = new Hono()
@@ -14,13 +15,7 @@ scheduleRoute.get('/:year', async (c) => {
   const gamesRes = await firestore
     .collection('games')
     .where('data.year', '==', year)
-    .limit(5)
     .get();
-
-  if (gamesRes.empty) {
-    console.log('gggg');
-  }
-
 
   const games = pipe(
     gamesRes.docs,
@@ -55,17 +50,25 @@ scheduleRoute.get('/:year', async (c) => {
     )
   );
 
-  const monoidGameArray = A.getMonoid<any>()
+  type Game = typeof games[number]
 
-  const gamesByMonth = RR.fromFoldableMap(monoidGameArray, A.Foldable)(
+  const getGamesArrayMonoid = A.getMonoid<Game>();
+
+  const gamesByDate = pipe(
     games,
-    (game) => {
-      const month = DateTime.fromISO(game.startDatetime).month.toString()
-      return [month, [game]] as const
-    }
-  )
+    A.filterMap((game): O.Option<readonly [string, Game[]]> => {
+      const date = DateTime.fromISO(game.startDatetime);
 
-  return c.json(gamesByMonth)
+      if (!date.isValid) {
+        return O.none;
+      }
+
+      return O.some([date.toISODate(), [game]] as const);
+    }),
+    (data) => RR.fromFoldable(getGamesArrayMonoid, A.Foldable)(data)
+  );
+  
+  return c.json(gamesByDate);
 });
 
 
