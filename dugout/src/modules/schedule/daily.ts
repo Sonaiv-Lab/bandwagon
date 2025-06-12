@@ -6,9 +6,9 @@ import * as A from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
 import * as RR from 'fp-ts/ReadonlyRecord';
 
-const scheduleRoute = new Hono()
+const daily = new Hono();
 
-scheduleRoute.get('/:year', async (c) => {
+daily.get('/daily/:year', async (c) => {
   const year = c.req.param('year');
 
   const firestore = await getFirestore();
@@ -50,7 +50,7 @@ scheduleRoute.get('/:year', async (c) => {
     )
   );
 
-  type Game = typeof games[number]
+  type Game = (typeof games)[number];
 
   const getGamesArrayMonoid = A.getMonoid<Game>();
 
@@ -67,9 +67,8 @@ scheduleRoute.get('/:year', async (c) => {
     }),
     (data) => RR.fromFoldable(getGamesArrayMonoid, A.Foldable)(data)
   );
-  
+
   return c.json(gamesByDate);
 });
 
-
-export { scheduleRoute as schedule };
+export { daily };
