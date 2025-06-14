@@ -8,6 +8,11 @@ const getEnvStringScheme = (name: string) =>
     message: `env prop not defined: ${name}`,
   });
 
+
+/**
+  TODO: 參考這個部分  https://github.com/colinhacks/zod/issues/2807#issuecomment-1977406654
+  在使用 zod 時以 type 為優先，再 implement zod scheme
+*/
 // register the environment variable right here
 export const EnvSchemes = z.object({
   FIRESTORE_CERT_LOCAL: getEnvStringScheme('FIRESTORE_CERT_LOCAL').optional(),

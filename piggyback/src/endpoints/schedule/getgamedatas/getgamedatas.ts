@@ -1,13 +1,16 @@
 import { intercept } from '#/utils/interceptNetworkFromPage';
 import { z, ZodError } from 'zod';
-import { Scheme as KindCodeScheme } from '#/variables/kindCode';
-import { FieldOptsScheme } from '#/variables/fieldOpts';
+import { Scheme as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
 import { DateTime, IANAZone } from 'luxon';
 import { request } from 'undici';
 import { GamesDatasSchema } from './schema';
 
 import type { TGamesDatasSchema, TGamesData } from './schema';
-import { Game, GameScheme } from '#/resources/game/types';
+import { Game, GameScheme } from '@bandwagon/shared/modules/game';
+import {
+  FIELD_OPTS,
+  FieldOptsScheme,
+} from '@bandwagon/shared/constants/fieldOpts';
 
 /**
 one endpoint need 
@@ -169,6 +172,7 @@ const toGameData = (data: TGamesData): Game => {
     result: GameResultMap[data.GameResult],
     durationSeconds: transformDuringTime(data.GameDuringTime),
     reserveDate: toISODatetimeWithZone(data.ReserveDate ?? '', 'Asia/Taipei'),
+    field: FIELD_OPTS[data.FieldAbbe],
     // score
     homeScore: data.HomeScore,
     visitingScore: data.VisitingScore,

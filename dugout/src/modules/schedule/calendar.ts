@@ -6,9 +6,12 @@ import * as A from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
 import * as RR from 'fp-ts/ReadonlyRecord';
 import type { Monoid } from 'fp-ts/Monoid';
+import { Calendar } from '@bandwagon/shared/modules/schedule';
+import { DateString } from '@bandwagon/shared/types';
 
 const calendar = new Hono();
 
+// TODO 這支 API 未來會需要加上參數，表示說有哪些 data source
 calendar.get('/calendar', async (c) => {
   const firestore = await getFirestore();
   const gamesRes = await firestore.collection('games').get();
@@ -19,10 +22,14 @@ calendar.get('/calendar', async (c) => {
   };
   const monthRecordMonoid = RR.getMonoid(dedupeStringArrayMonoid);
 
-  const games = pipe(
+  const games: Calendar = pipe(
     gamesRes.docs,
     A.map((game: FirebaseFirestore.QueryDocumentSnapshot) => game.data()),
-    A.map(({ data }) => data),
+    A.map(({ data }) => {
+      console.log(data);
+
+      return data;
+    }),
     A.filterMap(({ startDatetime }) => {
       const date = DateTime.fromISO(startDatetime);
 
@@ -30,10 +37,10 @@ calendar.get('/calendar', async (c) => {
         return O.none;
       }
 
-      const dates: string[] = [date.toISODate()];
+      const dates: DateString[] = [date.toISODate()];
       return O.some([
         String(date.get('year')),
-        String(date.get('month')),
+        date.toFormat('yyyy-MM'), // match the minimum format that luxon can parse to month
         dates,
       ] as const);
     }),

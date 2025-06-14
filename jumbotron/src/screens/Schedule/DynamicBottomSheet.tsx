@@ -8,6 +8,7 @@ import { StyleSheet } from "react-native";
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/src/types";
 import type { BottomSheetProps } from "@gorhom/bottom-sheet";
 
+// 需要 useLayoutEffect 的 trick？
 const DynamicBottomSheet = ({
   bottomSheetRef,
   onChange,

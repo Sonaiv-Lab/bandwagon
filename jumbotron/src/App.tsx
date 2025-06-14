@@ -1,21 +1,23 @@
 import React from 'react';
-import { Home } from './screens';
-import { Schedule, Game } from '#/navigation';
+import {Home} from './screens';
+import {Schedule, Game} from '#/navigation';
 
-import { createStaticNavigation } from '@react-navigation/native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button as NavigationButton } from '@react-navigation/elements';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {createStaticNavigation} from '@react-navigation/native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Button as NavigationButton} from '@react-navigation/elements';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-import { PaperProvider } from 'react-native-paper';
+import {PaperProvider} from 'react-native-paper';
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {} from '@tanstack/react-query';
 
+import {QueryProvider} from '#/data';
 
 const Root = createBottomTabNavigator({
   screenOptions: {
     animation: 'fade',
-    headerStyle: { backgroundColor: 'tomato' },
+    headerStyle: {backgroundColor: 'tomato'},
   },
   initialRouteName: 'Home',
   backBehavior: 'order',
@@ -39,13 +41,15 @@ const Navigation = createStaticNavigation(Root);
 
 function App(): React.JSX.Element {
   return (
-    <GestureHandlerRootView>
-      <PaperProvider>
-        <SafeAreaProvider>
-          <Navigation />
-        </SafeAreaProvider>
-      </PaperProvider>
-    </GestureHandlerRootView>
+    <QueryProvider>
+      <GestureHandlerRootView>
+        <PaperProvider>
+          <SafeAreaProvider>
+            <Navigation />
+          </SafeAreaProvider>
+        </PaperProvider>
+      </GestureHandlerRootView>
+    </QueryProvider>
   );
 }
 

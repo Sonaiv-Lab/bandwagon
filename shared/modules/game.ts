@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { Scheme as KindCodeScheme } from '#/variables/kindCode';
+import { Scheme as KindCodeScheme } from '../constants/kindCode';
+import { FieldOptsScheme } from '../constants/fieldOpts';
 
 const DatetimeScheme = z.string().datetime({ offset: true });
 
@@ -14,14 +15,16 @@ const gameSeason = z.enum([
   '2', // 下半季
 ]);
 
-const GameResultScheme = z.enum([
+export type GameSeason = z.infer<typeof gameSeason>;
+
+const ResultScheme = z.enum([
   'pending', // 未結束,
   'ended', // 結束,
   'postponed', // 延賽,
   'suspended', // 保留比賽
 ]);
 
-type GameResult = z.infer<typeof GameResultScheme>;
+export type Result = z.infer<typeof ResultScheme>;
 
 type LinkResource = {
   type: 'link';
@@ -39,7 +42,8 @@ export const GameScheme = z.object({
   startDatetime: DatetimeScheme,
   endDatetime: DatetimeScheme.nullable(),
   durationSeconds: z.number(),
-  result: GameResultScheme,
+  field: FieldOptsScheme,
+  result: ResultScheme,
   homeScore: z.number(),
   visitingScore: z.number(),
   reserveDate: DatetimeScheme.nullable(),

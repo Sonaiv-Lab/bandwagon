@@ -1,5 +1,7 @@
 import { Hono } from 'hono';
 import { getFirestore } from '#/db/firestore';
+import type { GameSummary } from '@bandwagon/shared/modules/schedule';
+import type { Game } from '@bandwagon/shared/modules/game';
 import { pipe } from 'fp-ts/function';
 import { DateTime } from 'luxon';
 import * as A from 'fp-ts/Array';
@@ -17,10 +19,10 @@ daily.get('/daily/:year', async (c) => {
     .where('data.year', '==', year)
     .get();
 
-  const games = pipe(
+  const games: GameSummary[] = pipe(
     gamesRes.docs,
     A.map((game: FirebaseFirestore.QueryDocumentSnapshot) => game.data()),
-    A.map(({ data }) => data),
+    A.map(({ data }) => data as Game),
     A.map(
       ({
         id,
@@ -36,10 +38,12 @@ daily.get('/daily/:year', async (c) => {
         gameKindCode,
         gameSeason,
         gameNo,
-      }) => ({
+        result,
+        field
+      }): GameSummary => ({
         id,
         startDatetime,
-        endDatetime,
+        endDatetime: endDatetime ?? '',
         year,
         homeTeamName,
         homeTeamCode,
@@ -50,17 +54,17 @@ daily.get('/daily/:year', async (c) => {
         gameKindCode,
         gameSeason,
         gameNo,
+        result,
+        field
       })
     )
   );
 
-  type Game = (typeof games)[number];
-
-  const getGamesArrayMonoid = A.getMonoid<Game>();
+  const getGamesArrayMonoid = A.getMonoid<GameSummary>();
 
   const gamesByDate = pipe(
     games,
-    A.filterMap((game): O.Option<readonly [string, Game[]]> => {
+    A.filterMap((game): O.Option<readonly [string, GameSummary[]]> => {
       const date = DateTime.fromISO(game.startDatetime);
 
       if (!date.isValid) {

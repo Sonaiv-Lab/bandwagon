@@ -1,7 +1,13 @@
 import { z } from 'zod';
-import { Scheme as KindCodeScheme } from '#/variables/kindCode';
-import { FieldOptsScheme, FieldScheme } from '#/variables/fieldOpts';
-import { TeamCodesScheme, TeamsScheme } from '#/variables/teams';
+import { Scheme as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
+import {
+  FieldOptsScheme,
+  FieldScheme,
+} from '@bandwagon/shared/constants/fieldOpts';
+import {
+  teamCodeSchema,
+  teamFullNamesSchema,
+} from '@bandwagon/shared/constants/teams';
 
 const Body = z
   .object({
@@ -51,10 +57,10 @@ const GamesData = z.object({
   */
   PreExeDate: Date, 
   // 不知道什麼意思，目前都跟 GameDate 一樣
-  VisitingTeamCode: TeamCodesScheme,
-  VisitingTeamName: TeamsScheme,
-  HomeTeamCode: TeamCodesScheme,
-  HomeTeamName: TeamsScheme,
+  VisitingTeamCode: teamCodeSchema,
+  VisitingTeamName: teamFullNamesSchema,
+  HomeTeamCode: teamCodeSchema,
+  HomeTeamName: teamFullNamesSchema,
   FieldAbbe: FieldScheme,
   VisitingScore: z.number(),
   HomeScore: z.number(),

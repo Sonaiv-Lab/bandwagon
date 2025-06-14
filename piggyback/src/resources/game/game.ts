@@ -1,6 +1,6 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import type { Firestore } from '@google-cloud/firestore';
-import type { Game } from './types';
+import type { Game } from '@bandwagon/shared/modules/game';
 import logger from '#/runtime/logger';
 
 type GameDoc = {

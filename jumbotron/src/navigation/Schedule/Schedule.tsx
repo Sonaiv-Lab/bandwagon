@@ -1,21 +1,123 @@
-import {Schedule as ScheduleScreen} from '#/screens';
-import {Appbar} from 'react-native-paper';
+import { useCalendar } from '#/data/schedule/calendar';
+import { Schedule as ScheduleScreen } from '#/screens';
+import { useNavigation } from '@react-navigation/native';
+import { DateTime } from 'luxon';
+import { Appbar } from 'react-native-paper';
+import { pipe } from 'fp-ts/function';
+import * as R from 'fp-ts/Record';
+import * as A from 'fp-ts/Array';
 
-const Header = () => (
-  <Appbar.Header>
-    <Appbar.Action icon="calendar-refresh" onPress={() => {}} />
-    <Appbar.Action icon="chevron-left" onPress={() => {}} />
-    <Appbar.Content titleStyle={{textAlign: 'center'}} title="2025/12" />
-    <Appbar.Action icon="chevron-right" onPress={() => {}} />
-    <Appbar.Action icon="view-list" onPress={() => {}} />
-  </Appbar.Header>
-);
+const format = (datetime: DateTime) => {
+  return datetime.toFormat('yyyy-MM');
+};
+
+// TODO dealing with typescript issue from route
+const Header = ({ route }) => {
+  const navigation = useNavigation();
+  const { data: calendar = {} } = useCalendar();
+
+  const currentMonth = route.params.current;
+  const currentDateTime = DateTime.fromISO(currentMonth);
+
+  const flattenedEntries = pipe(
+    calendar,
+    R.toEntries,
+    A.flatMap(([year, months]) => 
+      pipe(
+        months,
+        R.toEntries,
+      ),
+    ),
+  );
+
+  const currentMonthIndex = flattenedEntries.findIndex(
+    ([yearMonth]) => yearMonth === currentMonth,
+  );
+
+
+  console.log({ currentMonth, flattenedEntries, calendar });
+
+
+  const isPrevAvailable = currentMonthIndex > 0;
+  const isNextAvailable =
+    currentMonthIndex > -1 &&
+    currentMonthIndex + 1 <= flattenedEntries.length - 1;
+
+
+  console.log({
+    isPrevAvailable,
+    isNextAvailable
+  });
+
+
+
+  const toNow = () => {
+    const now = pipe(DateTime.now(), format);
+
+    navigation.setParams({
+      current: now,
+    });
+  };
+
+  const toNext = () => {
+    const nextMonth = pipe(
+      currentDateTime.plus({ month: 1 }),
+      format,
+    );
+
+    navigation.setParams({
+      current: nextMonth,
+    });
+  };
+
+  const toPrev = () => {
+    const prevMonth = pipe(
+      currentDateTime.minus({ month: 1 }),
+      format,
+    );
+
+    navigation.setParams({
+      current: prevMonth,
+    });
+  };
+
+
+
+  const title = currentDateTime.toFormat('yyyy/MM');
+
+  return (
+    <Appbar.Header>
+      <Appbar.Action icon="calendar-refresh" onPress={toNow} />
+      <Appbar.Action
+        icon="chevron-left"
+        onPress={toPrev}
+        disabled={!isPrevAvailable}
+      />
+      <Appbar.Content titleStyle={{ textAlign: 'center' }} title={title} />
+      <Appbar.Action
+        icon="chevron-right"
+        onPress={toNext}
+        disabled={!isNextAvailable}
+      />
+      <Appbar.Action
+        icon="view-list"
+        onPress={() => { }}
+        style={{ opacity: 0 }}
+        disabled
+      />
+    </Appbar.Header>
+  );
+};
 
 const Schedule = {
   screen: ScheduleScreen,
+  initialParams: {
+    current: format(DateTime.now()),
+  },
   options: {
-    header: () => <Header />,
+    // must use render function: https://github.com/react-navigation/react-navigation/issues/8463
+    header: props => <Header {...props} />,
   },
 };
 
-export {Schedule};
+export { Schedule };
