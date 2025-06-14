@@ -10,3 +10,19 @@ syncInjectedDepsAfterScripts:
 # prevent the monorepo use other package's dependencies, it works only in local file structure but make the error when trim out other package's installed module
 # but the interesting point it, it doesn't work when pnpm install, checkout this issue: https://github.com/pnpm/pnpm/issues/6893
 strictPeerDependencies: true
+lockfile: true # if need update pnpm-lock, manual --force option
+
+# used to unify the package version
+overrides:
+  zod: ^3.25.64 # its fix issue for react naive
+  fp-ts: ^2.16.10
+  luxon: ^3.6.1 
+  "@types/luxon": ^3.6.1
+  dotenv: ^16.5.0
+  winston: ^3.17.0
+  "@google-cloud/logging-winston": ^6.0.0
+  "@google-cloud/secret-manager": ^6.0.1
+  tsup: ^8.4.0
+  firebase-admin: ^13.2.0
+  google-auth-library: ^9.15.1
+  typescript: 5.0.4

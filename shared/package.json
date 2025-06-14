@@ -11,14 +11,14 @@
     "@google-cloud/logging-winston": "^6.0.0",
     "winston": "^3.17.0",
     "firebase-admin": "^13.2.0",
-    "luxon": "^3.6.1",
-    "zod": "^3.24.2",
+    "luxon": "^3.6.1 ",
+    "zod": "^3.25.64",
     "dotenv": "^16.5.0"
   },
   "dependencies": {
     "google-auth-library": "^9.15.1"
   },
   "devDependencies": {
-    "@types/luxon": "^3.6.2"
+    "@types/luxon": "^3.6.1"
   }
 }
