@@ -1,16 +1,6 @@
 import { z } from 'zod';
 import { Color } from '../types';
 
-
-type TeamInfo = {
-  code: TeamCode;
-  fullName: string;
-  name: string;
-  theme: {
-    color: Color;
-  };
-};
-
 export const TEAMS_INFO = {
   ADD011: {
     code: 'ADD011',
@@ -61,9 +51,12 @@ export const TEAMS_INFO = {
       color: '#FF393C',
     },
   },
-} as const; ;
+} as const 
 
 export type TeamCode = keyof typeof TEAMS_INFO;
+
+
+export type TeamInfo = typeof TEAMS_INFO[TeamCode]
 
 const teamCodes = Object.keys(TEAMS_INFO) as TeamCode[];
 

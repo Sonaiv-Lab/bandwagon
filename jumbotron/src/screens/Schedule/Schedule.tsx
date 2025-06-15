@@ -49,9 +49,9 @@ export const Schedule = () => {
 
   console.log("Schedule - reoute", { schedule });
 
-  const onPressGame = () => {
+  const onPressGame = ({ gameId, year }) => {
     bottomSheetModalRef.current?.close();
-    navigation.navigate("Game")
+    navigation.navigate("Game", { gameId,  competitionYear: year})
   };
 
   const selectedDateGames = selectedDate ? schedule?.[selectedDate] : [];
@@ -79,7 +79,7 @@ export const Schedule = () => {
         <LargeGameChip
           key={game.id}
           onPress={() => {
-            onPressGame();
+            onPressGame({gameId: game.id, year: currentYear});
           }}
           gameSummary={game}
         />
@@ -120,12 +120,7 @@ export const Schedule = () => {
               children: (
                 <Pressable
                   onPress={() => {
-                    if (date === "") return;
-
-                    console.log(
-                      dateTime.setLocale("zh").toFormat("yyyy/M/d cccc"),
-                    );
-                    setSelectedDate(date);
+                    date !== "" && setSelectedDate(date);
                   }}
                 >
                   <View

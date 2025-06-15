@@ -1,107 +1,34 @@
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { SimplifyUni } from "#/components/icons";
+import { Duel } from "./Duel";
+import { useGame } from "#/data/games";
+import { FIELDS } from "@bandwagon/shared/constants/fieldOpts";
+import { TeamInfo, TEAMS_INFO } from "@bandwagon/shared/constants/teams";
+import { DateTime } from "luxon";
+import { TEAMS_VISUAL } from "#/constants/teamsVisual";
 
-const Team = () => {
-  return (
-    <View
-      style={{
-        flexDirection: "column",
-        alignItems: "center",
-        paddingHorizontal: 10,
-      }}
-    >
-      <SimplifyUni width={"60"} height={"60"} />
-      <Text style={{ fontSize: 16, marginTop: 6 }}>統一獅</Text>
-      <Text style={styles.textSecondary}>12 - 5</Text>
-    </View>
-  );
-};
+export function Game({ route }) {
+  const gameId = route.params.gameId;
 
+  const { data: game } = useGame({ id: gameId });
 
-const Block = ({ style, ...props }: React.ComponentProps<typeof View>) => {
-  return (
-    <View
-      style={[{
-        flexDirection: "row",
-        width: "100%",
-        padding: 20,
-        justifyContent: "space-between",
-        borderRadius: 10,
-        backgroundColor: "#ffffff",
-        shadowOpacity: 25,
-        shadowColor: "#ababab",
-        boxShadow: "0px 2px 6px 0px #ababab",
-      }, style]}
-      {...props}
-    />
-  );
-};
+  const fieldName = game?.field ? FIELDS[game.field].name : "";
+  const homeTeam = game?.homeTeamCode
+    ? TEAMS_INFO[game.homeTeamCode]
+    : undefined;
+  const visitingTeam = game?.visitingTeamCode
+    ? TEAMS_INFO[game.visitingTeamCode]
+    : undefined;
 
-const Duel = () => {
-  return (
-    <Block
-      style={{
-        borderLeftWidth: 5,
-        borderLeftColor: "#FB9611",
-        borderRightWidth: 5,
-        borderRightColor: "#FECF11",
-      }}
-    >
-      <Team />
-      <View
-        style={{
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Text>14:30</Text>
-        <Text
-          style={{
-            fontSize: 16,
-            textDecorationLine: "underline",
-            marginBottom: 4,
-          }}
-        >
-          台中洲際棒球場
-        </Text>
-        <Text style={{ fontSize: 24, marginBottom: 12, color: "#979393" }}>
-          vs
-        </Text>
-      </View>
-      <Team />
-    </Block>
-  );
-};
+  const datetimeString = game?.startDatetime ? DateTime.fromISO(game.startDatetime).setLocale("zh")
+    .toFormat("HH:mm") : ""
 
 
-const Pitcher = () => {
-  return <View style={{ paddingHorizontal: 20, flexDirection: 'column', alignItems: 'center' }}>
-    <Text style={{fontSize: 24, marginBottom: 10}}>高鹽將樹</Text>
-    <Text style={styles.textSecondary}>ERA 0.0</Text>
-    <Text style={styles.textSecondary}>1 - 5</Text>
-  </View>
-}
+  const leftIcon = game?.homeTeamCode ? TEAMS_VISUAL[game.homeTeamCode].simplifyIcon : undefined
+  const rightIcon = game?.visitingTeamCode ? TEAMS_VISUAL[game.visitingTeamCode].simplifyIcon : undefined
 
-const StarterPitchers = () => {
-  return (
-    <Block
-      style={{
-        borderLeftWidth: 5,
-        borderLeftColor: "#FB9611",
-        borderRightWidth: 5,
-        borderRightColor: "#FECF11",
-      }}
-    >
-      <Pitcher />
-      <Pitcher />
-     
-    </Block>
-  );
-};
+  
 
-export function Game() {
   return (
     <View
       style={{
@@ -111,12 +38,25 @@ export function Game() {
         gap: 12,
       }}
     >
-      <Duel />
-      <StarterPitchers />
+      {homeTeam && visitingTeam && (
+        <Duel
+          timeString={datetimeString}
+          fieldName={fieldName}
+          gameNo={String(game?.gameNo)}
+          leftTeam={{
+            name: homeTeam.name,
+            color: homeTeam.theme.color,
+            Icon: leftIcon
+          }}
+          rightTeam={{
+            name: visitingTeam.name,
+            color: visitingTeam.theme.color,
+            Icon: rightIcon
+          }}
+        />
+      )}
+
+      {/* <StarterPitchers /> */}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  textSecondary: { fontSize: 14, color: "#979393" },
-});

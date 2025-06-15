@@ -44,8 +44,5 @@ const field = [...Object.keys(FIELD_OPTS)]
 
 const FieldScheme = z.enum(field as [Field, ...Field[]]);
 
-
-
-export default FIELD_OPTS;
-export { FieldOptsScheme, FieldScheme,  };
+export { FieldOptsScheme, FieldScheme };
 export type { FieldOpts, Field };

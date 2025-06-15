@@ -3,6 +3,7 @@ import { Schedule as ScheduleScreen } from '#/screens';
 import { useNavigation } from '@react-navigation/native';
 import { DateTime } from 'luxon';
 import { Appbar } from 'react-native-paper';
+import Icon from "@react-native-vector-icons/material-design-icons";
 import { pipe } from 'fp-ts/function';
 import * as R from 'fp-ts/Record';
 import * as A from 'fp-ts/Array';
@@ -42,14 +43,6 @@ const Header = ({ route }) => {
   const isNextAvailable =
     currentMonthIndex > -1 &&
     currentMonthIndex + 1 <= flattenedEntries.length - 1;
-
-
-  console.log({
-    isPrevAvailable,
-    isNextAvailable
-  });
-
-
 
   const toNow = () => {
     const now = pipe(DateTime.now(), format);
@@ -115,6 +108,7 @@ const Schedule = {
     current: format(DateTime.now()),
   },
   options: {
+    tabBarIcon: (props) => <Icon name='calendar' {...props}/>,
     // must use render function: https://github.com/react-navigation/react-navigation/issues/8463
     header: props => <Header {...props} />,
   },

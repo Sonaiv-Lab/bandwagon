@@ -13,6 +13,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {} from '@tanstack/react-query';
 
 import {QueryProvider} from '#/data';
+import Icon from '@react-native-vector-icons/material-design-icons';
 
 const Root = createBottomTabNavigator({
   screenOptions: {
@@ -25,11 +26,7 @@ const Root = createBottomTabNavigator({
     Home: {
       screen: Home,
       options: {
-        headerRight: () => (
-          <NavigationButton onPress={() => alert('This is a button!')}>
-            Info
-          </NavigationButton>
-        ),
+        tabBarIcon: (props) => <Icon name='home' {...props}/>,
       },
     },
     Schedule,

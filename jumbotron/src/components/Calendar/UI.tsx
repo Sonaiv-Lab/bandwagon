@@ -51,12 +51,13 @@ export const CellBody = ({
 
 export const RowBody = ({
   row,
+  style
 }: {
   row: ReactNode[];
   style?: StyleProp<ViewStyle>;
 }) => {
   return (
-    <View style={concatStyle(styles.row as ViewStyle, styles.rowContent)}>
+    <View style={concatStyle(styles.row as ViewStyle, styles.rowContent, style)}>
       {row}
     </View>
   );
@@ -78,12 +79,13 @@ export const Header = () => {
 
 const styles = StyleSheet.create({
   cell: {
-    borderColor: 'grey',
+    borderColor: '#aaaaaa',
     borderRightWidth: 1,
     paddingVertical: 3,
     paddingHorizontal: 2,
     flex: 1,
     flexDirection: 'column',
+    backgroundColor: '#fefefe'
   },
   cellText: {
     textAlign: 'center',
@@ -100,6 +102,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderColor: 'grey',
+    borderColor: '#aaaaaa',
   },
 });

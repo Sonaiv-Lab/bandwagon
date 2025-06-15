@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { Scheme as KindCodeScheme } from '../constants/kindCode';
 import { FieldOptsScheme } from '../constants/fieldOpts';
+import { teamCodeSchema } from "../constants/teams";
 
 const DatetimeScheme = z.string().datetime({ offset: true });
 
@@ -47,10 +48,10 @@ export const GameScheme = z.object({
   homeScore: z.number(),
   visitingScore: z.number(),
   reserveDate: DatetimeScheme.nullable(),
-  homeTeamCode: TeamId,
+  homeTeamCode: teamCodeSchema,
   homeTeamName: z.string(),
   homeTeamIconUrl: Url,
-  visitingTeamCode: TeamId,
+  visitingTeamCode: teamCodeSchema,
   visitingTeamName: z.string(),
   visitingTeamIconUrl: Url,
   mvpPlayerId: PlayerId.or(z.literal('')),

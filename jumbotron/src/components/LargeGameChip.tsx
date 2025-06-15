@@ -5,7 +5,7 @@ import { Text } from "react-native-paper";
 import Svg, { Path } from "react-native-svg";
 import type { GameSummary } from "@bandwagon/shared/modules/schedule";
 import { TeamCode, TEAMS_INFO } from "@bandwagon/shared/constants/teams";
-// import { FIELDS } from "@bandwagon/shared/constants/fieldOpts";
+import { FIELDS } from "@bandwagon/shared/constants/fieldOpts";
 import { DateTime } from "luxon";
 
 export const LargeGameChip = (
@@ -48,8 +48,8 @@ export const LargeGameChip = (
       >
         <Text style={{ fontSize: 16 }}>{`No.${gameSummary.gameNo}`}</Text>
         <Text style={{ fontSize: 16, flexGrow: 1, textAlign: "center" }}>
-          {/* {`${FIELDS[gameSummary.field].name} ${timeString}`} */}
-          {`${'123123'} ${timeString}`}
+          {`${FIELDS[gameSummary.field].name} ${timeString}`}
+          {/* {`${'123123'} ${timeString}`} */}
         </Text>
         <Icon
           name="chevron-right"
