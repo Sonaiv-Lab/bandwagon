@@ -30,6 +30,9 @@ const config = {
   resolver: {
     assetExts: assetExts.filter(ext => ext !== 'svg'),
     sourceExts: [...sourceExts, 'svg'],
+    // isESMImport and nodeModulesPaths are used for fix the esm build issue
+    isESMImport: true,
+    nodeModulesPaths: [path.join(WORKSPACE_ROOT, 'jumbotron', 'node_modules')]
   },
 };
 
