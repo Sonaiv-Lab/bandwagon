@@ -2,11 +2,12 @@ import React from "react";
 import { Pressable, View } from "react-native";
 import Icon from "@react-native-vector-icons/material-design-icons";
 import { Text } from "react-native-paper";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Text as SVGText } from "react-native-svg";
 import type { GameSummary } from "@bandwagon/shared/modules/schedule";
 import { TeamCode, TEAMS_INFO } from "@bandwagon/shared/constants/teams";
 import { FIELDS } from "@bandwagon/shared/constants/fieldOpts";
 import { DateTime } from "luxon";
+import { useTheme } from "@react-navigation/native";
 
 export const LargeGameChip = (
   { onPress, gameSummary }: { onPress; gameSummary: GameSummary },
@@ -17,21 +18,15 @@ export const LargeGameChip = (
     "HH:mm",
   );
 
-  console.log({
-    gameSummary,
-    no: gameSummary.gameNo,
-    timeString,
-    homeTeam,
-    visitingTeam
-  });
-
-
+  const theme = useTheme()
+  const textColor = theme.colors.text
+  
   return (
     <Pressable
       style={{
         flexDirection: "column",
         gap: 6,
-        borderBottomColor: "#DEDEDE",
+        borderBottomColor: theme.colors.border,
         borderBottomWidth: 1,
         paddingHorizontal: 24,
         paddingVertical: 12,
@@ -46,8 +41,8 @@ export const LargeGameChip = (
           alignItems: "center",
         }}
       >
-        <Text style={{ fontSize: 16 }}>{`No.${gameSummary.gameNo}`}</Text>
-        <Text style={{ fontSize: 16, flexGrow: 1, textAlign: "center" }}>
+        <Text style={{ fontSize: 14, color: textColor }}>{`No.${gameSummary.gameNo}`}</Text>
+        <Text style={{ fontSize: 14, flexGrow: 1, textAlign: "center", color: textColor }}>
           {`${FIELDS[gameSummary.field].name} ${timeString}`}
           {/* {`${'123123'} ${timeString}`} */}
         </Text>
@@ -57,8 +52,8 @@ export const LargeGameChip = (
           style={{ paddingTop: 0, paddingLeft: 20 }}
         />
       </View>
-      <View>
-        <Svg width="362" height="44" viewBox="0 0 362 44">
+      <View style={{height: 44}}>
+        <Svg width="100%" height="44" viewBox="0 0 362 44">
         <Path
             d="M186.376 18.8729H168.326L176.366 43.4068H6.01662C2.69374 43.4068 1.61516e-07 40.7168 0 37.3985V6.35554C1.61515e-07 3.03724 2.69373 0.347229 6.01662 0.347229H180.305L186.376 18.8729Z"
             fill={homeTeam.theme.color}
@@ -70,23 +65,24 @@ export const LargeGameChip = (
         </Svg>
         <Text
           style={{
-            fontSize: 23,
+            fontSize: 16,
             left: 10,
-            top: 4,
+            top: 22,
+            transform: [{ translateY: -11 }],
             position: "absolute",
-            color: "#eaeaea",
+            color: theme.colors.background,
           }}
         >
           {homeTeam.name}
         </Text>
         <Text
           style={{
-            fontSize: 24,
+            fontSize: 16,
             right: 10,
-            top: 4,
-            textAlign: "right",
+            top: 22,
+            transform: [{ translateY: -11 }],
             position: "absolute",
-            color: "#eaeaea",
+            color: theme.colors.background,
           }}
         >
           {visitingTeam.name}

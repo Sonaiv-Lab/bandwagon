@@ -15,10 +15,10 @@ import {} from '@tanstack/react-query';
 import {QueryProvider} from '#/data';
 import Icon from '@react-native-vector-icons/material-design-icons';
 
+
 const Root = createBottomTabNavigator({
   screenOptions: {
     animation: 'fade',
-    headerStyle: {backgroundColor: 'tomato'},
   },
   initialRouteName: 'Home',
   backBehavior: 'order',

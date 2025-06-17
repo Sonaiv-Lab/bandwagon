@@ -12,6 +12,7 @@ import {Text} from 'react-native-paper';
 import * as A from 'fp-ts/Array';
 import {pipe} from 'fp-ts/function';
 import {concatStyle} from '#/utils/concatStyle';
+import {useTheme} from '@react-navigation/native';
 
 const CellHeader = ({
   style,
@@ -20,16 +21,20 @@ const CellHeader = ({
   style?: StyleProp<ViewStyle>;
   children: ReactNode;
 }) => {
+  const theme = useTheme();
   return (
-    <View style={concatStyle(styles.cell as ViewStyle, style)}>
-      <Text style={styles.cellText}>{children}</Text>
+    <View style={[styles.cell, {borderColor: theme.colors.border}, style]}>
+      <Text style={[styles.cellText, {color: theme.colors.text}]}>
+        {children}
+      </Text>
     </View>
   );
 };
 
-export const Label = ({children}: {children: string}) => (
-  <Text style={{textAlign: 'left', marginBottom: 4}}>{children}</Text>
-);
+export const Label = ({children}: {children: string}) => {
+  const theme = useTheme();
+  return <Text style={{ textAlign: 'left', marginBottom: 4, color: theme.colors.text }}>{children}</Text>;
+};
 
 export const CellBody = ({
   label,
@@ -40,8 +45,17 @@ export const CellBody = ({
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
 }) => {
+  const theme = useTheme();
   return (
-    <View style={concatStyle(styles.cell as ViewStyle, style)}>
+    <View
+      style={concatStyle(
+        styles.cell as ViewStyle,
+        {
+          borderColor: theme.colors.border,
+          backgroundColor: theme.colors.background,
+        },
+        style,
+      )}>
       <View>{label}</View>
 
       {children}
@@ -51,21 +65,34 @@ export const CellBody = ({
 
 export const RowBody = ({
   row,
-  style
+  style,
 }: {
   row: ReactNode[];
   style?: StyleProp<ViewStyle>;
 }) => {
+  const theme = useTheme();
   return (
-    <View style={concatStyle(styles.row as ViewStyle, styles.rowContent, style)}>
+    <View
+      style={[
+        styles.row as ViewStyle,
+        styles.rowContent,
+        {borderColor: theme.colors.border},
+        style,
+      ]}>
       {row}
     </View>
   );
 };
 
 export const Header = () => {
+  const theme = useTheme();
   return (
-    <View style={[styles.row, styles.rowHeader]}>
+    <View
+      style={[
+        styles.row,
+        styles.rowHeader,
+        {borderColor: theme.colors.border},
+      ]}>
       <CellHeader>S</CellHeader>
       <CellHeader>M</CellHeader>
       <CellHeader>T</CellHeader>
@@ -79,19 +106,17 @@ export const Header = () => {
 
 const styles = StyleSheet.create({
   cell: {
-    borderColor: '#aaaaaa',
+    width: '12.28%',
     borderRightWidth: 1,
     paddingVertical: 3,
     paddingHorizontal: 2,
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: '#fefefe'
   },
   cellText: {
     textAlign: 'center',
   },
   rowHeader: {
-    // height: 30,
     flexGrow: 0,
   },
   rowContent: {
@@ -102,6 +127,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderColor: '#aaaaaa',
   },
 });

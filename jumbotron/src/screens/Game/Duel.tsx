@@ -55,17 +55,17 @@ export const Duel = (
         <Text>{timeString}</Text>
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 12,
             textDecorationLine: "underline",
             marginBottom: 4,
           }}
         >
           {fieldName}
         </Text>
-        <Text style={{ fontSize: 24, marginBottom: 4, color: "#979393" }}>
+        <Text style={{ fontSize: 16, marginBottom: 4, color: "#979393" }}>
           vs
         </Text>
-        {gameNo && <Text style={{ fontSize: 14}}>
+        {gameNo && <Text style={{ fontSize: 12}}>
           {`No.${gameNo}`}
         </Text>}
       </View>

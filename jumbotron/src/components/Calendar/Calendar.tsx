@@ -26,9 +26,10 @@ export const Calendar = ({
     A.mapWithIndex(i => {
       return displayStartDate.plus({days: i});
     }),
-    A.map(datetime => {
+    A.mapWithIndex((i,datetime) => {
+      const isLastWeek = i % 7 === 6;
       return (
-        <CellBody key={datetime.toISODate()} {...renderCellProps(datetime)} />
+        <CellBody key={datetime.toISODate()} style={isLastWeek && {borderRightWidth: 0}}{...renderCellProps(datetime)} />
       );
     }),
     A.chunksOf(7),

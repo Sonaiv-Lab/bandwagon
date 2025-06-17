@@ -12,6 +12,7 @@ import {
   useFocusEffect,
   useNavigation,
   useRoute,
+  useTheme,
 } from "@react-navigation/native";
 import { useDailySchedule } from "#/data/schedule";
 import { DateTime } from "luxon";
@@ -20,6 +21,7 @@ import { TeamCode, TEAMS_INFO } from "@bandwagon/shared/constants/teams";
 import { ISODateTimeString } from "shared/types";
 import { LargeGameChip } from "#/components/LargeGameChip";
 import { GameChip } from "#/components/GameChip";
+import { toYYYY_MM_DD_CCCC } from "#/utils/datetime";
 
 /**
  * TODO: 後續再作類似 google calendar 可以透過拖曳看前後個月
@@ -40,9 +42,9 @@ export const Schedule = () => {
   });
   const [selectedDate, setSelectedDate] = useState<ISODateTimeString>();
 
-  const selectedDateString = DateTime.fromISO(selectedDate ?? "")
-    .setLocale("zh")
-    .toFormat("yyyy/M/d cccc");
+  const selectedDateString = toYYYY_MM_DD_CCCC(DateTime.fromISO(selectedDate ?? ""))
+
+  const theme = useTheme()
 
   const fromDate = currentDateTime.startOf("month");
   const toDate = currentDateTime.endOf("month");
@@ -150,7 +152,8 @@ export const Schedule = () => {
       >
         <Text
           style={{
-            borderBottomColor: "#DEDEDE",
+            color: theme.colors.text,
+            borderBottomColor: theme.colors.border,
             borderBottomWidth: 1,
             textAlign: "center",
             paddingTop: 0,

@@ -7,7 +7,7 @@ import Icon from "@react-native-vector-icons/material-design-icons";
 import * as R from "fp-ts/Record";
 import * as A from "fp-ts/Array";
 import { DateTime } from "luxon";
-import { toFullShort } from "#/utils/datetime";
+import { toYYYY_MM_DD_C } from "#/utils/datetime";
 
 const Header = ({ route }) => {
   const navigation = useNavigation();
@@ -37,8 +37,6 @@ const Header = ({ route }) => {
 
   const currentGame = flattenedGames[currentGameIndex]
 
-  console.log("flattenedGames", flattenedGames);
-
   const toNext = () => {
     const nextGame = flattenedGames[currentGameIndex + 1]
     if (!nextGame) return
@@ -57,7 +55,7 @@ const Header = ({ route }) => {
     });
   };
 
-  const currentDate = toFullShort(DateTime.fromISO(currentGame.startDatetime))
+  const currentDate = toYYYY_MM_DD_C(DateTime.fromISO(currentGame.startDatetime))
 
   return (
     <Appbar.Header>
@@ -73,7 +71,7 @@ const Header = ({ route }) => {
         onPress={toPrev}
       />
       <Appbar.Content
-        titleStyle={{ textAlign: "center" }}
+        titleStyle={{ textAlign: "center", fontSize: 16 }}
         title={currentDate}
       />
       <Appbar.Action
@@ -81,14 +79,14 @@ const Header = ({ route }) => {
         disabled={!isNextAvailable}
         onPress={toNext}
       />
-      <Appbar.Action icon="view-list" onPress={() => {}} />
+      <Appbar.Action icon="view-list" onPress={() => { }} style={{ opacity: 0 }} />
     </Appbar.Header>
   );
 };
 
 const Game = {
   screen: GameScreen,
-  
+
   options: {
     header: (props) => <Header {...props} />,
     tabBarItemStyle: { display: "none" },
