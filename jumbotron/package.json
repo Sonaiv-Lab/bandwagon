@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android --mode=\"alphaDebug\" --appIdSuffix alpha",
+    "build:android": "react-native build-android --mode=\"alphaDebug\"",
     "clean": "react-native clean",
     "ios": "react-native run-ios",
     "lint": "eslint .",
