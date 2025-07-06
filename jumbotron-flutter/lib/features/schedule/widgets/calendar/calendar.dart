@@ -105,49 +105,43 @@ class Calendar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final teamInfoMap = ref.watch(teamInfoMapProvider);
+    final AsyncValue<TeamInfoMap> teamInfoMap = ref.watch(teamInfoMapProvider);
 
-    // TODD error handling, Loading state
-    return teamInfoMap.when(
-      error: (_, _) => Text('gg'),
-      loading: () => Text('gg'),
-      data: (teamInfoMap) {
-        return Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: List.generate(
-              6,
-              (int i) => CalendarRow(
-                isExpanded: true,
-                isLastRow: i >= 5,
-                children: List.filled(
-                  7,
-                  CalendarDate(
-                    dateLabel: '1',
-                    chips: [
-                      GameChip(
-                        leftColorHex: teamInfoMap['AKP011']!.theme.primaryColor,
-                        rightColorHex:
-                            teamInfoMap['AEO011']!.theme.primaryColor,
-                      ),
-                      GameChip(
-                        leftColorHex: teamInfoMap['AJL011']!.theme.primaryColor,
-                        rightColorHex:
-                            teamInfoMap['AAA011']!.theme.primaryColor,
-                      ),
-                      GameChip(
-                        leftColorHex: teamInfoMap['ACN011']!.theme.primaryColor,
-                        rightColorHex:
-                            teamInfoMap['ADD011']!.theme.primaryColor,
-                      ),
-                    ],
-                  ),
+    return switch (teamInfoMap) {
+      AsyncData(:final value) => Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: List.generate(
+            6,
+            (int i) => CalendarRow(
+              isExpanded: true,
+              isLastRow: i >= 5,
+              children: List.filled(
+                7,
+                CalendarDate(
+                  dateLabel: '1',
+                  chips: [
+                    GameChip(
+                      leftColorHex: value['AKP011']!.theme.primaryColor,
+                      rightColorHex: value['AEO011']!.theme.primaryColor,
+                    ),
+                    GameChip(
+                      leftColorHex: value['AJL011']!.theme.primaryColor,
+                      rightColorHex: value['AAA011']!.theme.primaryColor,
+                    ),
+                    GameChip(
+                      leftColorHex: value['ACN011']!.theme.primaryColor,
+                      rightColorHex: value['ADD011']!.theme.primaryColor,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        );
-      },
-    );
+        ),
+      ),
+      AsyncError() => const Text('gg'),
+      _ => const Text('gg'),
+    };
   }
 }
