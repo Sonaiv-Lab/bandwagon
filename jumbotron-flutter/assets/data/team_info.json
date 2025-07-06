@@ -1,0 +1,50 @@
+[
+  {
+    "code": "ADD011",
+    "fullName": "統一7-ELEVEn獅",
+    "name": "統一獅",
+    "theme": {
+      "primaryColor": "#FB9611"
+    }
+  },
+  {
+    "code": "AKP011",
+    "fullName": "台鋼雄鷹",
+    "name": "台鋼雄鷹",
+    "theme": {
+      "primaryColor": "#0F7A26"
+    }
+  },
+  {
+    "code": "ACN011",
+    "fullName": "中信兄弟",
+    "name": "中信兄弟",
+    "theme": {
+      "primaryColor": "#FECF11"
+    }
+  },
+  {
+    "code": "AEO011",
+    "fullName": "富邦悍將",
+    "name": "富邦悍將",
+    "theme": {
+      "primaryColor": "#2286DD"
+    }
+  },
+  {
+    "code": "AJL011",
+    "fullName": "樂天桃猿",
+    "name": "樂天桃猿",
+    "theme": {
+      "primaryColor": "#9B123D"
+    }
+  },
+  {
+    "code": "AAA011",
+    "fullName": "味全龍",
+    "name": "味全龍",
+    "theme": {
+      "primaryColor": "#FF393C"
+    }
+  }
+]
