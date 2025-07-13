@@ -102,7 +102,6 @@ android {
 
         create("production") {
             dimension = "env"
-            applicationIdSuffix = ".prod"
             manifestPlaceholders["appNameSuffix"] = ""
         }
     }
