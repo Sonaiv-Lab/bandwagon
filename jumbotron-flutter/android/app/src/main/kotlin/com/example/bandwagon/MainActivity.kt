@@ -1,4 +1,4 @@
-package com.bandwagon
+package com.bandwagon.jumbotron
 
 import io.flutter.embedding.android.FlutterActivity
 
