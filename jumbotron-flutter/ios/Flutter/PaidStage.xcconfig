@@ -1,0 +1,6 @@
+#include "Generated.xcconfig"
+APP_DISPLAY_NAME=今世球迷 - 貝塔
+ASSETCATALOG_COMPILER_APPICON_NAME=AppIcon-stage
+PRODUCT_BUNDLE_IDENTIFIER=com.bandwagon.jumbotron.paid.stage
+CODE_SIGN_STYLE=Manual
+DEVELOPMENT_TEAM=TB4CVVB86R
