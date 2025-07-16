@@ -1,70 +1,85 @@
+import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
+import 'package:bandwagon/shared/utils/resolve-async-value.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:bandwagon/features/schedule/utils.dart';
-import './widgets/calendar/calendar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:jiffy/jiffy.dart';
+import './widgets/calendar/calendar.dart';
+import './widgets/app_bar.dart';
 
-class ScheduleScreen extends HookConsumerWidget {
-  const ScheduleScreen({super.key, required this.title, required this.yearMonth});
+class Schedule extends HookConsumerWidget {
+  const Schedule({super.key, required this.yearMonth});
+
+  final String yearMonth;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final (status, data, error) = resolveAsyncValue(
+      ref.watch(scheduleTreeProvider),
+    );
+
+    return switch (status) {
+      QueryStatus.success => (() {
+        data!.monthsList;
+        final currentYearMonth = ScheduleYearMonth(yearMonth);
+
+        if (!data.monthsList.contains(yearMonth)) {
+          // TODO, go to the month with games;
+          return Center(
+            child: Column(
+              children: [
+                Text('No Games'),
+                TextButton(
+                  onPressed: () {
+                    final firstMonth = data.monthsList[0];
+                    GoRouter.of(context).go('/schedule/$firstMonth');
+                  },
+                  child: Text('Go to games'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final startOfMonth = Jiffy.parseFromDateTime(
+          currentYearMonth.datetime,
+        ).startOf(Unit.month).dateTime;
+        final endOfMonth = Jiffy.parseFromDateTime(
+          currentYearMonth.datetime,
+        ).endOf(Unit.month).dateTime;
+
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Calendar(from: startOfMonth, to: endOfMonth)],
+          ),
+        );
+      })(),
+      QueryStatus.error => (() {
+        return Container();
+      })(),
+      QueryStatus.loading => CircularProgressIndicator.adaptive(),
+    };
+  }
+}
+
+class ScheduleScreen extends StatelessWidget {
+  const ScheduleScreen({
+    super.key,
+    required this.title,
+    required this.yearMonth,
+  });
 
   final String title;
   final String yearMonth;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentYearMonth = ScheduleYearMonth(yearMonth);
-
-    final nextYearMonth = currentYearMonth.getNext();
-    final prevYearMonth = currentYearMonth.getPrev();
-
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        leading: IconButton(
-          onPressed: () {
-            final now = ScheduleYearMonth.fromDatetime(
-              DateTime.now(),
-            ).toFormatted();
-            GoRouter.of(context).go('/schedule/$now');
-          },
-          icon: Icon(Icons.calendar_today_rounded),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.calendar_today_rounded),
-            color: Color(0x00000000),
-          ),
-        ],
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              onPressed: () {
-                final prevString = prevYearMonth.toFormatted();
-                GoRouter.of(context).go('/schedule/$prevString');
-              },
-              icon: Icon(Icons.chevron_left),
-            ),
-            Text(title, textAlign: TextAlign.center),
-            IconButton(
-              onPressed: () {
-                final nextString = nextYearMonth.toFormatted();
-                GoRouter.of(context).go('/schedule/$nextString');
-              },
-              icon: Icon(Icons.chevron_right),
-            ),
-          ],
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Calendar()],
-        ),
-      ),
+      appBar: ScheduleAppBar(yearMonth: yearMonth),
+      body: Schedule(yearMonth: yearMonth)
     );
   }
 }

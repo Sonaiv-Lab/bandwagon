@@ -5,6 +5,9 @@
     "name": "統一獅",
     "theme": {
       "primaryColor": "#FB9611"
+    },
+    "assets": {
+      "simplifyIconPath": "assets/icons/simplify-icon-uni.svg"
     }
   },
   {
@@ -13,6 +16,9 @@
     "name": "台鋼雄鷹",
     "theme": {
       "primaryColor": "#0F7A26"
+    },
+    "assets": {
+      "simplifyIconPath": "assets/icons/simplify-icon-tsg.svg"
     }
   },
   {
@@ -21,6 +27,9 @@
     "name": "中信兄弟",
     "theme": {
       "primaryColor": "#FECF11"
+    },
+    "assets": {
+      "simplifyIconPath": "assets/icons/simplify-icon-brother.svg"
     }
   },
   {
@@ -29,6 +38,9 @@
     "name": "富邦悍將",
     "theme": {
       "primaryColor": "#2286DD"
+    },
+    "assets": {
+      "simplifyIconPath": "assets/icons/simplify-icon-fubon.svg"
     }
   },
   {
@@ -37,6 +49,9 @@
     "name": "樂天桃猿",
     "theme": {
       "primaryColor": "#9B123D"
+    },
+    "assets": {
+      "simplifyIconPath": "assets/icons/simplify-icon-rokuten.svg"
     }
   },
   {
@@ -45,6 +60,9 @@
     "name": "味全龍",
     "theme": {
       "primaryColor": "#FF393C"
+    },
+    "assets": {
+      "simplifyIconPath": "assets/icons/simplify-icon-weichuan.svg"
     }
   }
 ]

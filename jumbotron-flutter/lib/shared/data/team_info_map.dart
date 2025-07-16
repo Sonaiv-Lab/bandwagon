@@ -23,6 +23,6 @@ Future<TeamInfoMap> loadTeamInfoMap() async {
   return teamInfoMap;
 }
 
-final teamInfoMapProvider = FutureProvider<TeamInfoMap>((ref) async {
+final teamInfoMapProvider = FutureProvider.autoDispose<TeamInfoMap>((ref) async {
   return await loadTeamInfoMap();
 });

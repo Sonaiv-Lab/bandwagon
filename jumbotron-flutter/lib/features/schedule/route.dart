@@ -7,10 +7,13 @@ import 'package:bandwagon/shared/router.dart';
 
 final scheduleRoute = GoRoute(
   path: '/schedule',
-  redirect: (context, state) {
+  
+  redirect: (context, state) async {
     final yearMonth = state.pathParameters['yearMonth'];
 
     final bool isValidYearMonth = ScheduleYearMonth.isValid(yearMonth ?? '');
+
+    // todo，如果當下那個月沒有比賽，要去哪裡？
 
     if (yearMonth == null || !isValidYearMonth) {
       final currentYearMonth = ScheduleYearMonth.getNow();
@@ -24,9 +27,8 @@ final scheduleRoute = GoRoute(
       path: ':yearMonth',
       pageBuilder: (context, GoRouterState state) {
         final String? yearMonth = state.pathParameters['yearMonth'];
-        print('yearMonth $yearMonth');
-
         if (yearMonth == null) {
+          // TODO: if yearMonth is null, should redirect, so render error page
           return pageBuilderFactory(child: Text('gg'), key: state.pageKey);
         }
 

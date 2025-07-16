@@ -1,56 +1,92 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+
 class Duel extends StatelessWidget {
-  const Duel({super.key});
+  const Duel({
+    super.key,
+    required this.fieldName,
+    required this.leftTeamName,
+    required this.leftTeamColor,
+    required this.rightTeamColor,
+    required this.rightTeamName,
+    required this.startTimeStr,
+    required this.leftTeamIcon,
+    required this.rightTeamIcon,
+  });
+
+  final String leftTeamName;
+  final Color leftTeamColor;
+  final Color rightTeamColor;
+  final String rightTeamName;
+  final String fieldName;
+  final String startTimeStr;
+  final Widget leftTeamIcon;
+  final Widget rightTeamIcon;
+
 
   @override
   Widget build(BuildContext context) {
-    const String assetName = 'assets/icons/simplify-icon-brother.svg';
+    final theme = Theme.of(context);
 
-    final team = Column(
+    final teamLeft = Column(
       mainAxisSize: MainAxisSize.min,
       spacing: 6,
       children: [
-        SvgPicture.asset(assetName, width: 60, height: 60),
-        Text('味全龍', style: TextStyle(fontSize: 16)),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 60, maxWidth: 60),
+          child: leftTeamIcon,
+        )
+        ,
+        Text(leftTeamName, style: TextStyle(fontSize: 16)),
+      ],
+    );
+
+    final teamRight = Column(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 6,
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 60, maxWidth: 60),
+          child: rightTeamIcon,
+        ),
+        Text(rightTeamName, style: TextStyle(fontSize: 16)),
       ],
     );
 
     return Container(
-      // padding: EdgeInsets.symmetric(vertical: 20, horizontal: 26),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        borderRadius: BorderRadiusGeometry.all(Radius.circular(15)),
+        borderRadius: BorderRadiusGeometry.all(Radius.circular(20)),
         color: Colors.white,
         boxShadow: [
           BoxShadow(color: Colors.black38, offset: Offset(0, 4), blurRadius: 3),
         ],
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         decoration: BoxDecoration(
           border: BoxBorder.fromLTRB(
-            left: BorderSide(color: Colors.teal, width: 5),
-            right: BorderSide(color: Colors.yellowAccent, width: 5),
+            left: BorderSide(color: leftTeamColor, width: 5),
+            right: BorderSide(color: rightTeamColor, width: 5),
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            team,
+            teamLeft,
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('18:36'),
-                Text('雲林棒球場'),
+                Text(startTimeStr, style: TextStyle(fontSize: 12)),
+                Text(fieldName, style: TextStyle(fontSize: 15)),
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
-                  child: Text('vs'),
+                  child: Text('vs', style: TextStyle(fontSize: 12)),
                 ),
               ],
             ),
-            team,
+            teamRight,
           ],
         ),
       ),
