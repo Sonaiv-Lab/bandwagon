@@ -115,6 +115,7 @@ class Date extends HookConsumerWidget {
 
         return GameItem(
           onGameItemTap: () {
+            GoRouter.of(context).pop();
             GoRouter.of(context).push('/game/${game.id}');
           },
           gameNo: 'No. ${game.gameNo.toString()}',
