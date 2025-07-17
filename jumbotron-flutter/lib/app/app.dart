@@ -55,7 +55,11 @@ class App extends StatelessWidget {
         routes: [
           ShellRoute(
             builder: (context, state, child) {
-              print(state.matchedLocation);
+              final currentIndex = switch (state.uri.path) {
+                    var p when p.startsWith('/schedule') => 1,
+                    var p when p.startsWith('/') => 0,
+                    _ => 0,
+                  };
 
               return Scaffold(
                 body: child,
@@ -82,11 +86,7 @@ class App extends StatelessWidget {
                       label: 'Schedule',
                     ),
                   ],
-                  currentIndex: switch (state.uri.path) {
-                    var p when p.startsWith('/') => 0,
-                    var p when p.startsWith('/schedule') => 1,
-                    _ => 0,
-                  },
+                  currentIndex: currentIndex,
                 ),
               );
             },
