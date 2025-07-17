@@ -21,7 +21,7 @@ class CalendarRow extends StatelessWidget {
       'Always $columnCount cell in a week row',
     );
 
-    final border = BorderSide(color: Theme.of(context).colorScheme.onSurface);
+    final border = BorderSide(color: Theme.of(context).colorScheme.surfaceDim);
 
     final cells = [
       for (var i = 0; i < columnCount; i++)

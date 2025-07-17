@@ -34,7 +34,7 @@ class GameItem extends StatelessWidget {
         border: Border(
           top: BorderSide(
             width: 1,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: Theme.of(context).colorScheme.surfaceDim,
           ),
         ),
       ),
