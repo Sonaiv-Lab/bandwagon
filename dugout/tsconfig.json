@@ -4,8 +4,6 @@
   "include": ["src/**/*"],
   "compilerOptions": {
     "baseUrl": "../",
-    "strict": true,
-    "strictNullChecks": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ESNext",
