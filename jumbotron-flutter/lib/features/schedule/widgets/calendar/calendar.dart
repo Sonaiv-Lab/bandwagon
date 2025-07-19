@@ -56,7 +56,10 @@ class Calendar extends HookConsumerWidget {
           }
 
           final date = displayStart.add(days: dayIndex).dateTime;
-          return Date(date: date);
+          final isInRange = Jiffy.parseFromDateTime(
+            from,
+          ).isSame(Jiffy.parseFromDateTime(date), unit: Unit.month);
+          return Date(date: date, isInRange: isInRange);
         }).toList(),
       );
     }).toList();
@@ -76,8 +79,12 @@ class Calendar extends HookConsumerWidget {
 }
 
 class Date extends HookConsumerWidget {
-  const Date({super.key, required this.date});
+  const Date({super.key, 
+  required this.date,
+  required this.isInRange,
+  });
   final DateTime date;
+  final bool isInRange;
 
   Widget build(BuildContext context, WidgetRef ref) {
     final (teamInfoMapStatus, teamInfoMap, _) = resolveAsyncValue(
@@ -136,7 +143,8 @@ class Date extends HookConsumerWidget {
       return calendar_date.CalendarDate(
         chips: chips,
         dateLabel: date.day.toString(),
-        isDateLabelHighlight: isToday,
+        isDateLabelUnderlined: isToday,
+        isDateLabelColorDim: !isInRange,
         onDateTap: () {
           calendar_date.showDateDetailModal(
             items: modalGameItems,
