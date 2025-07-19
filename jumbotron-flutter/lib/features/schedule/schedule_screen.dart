@@ -63,7 +63,7 @@ class Schedule extends HookConsumerWidget {
       QueryStatus.loading => SizedBox(
         width: double.infinity,
         height: double.infinity,
-        child: CircularProgressIndicator.adaptive(),
+        child: Center(child: CircularProgressIndicator.adaptive()),
       ),
     };
   }
