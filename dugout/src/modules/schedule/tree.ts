@@ -6,6 +6,12 @@ import * as A from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
 import type { Monoid } from 'fp-ts/Monoid';
 
+/**
+TODO list
+- [ ] the every game in date should be sort by gameNo
+- [ ] decouple the data source and the process func, accept the multi source game
+*/
+
 // TODO replace to correct type
 type GameSummary = any;
 
