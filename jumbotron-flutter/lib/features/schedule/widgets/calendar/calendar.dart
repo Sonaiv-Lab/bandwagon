@@ -128,9 +128,15 @@ class Date extends HookConsumerWidget {
         );
       }).toList();
 
+      final isToday = Jiffy.now().isSame(
+        Jiffy.parseFromDateTime(date),
+        unit: Unit.day,
+      );
+
       return calendar_date.CalendarDate(
         chips: chips,
         dateLabel: date.day.toString(),
+        isDateLabelHighlight: isToday,
         onDateTap: () {
           calendar_date.showDateDetailModal(
             items: modalGameItems,
@@ -141,8 +147,6 @@ class Date extends HookConsumerWidget {
       );
     }
 
-    return Container(
-      child: CircularProgressIndicator.adaptive()
-    );
+    return Container();
   }
 }

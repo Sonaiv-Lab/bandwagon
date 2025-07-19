@@ -8,14 +8,17 @@ class CalendarDate extends StatelessWidget {
     required this.chips,
     required this.dateLabel,
     required this.onDateTap,
+    required this.isDateLabelHighlight,
   });
 
   final List<GameChip> chips;
   final String dateLabel;
   final void Function() onDateTap;
+  final bool isDateLabelHighlight;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: chips.isNotEmpty ? onDateTap : null,
       child: Container(
@@ -24,7 +27,27 @@ class CalendarDate extends StatelessWidget {
           spacing: 1,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(dateLabel),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 0.5, top: 1.5),
+              child: Stack(
+                children: [
+                  Container(
+                    child: Text(
+                      dateLabel,
+                      style: TextStyle(
+                        fontSize: 11,
+                        decoration: isDateLabelHighlight
+                            ? TextDecoration.underline
+                            : null,
+                        decorationStyle: TextDecorationStyle.solid,
+                        decorationThickness: 2,
+                        decorationColor: scheme.primary
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Column(spacing: 4, children: chips),
           ],
         ),
