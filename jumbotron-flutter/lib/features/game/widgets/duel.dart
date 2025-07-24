@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class Duel extends StatelessWidget {
   const Duel({
     super.key,
@@ -24,7 +23,6 @@ class Duel extends StatelessWidget {
   final Widget leftTeamIcon;
   final Widget rightTeamIcon;
 
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -36,8 +34,7 @@ class Duel extends StatelessWidget {
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 60, maxWidth: 60),
           child: leftTeamIcon,
-        )
-        ,
+        ),
         Text(leftTeamName, style: TextStyle(fontSize: 16)),
       ],
     );

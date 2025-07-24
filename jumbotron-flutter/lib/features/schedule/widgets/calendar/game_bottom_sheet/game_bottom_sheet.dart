@@ -1,3 +1,4 @@
+import 'package:bandwagon/shared/constants/game.dart';
 import 'package:bandwagon/shared/utils/time.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,21 +15,63 @@ class GameItem extends StatelessWidget {
     required this.startAt,
     required this.leftColorHex,
     required this.leftTeamName,
+    required this.leftScore,
     required this.rightColorHex,
     required this.rightTeamName,
+    required this.rightScore,
+    required this.result,
+    required this.startDatetime,
   });
 
   final void Function() onGameItemTap;
   final String gameNo;
   final String fieldName;
   final String startAt;
+  final int leftScore;
   final String leftColorHex;
   final String leftTeamName;
   final String rightColorHex;
+  final int rightScore;
   final String rightTeamName;
+  final GameResult result;
+  final DateTime startDatetime;
 
   @override
   Widget build(BuildContext context) {
+    final BottomSheetChip chip = switch (result) {
+      GameResult.pending when DateTime.now().isAfter(startDatetime) =>
+        OngoingBottomSheetChip(
+          leftColorHex: leftColorHex,
+          rightColorHex: rightColorHex,
+          leftTeamName: leftTeamName,
+          rightTeamName: rightTeamName,
+          leftScore: leftScore,
+          rightScore: rightScore,
+        ),
+      GameResult.pending => PendingBottomSheepChip(
+        leftColorHex: leftColorHex,
+        rightColorHex: rightColorHex,
+        leftTeamName: leftTeamName,
+        rightTeamName: rightTeamName,
+      ),
+      GameResult.ended => EndedBottomSheetChip(
+        leftScore: leftScore,
+        leftColorHex: leftColorHex,
+        rightScore: rightScore,
+        rightColorHex: rightColorHex,
+        leftTeamName: leftTeamName,
+        rightTeamName: rightTeamName,
+      ),
+      _ => EndedBottomSheetChip(
+        leftScore: leftScore,
+        leftColorHex: leftColorHex,
+        rightScore: rightScore,
+        rightColorHex: rightColorHex,
+        leftTeamName: leftTeamName,
+        rightTeamName: rightTeamName,
+      ),
+    };
+
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
@@ -42,7 +85,6 @@ class GameItem extends StatelessWidget {
         onTap: onGameItemTap,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(18, 10, 18, 16),
-
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -64,12 +106,7 @@ class GameItem extends StatelessWidget {
                   Icon(Icons.chevron_right),
                 ],
               ),
-              BottomSheetChip(
-                leftColorHex: leftColorHex,
-                rightColorHex: rightColorHex,
-                leftTeamName: leftTeamName,
-                rightTeamName: rightTeamName,
-              ),
+              chip,
             ],
           ),
         ),
@@ -96,10 +133,7 @@ class DetailModalBottomSheet extends StatelessWidget {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(bottom: 6),
-          child: Text(
-            toYYYY_MM_DD__EEE(date),
-            style: TextStyle(fontSize: 16),
-          ),
+          child: Text(toYYYY_MM_DD__EEE(date), style: TextStyle(fontSize: 16)),
         ),
         ...gameItems,
       ],

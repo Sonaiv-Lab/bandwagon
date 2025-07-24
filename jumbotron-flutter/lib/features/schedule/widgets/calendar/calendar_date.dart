@@ -1,7 +1,7 @@
 import 'package:bandwagon/shared/utils/by_platform.dart';
 import 'package:flutter/material.dart';
 import 'game_bottom_sheet/game_bottom_sheet.dart';
-import 'game_chip.dart';
+import 'game_chips.dart';
 
 class CalendarDate extends StatelessWidget {
   const CalendarDate({
@@ -27,33 +27,34 @@ class CalendarDate extends StatelessWidget {
       child: InkWell(
         onTap: chips.isNotEmpty ? onDateTap : null,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 2),
+          padding: EdgeInsets.symmetric(horizontal: 1),
           child: Column(
             spacing: 1,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 1.5, top: 1.5, left: 1),
+                padding: const EdgeInsets.only(bottom: 1.5, top: 1, left: 1),
                 child: Stack(
                   children: [
                     Container(
                       padding: EdgeInsets.only(bottom: 0),
-                      decoration: !isDateLabelUnderlined
-                          ? null
-                          : BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: scheme.primary,
-                                  width: 3,
-                                ),
-                              ),
-                            ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: isDateLabelUnderlined
+                                ? scheme.primary
+                                : Colors.transparent,
+                            width: 3,
+                          ),
+                        ),
+                      ),
                       child: Text(
                         dateLabel,
                         style: TextStyle(
                           shadows: [
-                            Shadow(color: isDateLabelColorDim
-                              ? Color.fromRGBO(256, 256, 256, 0.3)
+                            Shadow(
+                              color: isDateLabelColorDim
+                                  ? Color.fromRGBO(256, 256, 256, 0.3)
                                   : Colors.black,
                               offset: Offset(
                                 0,

@@ -1,5 +1,6 @@
 import 'package:bandwagon/features/schedule/widgets/calendar/game_bottom_sheet/game_bottom_sheet.dart';
-import 'package:bandwagon/features/schedule/widgets/calendar/game_chip.dart';
+import 'package:bandwagon/features/schedule/widgets/calendar/game_chips.dart';
+import 'package:bandwagon/shared/constants/game.dart';
 import 'package:bandwagon/shared/models/game_summary/game_summary.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
 import 'package:bandwagon/shared/utils/time.dart';
@@ -79,10 +80,7 @@ class Calendar extends HookConsumerWidget {
 }
 
 class Date extends HookConsumerWidget {
-  const Date({super.key, 
-  required this.date,
-  required this.isInRange,
-  });
+  const Date({super.key, required this.date, required this.isInRange});
   final DateTime date;
   final bool isInRange;
 
@@ -108,10 +106,33 @@ class Date extends HookConsumerWidget {
         final homeTeamInfo = teamInfoMap[homeTeamCode]!;
         final visitingTeamInfo = teamInfoMap[visitingTeamCode]!;
 
-        return GameChip(
-          leftColorHex: homeTeamInfo.theme.primaryColor,
-          rightColorHex: visitingTeamInfo.theme.primaryColor,
-        );
+        return switch (game.result) {
+          GameResult.pending when DateTime.now().isAfter(game.startDatetime) =>
+            OngoingGameChip(
+              leftColorHex: homeTeamInfo.theme.primaryColor,
+              rightColorHex: visitingTeamInfo.theme.primaryColor,
+              leftScore: game.homeScore,
+              rightScore: game.visitingScore,
+          ),
+          GameResult.pending => PendingGameChip(
+            leftColorHex: homeTeamInfo.theme.primaryColor,
+            rightColorHex: visitingTeamInfo.theme.primaryColor,
+          ),
+          GameResult.ended => EndedGameChip(
+            leftColorHex: homeTeamInfo.theme.primaryColor,
+            rightColorHex: visitingTeamInfo.theme.primaryColor,
+            leftScore: game.homeScore,
+            rightScore: game.visitingScore,
+          ),
+          GameResult.postponed => PendingGameChip(
+            leftColorHex: homeTeamInfo.theme.primaryColor,
+            rightColorHex: visitingTeamInfo.theme.primaryColor,
+          ),
+          _ => PendingGameChip(
+            leftColorHex: homeTeamInfo.theme.primaryColor,
+            rightColorHex: visitingTeamInfo.theme.primaryColor,
+          ),
+        };
       }).toList();
 
       final modalGameItems = games.map((game) {
@@ -130,8 +151,12 @@ class Date extends HookConsumerWidget {
           startAt: toHH_MM(game.startDatetime),
           leftColorHex: homeTeamInfo.theme.primaryColor,
           leftTeamName: homeTeamInfo.name,
+          leftScore: game.homeScore,
           rightColorHex: visitingTeamInfo.theme.primaryColor,
           rightTeamName: visitingTeamInfo.name,
+          rightScore: game.visitingScore,
+          result: game.result,
+          startDatetime: game.startDatetime
         );
       }).toList();
 
