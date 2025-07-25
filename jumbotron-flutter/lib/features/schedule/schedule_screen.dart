@@ -72,11 +72,9 @@ class Schedule extends HookConsumerWidget {
 class ScheduleScreen extends StatelessWidget {
   const ScheduleScreen({
     super.key,
-    required this.title,
     required this.yearMonth,
   });
 
-  final String title;
   final String yearMonth;
 
   @override

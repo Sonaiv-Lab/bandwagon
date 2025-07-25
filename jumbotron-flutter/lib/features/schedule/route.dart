@@ -32,10 +32,8 @@ final scheduleRoute = GoRoute(
           return pageBuilderFactory(child: Text('gg'), key: state.pageKey);
         }
 
-        final title = ScheduleYearMonth.transDisplayFormat(yearMonth);
-
         return pageBuilderFactory(
-          child: ScheduleScreen(title: title, yearMonth: yearMonth),
+          child: ScheduleScreen(yearMonth: yearMonth),
           key: state.pageKey,
         );
       },
