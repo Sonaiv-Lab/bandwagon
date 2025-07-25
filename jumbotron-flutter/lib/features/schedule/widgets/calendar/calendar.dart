@@ -2,18 +2,17 @@ import 'package:bandwagon/features/schedule/widgets/calendar/game_bottom_sheet/g
 import 'package:bandwagon/features/schedule/widgets/calendar/game_chips.dart';
 import 'package:bandwagon/shared/constants/game.dart';
 import 'package:bandwagon/shared/models/game_summary/game_summary.dart';
+import 'package:bandwagon/shared/utils/by_game_result.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
 import 'package:bandwagon/shared/utils/time.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'calendar_date.dart' as calendar_date;
 import 'calendar_row.dart';
 import 'package:collection/collection.dart';
 
-import 'package:bandwagon/shared/utils/time.dart';
 import 'package:bandwagon/shared/data/team_info_map.dart';
 import 'package:bandwagon/shared/data/field_info_map.dart';
 import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
@@ -80,11 +79,6 @@ class Calendar extends HookConsumerWidget {
       );
     }).toList();
 
-    // GameChip(
-    //  leftColorHex: value['AKP011']!.theme.primaryColor,
-    //  rightColorHex: value['AEO011']!.theme.primaryColor,
-    //),
-
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -135,33 +129,36 @@ class Date extends HookConsumerWidget {
         final homeTeamInfo = teamInfoMap[homeTeamCode]!;
         final visitingTeamInfo = teamInfoMap[visitingTeamCode]!;
 
-        return switch (game.result) {
-          GameResult.pending when DateTime.now().isAfter(game.startDatetime) =>
-            OngoingGameChip(
-              leftColorHex: homeTeamInfo.theme.primaryColor,
-              rightColorHex: visitingTeamInfo.theme.primaryColor,
-              leftScore: game.homeScore,
-              rightScore: game.visitingScore,
-          ),
-          GameResult.pending => PendingGameChip(
-            leftColorHex: homeTeamInfo.theme.primaryColor,
-            rightColorHex: visitingTeamInfo.theme.primaryColor,
-          ),
-          GameResult.ended => EndedGameChip(
+        return byGameStatus(
+          game.result,
+          DateTime.now().isAfter(game.startDatetime),
+          inProgress: OngoingGameChip(
             leftColorHex: homeTeamInfo.theme.primaryColor,
             rightColorHex: visitingTeamInfo.theme.primaryColor,
             leftScore: game.homeScore,
             rightScore: game.visitingScore,
           ),
-          GameResult.postponed => PendingGameChip(
+          pending: PendingGameChip(
             leftColorHex: homeTeamInfo.theme.primaryColor,
             rightColorHex: visitingTeamInfo.theme.primaryColor,
           ),
-          _ => PendingGameChip(
+          postponed: PendingGameChip(
+            leftColorHex: homeTeamInfo.theme.subtleColor,
+            rightColorHex: visitingTeamInfo.theme.subtleColor,
+          ),
+          suspended: OngoingGameChip(
+            leftColorHex: homeTeamInfo.theme.subtleColor,
+            rightColorHex: visitingTeamInfo.theme.subtleColor,
+            leftScore: game.homeScore,
+            rightScore: game.visitingScore,
+          ),
+          ended: EndedGameChip(
             leftColorHex: homeTeamInfo.theme.primaryColor,
             rightColorHex: visitingTeamInfo.theme.primaryColor,
+            leftScore: game.homeScore,
+            rightScore: game.visitingScore,
           ),
-        };
+        );
       }).toList();
 
       final modalGameItems = games.map((game) {
@@ -178,14 +175,16 @@ class Date extends HookConsumerWidget {
           gameNo: 'No. ${game.gameNo.toString()}',
           fieldName: field.name,
           startAt: toHH_MM(game.startDatetime),
-          leftColorHex: homeTeamInfo.theme.primaryColor,
+          leftPrimaryColorHex: homeTeamInfo.theme.primaryColor,
+          leftSubtleColorHex: homeTeamInfo.theme.subtleColor,
           leftTeamName: homeTeamInfo.name,
           leftScore: game.homeScore,
-          rightColorHex: visitingTeamInfo.theme.primaryColor,
+          rightPrimaryColorHex: visitingTeamInfo.theme.primaryColor,
+          rightSubtleColorHex: visitingTeamInfo.theme.subtleColor,
           rightTeamName: visitingTeamInfo.name,
           rightScore: game.visitingScore,
           result: game.result,
-          startDatetime: game.startDatetime
+          startDatetime: game.startDatetime,
         );
       }).toList();
 
