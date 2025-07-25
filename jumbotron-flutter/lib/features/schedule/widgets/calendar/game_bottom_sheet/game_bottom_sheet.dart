@@ -1,10 +1,9 @@
 import 'package:bandwagon/shared/constants/game.dart';
+import 'package:bandwagon/shared/utils/by_game_result.dart';
 import 'package:bandwagon/shared/utils/time.dart';
+import 'package:bandwagon/shared/widgets/tag.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'bottom_sheet_chip.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:bandwagon/shared/data/team_info_map.dart';
 
 class GameItem extends StatelessWidget {
   const GameItem({
@@ -13,10 +12,12 @@ class GameItem extends StatelessWidget {
     required this.gameNo,
     required this.fieldName,
     required this.startAt,
-    required this.leftColorHex,
+    required this.leftPrimaryColorHex,
+    required this.leftSubtleColorHex,
     required this.leftTeamName,
     required this.leftScore,
-    required this.rightColorHex,
+    required this.rightPrimaryColorHex,
+    required this.rightSubtleColorHex,
     required this.rightTeamName,
     required this.rightScore,
     required this.result,
@@ -28,9 +29,11 @@ class GameItem extends StatelessWidget {
   final String fieldName;
   final String startAt;
   final int leftScore;
-  final String leftColorHex;
+  final String leftPrimaryColorHex;
+  final String leftSubtleColorHex;
   final String leftTeamName;
-  final String rightColorHex;
+  final String rightPrimaryColorHex;
+  final String rightSubtleColorHex;
   final int rightScore;
   final String rightTeamName;
   final GameResult result;
@@ -38,39 +41,78 @@ class GameItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BottomSheetChip chip = switch (result) {
-      GameResult.pending when DateTime.now().isAfter(startDatetime) =>
-        OngoingBottomSheetChip(
-          leftColorHex: leftColorHex,
-          rightColorHex: rightColorHex,
-          leftTeamName: leftTeamName,
-          rightTeamName: rightTeamName,
-          leftScore: leftScore,
-          rightScore: rightScore,
-        ),
-      GameResult.pending => PendingBottomSheepChip(
-        leftColorHex: leftColorHex,
-        rightColorHex: rightColorHex,
+    final BottomSheetChip chip = byGameStatus(
+      result,
+      DateTime.now().isAfter(startDatetime),
+      inProgress: OngoingBottomSheetChip(
+        leftColorHex: leftPrimaryColorHex,
+        rightColorHex: rightPrimaryColorHex,
         leftTeamName: leftTeamName,
         rightTeamName: rightTeamName,
-      ),
-      GameResult.ended => EndedBottomSheetChip(
         leftScore: leftScore,
-        leftColorHex: leftColorHex,
         rightScore: rightScore,
-        rightColorHex: rightColorHex,
+      ),
+      pending: PendingBottomSheepChip(
+        leftColorHex: leftPrimaryColorHex,
+        rightColorHex: rightPrimaryColorHex,
         leftTeamName: leftTeamName,
         rightTeamName: rightTeamName,
       ),
-      _ => EndedBottomSheetChip(
+      postponed: PendingBottomSheepChip(
+        leftColorHex: leftSubtleColorHex,
+        rightColorHex: rightSubtleColorHex,
+        leftTeamName: leftTeamName,
+        rightTeamName: rightTeamName,
+      ),
+      suspended: OngoingBottomSheetChip(
+        leftColorHex: leftSubtleColorHex,
+        rightColorHex: rightSubtleColorHex,
+        leftTeamName: leftTeamName,
+        rightTeamName: rightTeamName,
         leftScore: leftScore,
-        leftColorHex: leftColorHex,
         rightScore: rightScore,
-        rightColorHex: rightColorHex,
+      ),
+      ended: EndedBottomSheetChip(
+        leftScore: leftScore,
+        leftColorHex: leftPrimaryColorHex,
+        rightScore: rightScore,
+        rightColorHex: rightPrimaryColorHex,
         leftTeamName: leftTeamName,
         rightTeamName: rightTeamName,
       ),
-    };
+    );
+
+    final midText = byGameStatus(
+      result,
+      DateTime.now().isAfter(startDatetime),
+      inProgress: Row(
+        spacing: 4,
+        children: [
+          Text('$fieldName $startAt'),
+          Tag(text: '進行中', color: Colors.redAccent)
+        ],
+      ),
+      pending: Row(
+        children: [
+          Text(fieldName),
+        ],
+      ),
+      postponed: Row(
+        spacing: 4,
+        children: [
+          Text(fieldName),
+          Tag(text: '延賽', color: Colors.indigo)
+        ],
+      ),
+      suspended: Row(
+        spacing: 4,
+        children: [
+          Text(fieldName),
+          Tag(text: '保留', color: Colors.orangeAccent)
+        ],
+      ),
+      ended: Text(fieldName),
+    );
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -92,18 +134,21 @@ class GameItem extends StatelessWidget {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 0),
-                    child: Text(gameNo),
+                    child: Text(gameNo, style: TextStyle(fontSize: 10)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 20),
-                    child: Text('$fieldName $startAt'),
+                    child: midText,
                   ),
-                  Icon(Icons.chevron_right),
+                  Transform.translate(
+                    offset: Offset(0, 2),
+                    child: Icon(Icons.chevron_right, size: 16),
+                  ),
                 ],
               ),
               chip,
