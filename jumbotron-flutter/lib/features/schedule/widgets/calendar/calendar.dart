@@ -18,6 +18,21 @@ import 'package:bandwagon/shared/data/team_info_map.dart';
 import 'package:bandwagon/shared/data/field_info_map.dart';
 import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
 
+class DateLabel extends StatelessWidget {
+  const DateLabel(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 10),
+    );
+  }
+}
+
 class Calendar extends HookConsumerWidget {
   const Calendar({super.key, required this.from, required this.to});
 
@@ -73,7 +88,21 @@ class Calendar extends HookConsumerWidget {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: dates,
+        children: [
+          CalendarRow(
+            isExpanded: false,
+            children: [
+              DateLabel('M'),
+              DateLabel('T'),
+              DateLabel('W'),
+              DateLabel('T'),
+              DateLabel('F'),
+              DateLabel('S'),
+              DateLabel('S'),
+            ],
+          ),
+          ...dates,
+        ],
       ),
     );
   }
