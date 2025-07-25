@@ -6,11 +6,14 @@ part of 'team_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TeamTheme _$TeamThemeFromJson(Map<String, dynamic> json) =>
-    TeamTheme(primaryColor: json['primaryColor'] as String);
+TeamTheme _$TeamThemeFromJson(Map<String, dynamic> json) => TeamTheme(
+  primaryColor: json['primaryColor'] as String,
+  subtleColor: json['subtleColor'] as String,
+);
 
 Map<String, dynamic> _$TeamThemeToJson(TeamTheme instance) => <String, dynamic>{
   'primaryColor': instance.primaryColor,
+  'subtleColor': instance.subtleColor,
 };
 
 Assets _$AssetsFromJson(Map<String, dynamic> json) =>

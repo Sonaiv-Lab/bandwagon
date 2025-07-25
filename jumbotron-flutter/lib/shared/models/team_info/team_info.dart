@@ -5,8 +5,9 @@ part 'team_info.g.dart';
 @JsonSerializable()
 class TeamTheme {
   final String primaryColor;
+  final String subtleColor;
 
-  TeamTheme({required this.primaryColor});
+  TeamTheme({required this.primaryColor, required this.subtleColor});
 
   factory TeamTheme.fromJson(Map<String, dynamic> json) =>
       _$TeamThemeFromJson(json);
