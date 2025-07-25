@@ -1,3 +1,4 @@
+import 'package:bandwagon/shared/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,26 +23,42 @@ class _ScheduleAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      leading: IconButton(
-        onPressed: onTodayPressed,
-        icon: Icon(Icons.calendar_today_rounded),
-      ),
-      actions: [
+    return CustomAppBar(
+      leadings: [
         IconButton(
-          onPressed: () {},
+          onPressed: onTodayPressed,
           icon: Icon(Icons.calendar_today_rounded),
-          color: Color(0x00000000),
+        ),
+      ],
+      actions: [
+         IconButton(
+          onPressed: () {},
+          icon: Icon(Icons.abc),
+          color: Colors.transparent,
         ),
       ],
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        spacing: 15,
         children: [
-          IconButton(onPressed: onPrevPressed, icon: Icon(Icons.chevron_left)),
-          Text(title, textAlign: TextAlign.center),
-          IconButton(onPressed: onNextPressed, icon: Icon(Icons.chevron_right)),
+          IconButton(
+            iconSize: 22,
+            onPressed: onPrevPressed,
+            icon: Icon(Icons.chevron_left),
+            splashColor: Colors.transparent,
+          ),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18),
+          ),
+          IconButton(
+            iconSize: 22,
+            onPressed: onNextPressed,
+            icon: Icon(Icons.chevron_right),
+            splashColor: Colors.transparent,
+          ),
         ],
       ),
     );
