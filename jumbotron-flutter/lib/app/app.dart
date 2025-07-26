@@ -51,7 +51,7 @@ class App extends StatelessWidget {
       ),
       routerConfig: GoRouter(
         debugLogDiagnostics: true,
-        initialLocation: '/',
+        initialLocation: '/schedule',
         routes: [
           ShellRoute(
             builder: (context, state, child) {
