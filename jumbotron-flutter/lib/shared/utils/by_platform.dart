@@ -1,9 +1,8 @@
 import 'dart:io';
 
-T byPlatform<T>({dynamic ios, dynamic android}) {
-  return switch (Platform) {
-    _ when Platform.isAndroid => android,
-    _ when Platform.isIOS => ios,
-    _ => FormatException('platform not supported'),
-  };
+T byPlatform<T extends dynamic>({required T ios, required T android}) {
+  if (Platform.isAndroid) return android;
+  if (Platform.isIOS) return ios;
+
+  throw FormatException('platform not supported');
 }
