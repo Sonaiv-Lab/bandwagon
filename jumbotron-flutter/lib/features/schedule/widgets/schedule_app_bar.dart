@@ -65,13 +65,12 @@ class _ScheduleAppBar extends StatelessWidget {
   }
 }
 
-class ScheduleAppBar extends HookConsumerWidget implements PreferredSizeWidget {
+class ScheduleAppBar extends HookConsumerWidget
+    with CustomAppBarPreferredSize
+    implements PreferredSizeWidget {
   const ScheduleAppBar({super.key, required this.yearMonth});
 
   final String yearMonth;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
