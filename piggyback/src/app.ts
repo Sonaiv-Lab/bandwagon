@@ -18,6 +18,8 @@ const makeGamesData = async () => {
     await Promise.allSettled(upserts);
   } catch (err) {
     if (err instanceof Error) {
+      console.log(err.stack);
+      
       logger.error(`makeGamesData: ${err.message}`);
     }
   } finally {

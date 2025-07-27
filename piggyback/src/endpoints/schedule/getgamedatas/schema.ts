@@ -30,7 +30,7 @@ const GamesData = z.object({
   IsGameStop: z.enum(['0', '1']),
   GameDateTimeS: Date,
   GameDateTimeE: NullableDate,
-  GameDuringTime: z.string().regex(/\d+/).length(6).or(z.literal('')),
+  GameDuringTime: z.string().regex(/[\d+\s]/).length(6).or(z.literal('')),
   // HHMMSS
   MultyGame: z.enum(['N', '']), 
   // 不知道什麼意思
@@ -79,8 +79,8 @@ const GamesData = z.object({
   MvpName: PlayerName,
   VisitingPitcherName: PlayerName,
   HomePitcherName: PlayerName,
-  IsPlayBall: z.literal('N').or(z.literal('Y')),
   // 是不是正在進行
+  IsPlayBall: z.literal('N').or(z.literal('Y')),
   ReserveDate: NullableDate,
 });
 

@@ -95,13 +95,17 @@ const fetchRawGames = async () => {
 
     const json = (await res.body.json()) as TResponseSchema;
 
-    ResponseSchema.parse(json);
+    ResponseSchema.parse(json, {
+      reportInput: true,
+    });
 
     const gameDataJson = json.GameDatas;
 
     const gameData = JSON.parse(gameDataJson) as TGamesDatasSchema;
 
-    await GamesDatasSchema.parseAsync(gameData);
+    await GamesDatasSchema.parseAsync(gameData, {
+      reportInput: true,
+    });
 
     return gameData;
   } catch (err) {
