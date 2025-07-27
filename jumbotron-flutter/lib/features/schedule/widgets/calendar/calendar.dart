@@ -174,7 +174,7 @@ class Date extends HookConsumerWidget {
           },
           gameNo: 'No. ${game.gameNo.toString()}',
           fieldName: field.name,
-          startAt: toHH_MM(game.startDatetime),
+          startAt: toH_MM(game.startDatetime),
           leftPrimaryColorHex: homeTeamInfo.theme.primaryColor,
           leftSubtleColorHex: homeTeamInfo.theme.subtleColor,
           leftTeamName: homeTeamInfo.name,
