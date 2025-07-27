@@ -43,7 +43,6 @@ class _ScheduleAppBar extends StatelessWidget {
         spacing: 15,
         children: [
           IconButton(
-            iconSize: 22,
             onPressed: onPrevPressed,
             icon: Icon(Icons.chevron_left),
             splashColor: Colors.transparent,
@@ -54,7 +53,6 @@ class _ScheduleAppBar extends StatelessWidget {
             style: TextStyle(fontSize: 18),
           ),
           IconButton(
-            iconSize: 22,
             onPressed: onNextPressed,
             icon: Icon(Icons.chevron_right),
             splashColor: Colors.transparent,

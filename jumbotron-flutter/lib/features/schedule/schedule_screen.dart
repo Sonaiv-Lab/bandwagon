@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:jiffy/jiffy.dart';
 import './widgets/calendar/calendar.dart';
-import './widgets/app_bar.dart';
+import 'widgets/schedule_app_bar.dart';
 
 class Schedule extends HookConsumerWidget {
   const Schedule({super.key, required this.yearMonth});

@@ -1,14 +1,11 @@
 import 'package:bandwagon/shared/data/game.dart' show getGameProvider;
 import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
-import 'package:bandwagon/shared/data/team_info_map.dart'
-    show teamInfoMapProvider;
-import 'package:bandwagon/shared/models/game/game.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
 import 'package:bandwagon/shared/utils/time.dart';
+import 'package:bandwagon/shared/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class _GameScreenAppBar extends StatelessWidget {
   const _GameScreenAppBar({
@@ -27,38 +24,41 @@ class _GameScreenAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      leading: IconButton(
+    return CustomAppBar(
+      leadings: [ IconButton(
         onPressed: onBackPressed,
         icon: Icon(Icons.arrow_back),
       ),
-      actions: [
-        IconButton(
+      ],
+      actions: [IconButton(
           onPressed: () {},
           icon: Icon(Icons.calendar_today_rounded),
-          color: Color(0x00000000),
+          color: Colors.transparent,
         ),
       ],
       title: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(onPressed: onPrevPressed, icon: Icon(Icons.chevron_left)),
-          Column(
-            spacing: 2,
-            children: [
-              Text(
-                dateStr,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
-              ),
-              Text(
-                'No.$gameNoStr',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  dateStr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14),
+                ),
+                Text(
+                  'No.$gameNoStr',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
           ),
           IconButton(onPressed: onNextPressed, icon: Icon(Icons.chevron_right)),
         ],
