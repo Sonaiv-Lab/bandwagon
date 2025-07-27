@@ -1,5 +1,6 @@
 packages: 
   - 'piggyback'
+  - 'scout'
   - 'dugout'
   - 'jumbotron'
   - 'shared'
