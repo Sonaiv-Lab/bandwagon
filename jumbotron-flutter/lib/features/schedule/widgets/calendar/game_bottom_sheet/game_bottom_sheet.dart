@@ -1,7 +1,7 @@
 import 'package:bandwagon/shared/constants/game.dart';
 import 'package:bandwagon/shared/utils/by_game_result.dart';
 import 'package:bandwagon/shared/utils/time.dart';
-import 'package:bandwagon/shared/widgets/tag.dart';
+import 'package:bandwagon/shared/widgets/tag/game_status_tag.dart';
 import 'package:flutter/material.dart';
 import 'bottom_sheet_chip.dart';
 
@@ -89,26 +89,22 @@ class GameItem extends StatelessWidget {
         spacing: 4,
         children: [
           Text('$fieldName $startAt'),
-          Tag(text: '進行中', color: Colors.redAccent)
+          GameStatusTag.inProgress(),
         ],
       ),
-      pending: Row(
-        children: [
-          Text(fieldName),
-        ],
-      ),
+      pending: Row(children: [Text(fieldName)]),
       postponed: Row(
         spacing: 4,
         children: [
           Text(fieldName),
-          Tag(text: '延賽', color: Colors.indigo)
+          GameStatusTag.postponed(),
         ],
       ),
       suspended: Row(
         spacing: 4,
         children: [
           Text(fieldName),
-          Tag(text: '保留', color: Colors.orangeAccent)
+          GameStatusTag.suspended(),
         ],
       ),
       ended: Text(fieldName),
