@@ -34,11 +34,13 @@ class RFC3339TimeConverter implements JsonConverter<DateTime, String> {
 }
 
 // e.g. '2025/07/11 星期五'
+// ignore: non_constant_identifier_names
 String toYYYY_MM_DD__EEE(DateTime date) {
   return DateFormat('y/M/d EEEE', 'zh_TW').format(date);
 }
 
 // e.g. '2025/07/11'
+// ignore: non_constant_identifier_names
 String toYYYY_MM_DD(DateTime date) {
   return DateFormat('yyyy-MM-dd').format(date);
 }
