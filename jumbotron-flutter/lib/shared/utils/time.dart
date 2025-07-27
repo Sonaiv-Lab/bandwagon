@@ -43,8 +43,8 @@ String toYYYY_MM_DD(DateTime date) {
   return DateFormat('yyyy-MM-dd').format(date);
 }
 
-String toHH_MM(DateTime date) {
-  return DateFormat('HH:mm').format(date);
+// e.g. 18:30, 9:30
+// ignore: non_constant_identifier_names
+String toH_MM(DateTime date) {
+  return DateFormat('H:mm').format(date);
 }
-
-
