@@ -29,7 +29,7 @@ const makeGamesData = async () => {
 
 const main = async () => {
   const makeGamesDataJob = new CronJob(
-    '0 0 * * 2-7',
+    '0 0,18,19,20,21,22,23,15,12 * * *',
     makeGamesData,
     () => {
       console.log('Running a job at 00:00 at Asia/Taipei timezone');
