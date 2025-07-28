@@ -1,0 +1,56 @@
+{
+  "name": "@bandwagon/scout",
+  "project_name": "scout",
+  "version": "0.0.1",
+  "description": "The data resource of bandwagon app",
+  "private": true,
+  "packageManager": "pnpm@10.9.0",
+  "scripts": {
+    "build:node": "tsup-node ./src/app.ts",
+    "build:resource-script": "tsup-node ./resource/generate.ts --outDir ./resource/dist",
+    "start:dev": "NODE_ENV=dev tsx --tsconfig ./tsconfig.json ./src/app.ts ",
+    "start:builded": "node ./dist/app.mjs",
+    "pre-playwright": "pnpm exec playwright install-deps chromium && pnpm exec playwright install chromium",
+    "start:docker": "pnpm scripts:secret && pnpm start:builded",
+    "dev": "pnpm start:dev",
+    "dev:builded": "pnpm build:node && pnpm run start:builded",
+    "ts-check": "tsc --project ./tsconfig.json --noEmit",
+    "node": "tsx --tsconfig ./tsconfig.json",
+    "script:resource-generate": "pnpm build:resource-script && node ./resource/dist/generate.mjs"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@babel/generator": "^7.28.0",
+    "@bandwagon/shared": "workspace:*",
+    "@google-cloud/firestore": "^7.11.0",
+    "@google-cloud/logging-winston": "^6.0.0",
+    "@google-cloud/secret-manager": "^6.0.1",
+    "@types/node": "^24.1.0",
+    "commander": "^13.1.0",
+    "cron": "^4.3.0",
+    "dotenv": "^16.5.0",
+    "firebase-admin": "^13.2.0",
+    "google-auth-library": "^9.15.1",
+    "luxon": "^3.6.1",
+    "microdiff": "^1.5.0",
+    "object-to-formdata": "^4.5.1",
+    "playwright": "^1.51.1",
+    "undici": "^7.8.0",
+    "winston": "^3.17.0",
+    "zod": "^4.0.10"
+  },
+  "devDependencies": {
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
+    "@babel/types": "^7.28.1",
+    "@dotenvx/dotenvx": "^1.41.0",
+    "@playwright/test": "^1.51.1",
+    "@types/luxon": "^3.6.1",
+    "esbuild": "^0.25.8",
+    "esmock": "^2.7.1",
+    "tsup": "^8.4.0",
+    "typescript": "5.0.4"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["src/**/*", "resource"],
+  "compilerOptions": {
+    "baseUrl": "../",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "outDir": "dist",
+    "paths": {
+      "#/package.json": ["./scout/package.json"],
+      "#/*": ["./scout/src/*"],
+      "#resource/*": ["./scout/resource/*"],
+    }
+  }
+}
