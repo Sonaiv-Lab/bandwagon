@@ -191,27 +191,27 @@ const makeResource = (resourcePath: string) => {
 
     const entry = getEntryFromResourcePath(resourcePath);
 
-    const { absolute: absEntryPath, relative: entryPath } = entry;
+    const { absolute: absEntryPath } = entry;
 
-    const metaData = getMetadataFromAbsPath(absResourcePath);
+    const metadata = getMetadataFromAbsPath(absResourcePath);
 
     const bundledHash  = getFileBundleHash(absEntryPath)
 
-    if (!metaData) {
+    if (!metadata) {
       throw new Error(`no metaData from ${resourcePath}`);
     }
 
     const fingerPrint = getFingerprint({
       bundledHash,
-      metaData,
+      metaData: metadata,
     });
 
     const resourcePathFromRoot = pathModule.relative(rootDirPath, absResourcePath);
     const entryPathFromRoot = pathModule.relative(rootDirPath, absEntryPath);
 
     const resource = {
-      id: getId(metaData),
-      metaData,
+      id: getId(metadata),
+      metadata,
       gitHash: getGitHash(),
       bundledHash,
       fingerPrint,

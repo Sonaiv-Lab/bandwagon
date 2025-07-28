@@ -1,11 +1,7 @@
-import { hashSha1 } from "./utils/getFingerprint";
-
 type Info = {
   description: string;
   tags: string[];
 };
-
-type Path = string;
 
 export type Version = `${number}.${number}.${number}`;
 
@@ -27,61 +23,52 @@ export interface Metadata<
 
 type ResourceId = `${TypeName}::${ResourceName}@${Version}`;
 
-type SHA1Hash = `sha1:${string}`;
+type BundleHash = string;
+type GitHash = string;
+type Fingerprint = string;
+type FilePathFromRoot = string;
+type ISODateString = string;
 
 // Resource should be generate from metadata
 
-
-
-export interface Resource<C extends Config = Config> extends Metadata<string, C> {
-  // 從 import.meta 裡面拿 default config
-  // relative from root path
-  entry: string;
-  // human readable ID
-  // id 用來給人類作識別
+export interface ResourceInfo<TMetaData extends Metadata> {
+  metadata: TMetaData;
   id: ResourceId;
-  // fingerprint 只和功能性「有關」，用來檢查功能有沒有變化
-  // hash(type, config, entry, builded entry)
-  // 
-  fingerprint: SHA1Hash;
-  gitHash: string;
+  gitHash: GitHash;
+  bundledHash: BundleHash;
+  fingerPrint: Fingerprint;
+  resourcePath: FilePathFromRoot;
+  entryPath: FilePathFromRoot;
+  buildAt: ISODateString;
 }
 
+/**
+ * - 未來可能會在這裡面新增各種 lifecycle
+ * - resource 可能是靜態的東西，也可能是動態的 function，就看外面怎麼用
+ */
+export class Resource<TMetaData extends Metadata, TResource> {
+  #info: ResourceInfo<TMetaData>;
+  #resource: TResource;
 
-const getId = (
-  metadata: Metadata
-): ResourceId => {
-  return `${metadata.type}::${metadata.name}@${metadata.version}`
-};
+  constructor(info: ResourceInfo<TMetaData>, resource: TResource) {
+    this.#info = info;
+    this.#resource = resource;
 
-const getFingerPrint = (resource: Resource): string => {
-  const buildedEntry = fingerprintBuild;
-  const factors = {
-    type: resource.type,
-    config: resource.config,
-    entry: resource.entry,
-    buildedEntry,
-  };
+    this.#init();
+  }
 
-  return hashSha1(JSON.stringify(factors));
-};
+  #init() {
+    // todo，作一些 logger, error handler 等等的 init，然後有一部分也可以由外面注入
+  }
 
-class Resource2 {
-  // don't not modified it
-  #metadata: Metadata;
-  #id: ResourceId;
-  #fingerprint: ResourceId;
-  #sourceDir;
-  constructor(
-    metadata: Metadata,
-    entryPath: Path,
-    sourceFilePath: Path,
-    fingerprint: string
-    gitHash: string,
-    builtAt: string,
-    id: string,
-  ) {
-    this.#metadata = metadata;
-    this.#id = getId(metadata);
+  get id() {
+    return this.#info.id;
+  }
+  get metadata() {
+    return this.#info.metadata;
+  }
+
+  use(): TResource {
+    return this.#resource;
   }
 }
