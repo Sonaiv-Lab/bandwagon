@@ -164,16 +164,18 @@ function createHash(input: string) {
 const getFingerprint = ({
   bundledHash,
   metaData,
+  entry
 }: {
   bundledHash: string;
   metaData: Metadata
+  entry: string
 }) => {
   // fingerprint 用以辨別兩個版本有沒有功能上的差異，這裡會放上與功能相關的 resource 作 hash
   const functionalPart = {
     bundledHash,
     type: metaData.type,
-    name: metaData.name,
     config: metaData.config,
+    entry
   };
 
   const fingerprint = createHash(JSON.stringify(functionalPart));
@@ -201,13 +203,16 @@ const makeResource = (resourcePath: string) => {
       throw new Error(`no metaData from ${resourcePath}`);
     }
 
+    const resourcePathFromRoot = pathModule.relative(rootDirPath, absResourcePath);
+    const entryPathFromRoot = pathModule.relative(rootDirPath, absEntryPath);
+
+
     const fingerPrint = getFingerprint({
       bundledHash,
       metaData: metadata,
+      entry: entryPathFromRoot
     });
 
-    const resourcePathFromRoot = pathModule.relative(rootDirPath, absResourcePath);
-    const entryPathFromRoot = pathModule.relative(rootDirPath, absEntryPath);
 
     const resource = {
       id: getId(metadata),
