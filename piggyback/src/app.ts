@@ -19,7 +19,7 @@ const makeGamesData = async () => {
   } catch (err) {
     if (err instanceof Error) {
       console.log(err.stack);
-      
+
       logger.error(`makeGamesData: ${err.message}`);
     }
   } finally {
