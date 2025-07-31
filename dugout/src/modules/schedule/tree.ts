@@ -25,9 +25,9 @@ Record<string, Record<string, GameSummary[]>>
 const tree = new Hono();
 tree.post('/tree/update', async (c) => {
   const baseUrl = env.PIGGYBACK_BASE_URL
-  await request(baseUrl + '/run/makeGameData');
+  await request(baseUrl + '/run/makeGamesData', { method: 'POST' });
 
-  c.text('success');
+  return c.text('success');
 })
 
 tree.get('/tree', async (c) => {
@@ -59,7 +59,7 @@ tree.get('/tree', async (c) => {
       }: Game): GameSummary => ({
         id,
         startDatetime,
-        endDatetime: endDatetime ?? '',
+        endDatetime,
         isPlayBall,
         year,
         homeTeamName,
