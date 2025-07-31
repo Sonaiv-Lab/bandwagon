@@ -15,7 +15,6 @@ TODO list
 - [ ] decouple the data source and the process func, accept the multi source game
 */
 
-// TODO replace to correct type
 // type GameSummary = any;
 
 type Tree = Record<
@@ -45,6 +44,7 @@ tree.get('/tree', async (c) => {
         startDatetime,
         endDatetime,
         year,
+        isPlayBall,
         homeTeamName,
         homeTeamCode,
         homeScore,
@@ -60,6 +60,7 @@ tree.get('/tree', async (c) => {
         id,
         startDatetime,
         endDatetime: endDatetime ?? '',
+        isPlayBall,
         year,
         homeTeamName,
         homeTeamCode,
