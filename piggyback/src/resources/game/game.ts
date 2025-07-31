@@ -16,7 +16,6 @@ const getCollection = (db: Firestore) => {
 // It's only simple set value logic now. But it'll contain lazy migration process in future
 export const upsertGame = async (db: Firestore, game: Game) => {
   const id = game.id;
-  logger.info(`${id}: update start`);
   try {
     const doc = getCollection(db).doc(id);
     const docRef = await doc.get();
@@ -33,10 +32,7 @@ export const upsertGame = async (db: Firestore, game: Game) => {
     }
 
     // TODO 要檢查如果相同的話，就不作改動，不然會被扣錢
-
     const result = await doc.set(newDoc, { merge: true });
-
-    logger.info(`${id}: update end`);
 
     return result;
   } catch (err) {
