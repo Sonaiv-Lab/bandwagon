@@ -9,9 +9,5 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    //
-    "paths": {
-      "@bandwagon/shared/*": ["./shared/*"]
-    }
   }
 }

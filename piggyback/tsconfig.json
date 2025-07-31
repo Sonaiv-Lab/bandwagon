@@ -10,7 +10,8 @@
     "outDir": "dist",
     "paths": {
       "#/package.json": ["./piggyback/package.json"],
-      "#/*": ["./piggyback/src/*"]
+      "#/*": ["./piggyback/src/*"],
+      "@bandwagon/shared/*": ["./shared/*"],
     }
   }
 }

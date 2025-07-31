@@ -10,7 +10,8 @@
     "outDir": "dist",
     "paths": {
       "#/package.json": ["./dugout/package.json"],
-      "#/*": ["./dugout/src/*"]
+      "#/*": ["./dugout/src/*"],
+      "@bandwagon/shared/*": ["./shared/*"],
     }
   }
 }
