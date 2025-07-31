@@ -170,6 +170,7 @@ const toGameData = (data: TGamesData): Game => {
     gameSeason: data.GameSeasonCode,
     gameSeriesNo: data.GameSno,
     isGameStop: data.IsGameStop === '1' ? true : false,
+    isPlayBall: data.IsPlayBall === 'Y' ? true : false,
     startDatetime:
       toISODatetimeWithZone(data.GameDateTimeS, 'Asia/Taipei') ?? '',
     endDatetime: toISODatetimeWithZone(data.GameDateTimeE ?? '', 'Asia/Taipei'),

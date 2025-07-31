@@ -3,6 +3,9 @@ import { upsertGame } from '#/resources/game';
 import { getFirestore } from '#/resources/db/firestore';
 import { CronJob } from 'cron';
 import logger from '#/runtime/logger';
+import { serve } from '@hono/node-server'
+import { Hono } from "hono";
+
 
 const makeGamesData = async () => {
   try {
@@ -16,18 +19,48 @@ const makeGamesData = async () => {
     });
 
     await Promise.allSettled(upserts);
+    
   } catch (err) {
     if (err instanceof Error) {
       console.log(err.stack);
 
-      logger.error(`makeGamesData: ${err.message}`);
+      const errMessage = `makeGamesData: ${err.message}`
+
+      logger.error(errMessage);
+      throw new Error(errMessage);
+      
     }
   } finally {
     logger.info('=== makeGamesData end ===');
   }
 };
 
+const app = new Hono();
+
+app.post('/run/makeGamesData', async (c) => {
+  try {
+    await makeGamesData();
+
+    return c.text('success')
+  } catch (err) {
+    if (err instanceof Error) {
+      c.text(err.message, 400);
+    } else {
+      c.text('unexpect error', 400);
+    }
+  }
+});
+
 const main = async () => {
+  serve(
+    {
+      fetch: app.fetch,
+    },
+    (info) => {
+      logger.info(`Server is running on http://localhost:${info.port}`);
+    }
+  );
+
   const makeGamesDataJob = new CronJob(
     '0 0,18,19,20,21,22,23,15,12 * * *',
     makeGamesData,
@@ -40,7 +73,7 @@ const main = async () => {
   );
 
   // run once when start
-  makeGamesData();
+  // makeGamesData();
 };
 
 main();
