@@ -3,7 +3,6 @@ import 'package:bandwagon/shared/models/game_summary/game_summary.dart';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:collection/collection.dart';
 
 typedef YYYY = String;
 typedef YYYYMM = String;
@@ -14,6 +13,10 @@ typedef MonthTreeMap = Map<YYYYMM, DateTreeMap>;
 typedef YearTreeMap = Map<YYYY, MonthTreeMap>;
 
 typedef GameListWithDate = List<(YYYYMMDD, GameSummary)>;
+
+updateScheduleTree() async {
+  await rest.post('/schedule/tree/update');
+}
 
 Future<ScheduleTree> getScheduleTree() async {
   final scheduleTreeResponse = await rest.get('/schedule/tree');

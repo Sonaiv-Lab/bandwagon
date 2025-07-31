@@ -10,12 +10,14 @@ import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
 class _ScheduleAppBar extends StatelessWidget {
   const _ScheduleAppBar({
     super.key,
+    required this.onReload,
     required this.onNextPressed,
     required this.onPrevPressed,
     required this.onTodayPressed,
     required this.title,
   });
 
+  final void Function()? onReload;
   final void Function()? onNextPressed;
   final void Function()? onPrevPressed;
   final void Function()? onTodayPressed;
@@ -31,10 +33,10 @@ class _ScheduleAppBar extends StatelessWidget {
         ),
       ],
       actions: [
-         IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.abc),
-          color: Colors.transparent,
+        IconButton(
+          onPressed: onReload,
+          icon: Icon(Icons.replay_outlined),
+          // color: Colors.transparent,
         ),
       ],
       title: Row(
@@ -80,13 +82,13 @@ class ScheduleAppBar extends HookConsumerWidget
 
     if (data == null) {
       return _ScheduleAppBar(
+        onReload: null,
         onNextPressed: null,
         onPrevPressed: null,
         onTodayPressed: null,
         title: title,
       );
     }
-
     final currentIndex = data.monthsList.indexOf(yearMonth);
 
     void Function()? getGoToIndexMonth(int index) {
@@ -99,7 +101,13 @@ class ScheduleAppBar extends HookConsumerWidget
       };
     }
 
+    onReload() async {
+      await updateScheduleTree();
+      return ref.refresh(scheduleTreeProvider.future);
+    }
+
     return _ScheduleAppBar(
+      onReload: onReload,
       onNextPressed: getGoToIndexMonth(currentIndex + 1),
       onPrevPressed: getGoToIndexMonth(currentIndex - 1),
       onTodayPressed: () {
