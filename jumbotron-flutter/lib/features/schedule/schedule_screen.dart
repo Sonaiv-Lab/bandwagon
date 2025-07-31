@@ -58,7 +58,7 @@ class Schedule extends HookConsumerWidget {
         );
       })(),
       QueryStatus.error => (() {
-        return Container();
+        return Container(child: Center(child: Text('something went wrong')));
       })(),
       QueryStatus.loading => SizedBox(
         width: double.infinity,
