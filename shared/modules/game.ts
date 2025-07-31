@@ -40,6 +40,7 @@ export const GameScheme = z.object({
   gameSeason: gameSeason,
   gameSeriesNo: z.number(),
   isGameStop: z.boolean(),
+  isPlayBall: z.boolean(),
   startDatetime: DatetimeScheme,
   endDatetime: DatetimeScheme.nullable(),
   durationSeconds: z.number(),
