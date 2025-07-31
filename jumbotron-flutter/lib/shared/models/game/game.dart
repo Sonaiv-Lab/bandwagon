@@ -12,6 +12,7 @@ class Game {
   final String gameSeason;
   final int gameSeriesNo;
   final bool isGameStop;
+  final bool isPlayBall;
   
   final int durationSeconds;
   final String field;
@@ -51,6 +52,7 @@ class Game {
     required this.gameSeason,
     required this.gameSeriesNo,
     required this.isGameStop,
+    required this.isPlayBall,
     required this.startDatetime,
     this.endDatetime,
     required this.durationSeconds,

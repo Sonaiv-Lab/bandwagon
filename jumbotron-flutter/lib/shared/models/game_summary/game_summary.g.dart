@@ -8,6 +8,7 @@ part of 'game_summary.dart';
 
 GameSummary _$GameSummaryFromJson(Map<String, dynamic> json) => GameSummary(
   id: json['id'] as String,
+  isPlayBall: json['isPlayBall'] as bool,
   startDatetime: const RFC3339TimeConverter().fromJson(
     json['startDatetime'] as String,
   ),
@@ -45,6 +46,7 @@ Map<String, dynamic> _$GameSummaryToJson(
   'gameNo': instance.gameNo,
   'gameSeason': _$GameSeasonEnumMap[instance.gameSeason]!,
   'result': _$GameResultEnumMap[instance.result]!,
+  'isPlayBall': instance.isPlayBall,
   'startDatetime': const RFC3339TimeConverter().toJson(instance.startDatetime),
   'endDatetime': _$JsonConverterToJson<String, DateTime>(
     instance.endDatetime,

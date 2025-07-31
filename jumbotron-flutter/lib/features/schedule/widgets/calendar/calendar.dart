@@ -131,7 +131,7 @@ class Date extends HookConsumerWidget {
 
         return byGameStatus(
           game.result,
-          DateTime.now().isAfter(game.startDatetime),
+          game.isPlayBall,
           inProgress: OngoingGameChip(
             leftColorHex: homeTeamInfo.theme.primaryColor,
             rightColorHex: visitingTeamInfo.theme.primaryColor,
@@ -174,6 +174,7 @@ class Date extends HookConsumerWidget {
           },
           gameNo: 'No. ${game.gameNo.toString()}',
           fieldName: field.name,
+          isPlayBall: game.isPlayBall,
           startAt: toH_MM(game.startDatetime),
           leftPrimaryColorHex: homeTeamInfo.theme.primaryColor,
           leftSubtleColorHex: homeTeamInfo.theme.subtleColor,

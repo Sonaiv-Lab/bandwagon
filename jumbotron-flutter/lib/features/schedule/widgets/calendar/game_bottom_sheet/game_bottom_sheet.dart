@@ -22,6 +22,7 @@ class GameItem extends StatelessWidget {
     required this.rightScore,
     required this.result,
     required this.startDatetime,
+    required this.isPlayBall,
   });
 
   final void Function() onGameItemTap;
@@ -38,6 +39,7 @@ class GameItem extends StatelessWidget {
   final String rightTeamName;
   final GameResult result;
   final DateTime startDatetime;
+  final bool isPlayBall;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +86,7 @@ class GameItem extends StatelessWidget {
 
     final midText = byGameStatus(
       result,
-      DateTime.now().isAfter(startDatetime),
+      isPlayBall,
       inProgress: Row(
         spacing: 4,
         children: [

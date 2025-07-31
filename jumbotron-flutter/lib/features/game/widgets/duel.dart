@@ -224,11 +224,9 @@ class _Duel extends StatelessWidget {
       standings: '',
     );
 
-    final isPlayBall = DateTime.now().isAfter(game.startDatetime);
-
     final gameInfo = byGameStatus(
       game.result,
-      isPlayBall,
+      game.isPlayBall,
       inProgress: GameInfoLayout(
         fieldName: fieldName,
         statusTag: GameStatusTag.inProgress(),

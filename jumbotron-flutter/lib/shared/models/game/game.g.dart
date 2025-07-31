@@ -14,6 +14,7 @@ Game _$GameFromJson(Map<String, dynamic> json) => Game(
   gameSeason: json['gameSeason'] as String,
   gameSeriesNo: (json['gameSeriesNo'] as num).toInt(),
   isGameStop: json['isGameStop'] as bool,
+  isPlayBall: json['isPlayBall'] as bool,
   startDatetime: DateTime.parse(json['startDatetime'] as String),
   endDatetime: json['endDatetime'] == null
       ? null
@@ -55,6 +56,7 @@ Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
   'gameSeason': instance.gameSeason,
   'gameSeriesNo': instance.gameSeriesNo,
   'isGameStop': instance.isGameStop,
+  'isPlayBall': instance.isPlayBall,
   'durationSeconds': instance.durationSeconds,
   'field': instance.field,
   'result': _$GameResultEnumMap[instance.result]!,

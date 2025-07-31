@@ -6,7 +6,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'game_summary.g.dart';
 
-
 @JsonSerializable()
 class GameSummary {
   final String id,
@@ -22,6 +21,7 @@ class GameSummary {
 
   final GameSeason gameSeason;
   final GameResult result;
+  final bool isPlayBall;
 
   @RFC3339TimeConverter()
   final DateTime startDatetime; 
@@ -32,6 +32,7 @@ class GameSummary {
 
   GameSummary({
     required this.id,
+    required this.isPlayBall,
     required this.startDatetime,
     required this.endDatetime,
     required this.year,
