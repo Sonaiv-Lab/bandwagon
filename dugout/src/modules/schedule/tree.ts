@@ -6,6 +6,8 @@ import { request } from 'undici';
 import * as A from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
 import env from '#/runtime/env';
+import { Game } from '@bandwagon/shared/modules/game';
+import type { GameSummary } from '@bandwagon/shared/modules/schedule'
 
 /**
 TODO list
@@ -14,7 +16,7 @@ TODO list
 */
 
 // TODO replace to correct type
-type GameSummary = any;
+// type GameSummary = any;
 
 type Tree = Record<
 string,
@@ -36,7 +38,42 @@ tree.get('/tree', async (c) => {
   const games: Tree = pipe(
     gamesRes.docs,
     A.map((game: FirebaseFirestore.QueryDocumentSnapshot) => game.data()),
-    A.map(({ data }) => data),
+    A.map(({ data }) => data as Game),
+    A.map(
+      ({
+        id,
+        startDatetime,
+        endDatetime,
+        year,
+        homeTeamName,
+        homeTeamCode,
+        homeScore,
+        visitingTeamName,
+        visitingScore,
+        visitingTeamCode,
+        gameKindCode,
+        gameSeason,
+        gameNo,
+        result,
+        field,
+      }: Game): GameSummary => ({
+        id,
+        startDatetime,
+        endDatetime: endDatetime ?? '',
+        year,
+        homeTeamName,
+        homeTeamCode,
+        homeScore,
+        visitingTeamName,
+        visitingScore,
+        visitingTeamCode,
+        gameKindCode,
+        gameSeason,
+        gameNo,
+        result,
+        field,
+      })
+    ),
     A.filterMap((game) => {
       const { startDatetime } = game;
       const date = DateTime.fromISO(startDatetime);
@@ -49,7 +86,7 @@ tree.get('/tree', async (c) => {
         String(date.get('year')),
         date.toFormat('yyyy-MM'),
         date.toISODate(),
-        [game] satisfies GameSummary[],
+        game,
       ] as const);
     }),
     (input: (readonly [string, string, string, GameSummary])[]) => {
@@ -60,7 +97,7 @@ tree.get('/tree', async (c) => {
         tree[year][month] ??= {};
         tree[year][month][date] ??= [];
 
-        tree[year][month][date] = tree[year][month][date].concat(games)
+        tree[year][month][date] = tree[year][month][date].concat(games);
       }
 
       return tree;
