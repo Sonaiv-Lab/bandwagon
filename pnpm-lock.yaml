@@ -13,7 +13,7 @@ importers:
     dependencies:
       '@bandwagon/shared':
         specifier: workspace:*
-        version: file:shared(@google-cloud/logging-winston@6.0.1(winston@3.17.0))(@google-cloud/secret-manager@6.1.0)(dotenv@16.6.1)(firebase-admin@13.4.0)(luxon@3.7.1)(winston@3.17.0)(zod@4.0.10)
+        version: link:../shared
       '@google-cloud/logging-winston':
         specifier: ^6.0.0
         version: 6.0.1(winston@3.17.0)
@@ -22,7 +22,7 @@ importers:
         version: 6.1.0
       '@hono/node-server':
         specifier: ^1.14.1
-        version: 1.17.1(hono@4.8.7)
+        version: 1.17.1(hono@4.7.8)
       dotenv:
         specifier: ^16.5.0
         version: 16.6.1
@@ -37,10 +37,13 @@ importers:
         version: 9.15.1
       hono:
         specifier: ^4.7.8
-        version: 4.8.7
+        version: 4.7.8
       luxon:
         specifier: '^3.6.1 '
         version: 3.7.1
+      undici:
+        specifier: 7.8.0
+        version: 7.8.0
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -192,7 +195,7 @@ importers:
     dependencies:
       '@bandwagon/shared':
         specifier: workspace:*
-        version: file:shared(@google-cloud/logging-winston@6.0.1(winston@3.17.0))(@google-cloud/secret-manager@6.1.0)(dotenv@16.6.1)(firebase-admin@13.4.0)(luxon@3.7.1)(winston@3.17.0)(zod@4.0.10)
+        version: link:../shared
       '@google-cloud/firestore':
         specifier: ^7.11.0
         version: 7.11.3
@@ -202,6 +205,9 @@ importers:
       '@google-cloud/secret-manager':
         specifier: ^6.0.1
         version: 6.1.0
+      '@hono/node-server':
+        specifier: 1.14.1
+        version: 1.14.1(hono@4.7.8)
       commander:
         specifier: ^13.1.0
         version: 13.1.0
@@ -217,6 +223,9 @@ importers:
       google-auth-library:
         specifier: ^9.15.1
         version: 9.15.1
+      hono:
+        specifier: 4.7.8
+        version: 4.7.8
       luxon:
         specifier: ^3.6.1
         version: 3.7.1
@@ -231,7 +240,7 @@ importers:
         version: 1.54.1
       undici:
         specifier: ^7.8.0
-        version: 7.12.0
+        version: 7.8.0
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -259,7 +268,7 @@ importers:
         version: 7.28.0
       '@bandwagon/shared':
         specifier: workspace:*
-        version: file:shared(@google-cloud/logging-winston@6.0.1(winston@3.17.0))(@google-cloud/secret-manager@6.1.0)(dotenv@16.6.1)(firebase-admin@13.4.0)(luxon@3.7.1)(winston@3.17.0)(zod@4.0.10)
+        version: link:../shared
       '@google-cloud/firestore':
         specifier: ^7.11.0
         version: 7.11.3
@@ -301,7 +310,7 @@ importers:
         version: 1.54.1
       undici:
         specifier: ^7.8.0
-        version: 7.12.0
+        version: 7.8.0
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -1432,6 +1441,12 @@ packages:
 
   '@hapi/topo@5.1.0':
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
+
+  '@hono/node-server@1.14.1':
+    resolution: {integrity: sha512-vmbuM+HPinjWzPe7FFPWMMQMsbKE9gDPhaH0FFdqbGpkT5lp++tcWDTxwBl5EgS5y6JVgIaCdjeHRfQ4XRBRjQ==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
 
   '@hono/node-server@1.17.1':
     resolution: {integrity: sha512-SY79W/C+2b1MyAzmIcV32Q47vO1b5XwLRwj8S9N6Jr5n1QCkIfAIH6umOSgqWZ4/v67hg6qq8Ha5vZonVidGsg==}
@@ -3511,8 +3526,8 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  hono@4.8.7:
-    resolution: {integrity: sha512-gS/IyUw6MzcdnOyVRcRshn9hc/EygYc75glsnI3iESod3kGg9Mz194Y9NWJN8O/4qybIoonyIq6E4agc/t0i/g==}
+  hono@4.7.8:
+    resolution: {integrity: sha512-PCibtFdxa7/Ldud9yddl1G81GjYaeMYYTq4ywSaNsYbB1Lug4mwtOMJf2WXykL0pntYwmpRJeOI3NmoDgD+Jxw==}
     engines: {node: '>=16.9.0'}
 
   html-entities@2.6.0:
@@ -5323,8 +5338,8 @@ packages:
   undici-types@7.8.0:
     resolution: {integrity: sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw==}
 
-  undici@7.12.0:
-    resolution: {integrity: sha512-GrKEsc3ughskmGA9jevVlIOPMiiAHJ4OFUtaAH+NhfTUSiZ1wMPIQqQvAJUrJspFXJt3EBWgpAeoHEDVT1IBug==}
+  undici@7.8.0:
+    resolution: {integrity: sha512-vFv1GA99b7eKO1HG/4RPu2Is3FBTWBrmzqzO0mz+rLxN3yXkE4mqRcb8g8fHxzX4blEysrNZLqg5RbJLqX5buA==}
     engines: {node: '>=20.18.1'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
@@ -6501,20 +6516,6 @@ snapshots:
       - encoding
       - supports-color
 
-  '@bandwagon/shared@file:shared(@google-cloud/logging-winston@6.0.1(winston@3.17.0))(@google-cloud/secret-manager@6.1.0)(dotenv@16.6.1)(firebase-admin@13.4.0)(luxon@3.7.1)(winston@3.17.0)(zod@4.0.10)':
-    dependencies:
-      '@google-cloud/logging-winston': 6.0.1(winston@3.17.0)
-      '@google-cloud/secret-manager': 6.1.0
-      dotenv: 16.6.1
-      firebase-admin: 13.4.0
-      google-auth-library: 9.15.1
-      luxon: 3.7.1
-      winston: 3.17.0
-      zod: 4.0.10
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
   '@bcoe/v8-coverage@0.2.3': {}
 
   '@callstack/react-theme-provider@3.0.9(react@19.0.0)':
@@ -6840,9 +6841,13 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  '@hono/node-server@1.17.1(hono@4.8.7)':
+  '@hono/node-server@1.14.1(hono@4.7.8)':
     dependencies:
-      hono: 4.8.7
+      hono: 4.7.8
+
+  '@hono/node-server@1.17.1(hono@4.7.8)':
+    dependencies:
+      hono: 4.7.8
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
@@ -9514,7 +9519,7 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
-  hono@4.8.7: {}
+  hono@4.7.8: {}
 
   html-entities@2.6.0: {}
 
@@ -11770,7 +11775,7 @@ snapshots:
 
   undici-types@7.8.0: {}
 
-  undici@7.12.0: {}
+  undici@7.8.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 
