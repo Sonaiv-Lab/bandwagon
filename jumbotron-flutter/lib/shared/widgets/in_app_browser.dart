@@ -5,7 +5,9 @@ class InAppBrowser {
 
   final webview.InAppBrowser browser = webview.InAppBrowser();
   final settings = webview.InAppBrowserClassSettings(
-    browserSettings: webview.InAppBrowserSettings(hideUrlBar: true),
+    browserSettings: webview.InAppBrowserSettings(
+      hideDefaultMenuItems: true,
+    ),
   );
 
   openUrl(String url) {
