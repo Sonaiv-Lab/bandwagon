@@ -455,13 +455,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -648,7 +644,7 @@
 		};
 		5B3F79442E226A3200CF419A /* Debug-freeDevelopment */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D1A52BBE99F42FC46FD1A419 /* Pods-Runner.debug-freedevelopment.xcconfig */;
+			baseConfigurationReference = 5B2B066E2E3D2FED007F1747 /* debug-FreeDev.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development: Lance Fang (35H7JM77A9)";
@@ -926,7 +922,7 @@
 		};
 		5B3F794D2E226C6200CF419A /* Debug-paidDevelopment */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5F90495581D02B835ED8DC24 /* Pods-Runner.debug-paiddevelopment.xcconfig */;
+			baseConfigurationReference = 5B2B06712E3D2FED007F1747 /* debug-PaidDev.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development: Lance Fang (35H7JM77A9)";
@@ -1203,7 +1199,7 @@
 		};
 		5B3F79562E226CCB00CF419A /* Debug-paidStaging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2095C3B52911BE2626F7C81A /* Pods-Runner.debug-paidstaging.xcconfig */;
+			baseConfigurationReference = 5B2B06732E3D2FED007F1747 /* debug-PaidStage.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development: Lance Fang (35H7JM77A9)";
@@ -1480,7 +1476,7 @@
 		};
 		5B3F795F2E226D4C00CF419A /* Debug-freeStaging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E81967D078134B2B4CC2C518 /* Pods-Runner.debug-freestaging.xcconfig */;
+			baseConfigurationReference = 5B2B06702E3D2FED007F1747 /* debug-FreeStage.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development: Lance Fang (35H7JM77A9)";
@@ -1757,7 +1753,7 @@
 		};
 		5B3F796B2E226D9100CF419A /* Debug-freeProduction */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EE88EB3A8AB663D69D90E7A8 /* Pods-Runner.debug-freeproduction.xcconfig */;
+			baseConfigurationReference = 5B2B066F2E3D2FED007F1747 /* debug-FreeProd.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development: Lance Fang (35H7JM77A9)";
@@ -2214,7 +2210,7 @@
 		};
 		5B3F797A2E226DCD00CF419A /* Debug-paidProduction */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 47EAE340FC16EAAAD70F7FED /* Pods-Runner.debug-paidproduction.xcconfig */;
+			baseConfigurationReference = 5B2B06722E3D2FED007F1747 /* debug-PaidProd.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development: Lance Fang (35H7JM77A9)";
