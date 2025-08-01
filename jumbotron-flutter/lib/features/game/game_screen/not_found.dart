@@ -6,6 +6,7 @@ class NotFoundScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final path = GoRouter.of(context).state.path;
     return  Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -31,7 +32,13 @@ class NotFoundScreen extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: Text('Game Not Found'),
+        child: Column(
+          spacing: 10,
+          children: [
+            Text('Game Not Found'),
+            Text('path: $path'),
+          ],
+        ),
       ),
     );
   }
