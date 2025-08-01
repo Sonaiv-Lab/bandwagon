@@ -1,3 +1,4 @@
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release-freedevelopment.xcconfig"
 #include "Generated.xcconfig"
 
 APP_DISPLAY_NAME=今日球迷 - 阿法

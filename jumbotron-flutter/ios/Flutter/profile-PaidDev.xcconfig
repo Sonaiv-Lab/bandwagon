@@ -1,3 +1,4 @@
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.profile-paiddevelopment.xcconfig"
 #include "Generated.xcconfig"
 
 APP_DISPLAY_NAME=今世球迷 - 阿法
