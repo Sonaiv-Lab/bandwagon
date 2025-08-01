@@ -96,7 +96,6 @@ class GameScreenAppBar extends HookConsumerWidget
 
       final list = scheduleTree.gameListWithDate;
 
-      //
       final index = list.indexWhere((record) {
         final (_, game) = record;
         return game.id == gameId;

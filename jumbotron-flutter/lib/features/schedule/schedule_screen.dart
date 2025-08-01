@@ -43,6 +43,16 @@ class Schedule extends HookConsumerWidget {
           );
         }
 
+        void goToIndexMonth(int next) {
+          final currentIndex = data.monthsList.indexOf(yearMonth);
+          final index = currentIndex + next;
+          if (index < 0 || index >= data.monthsList.length) {
+            return;
+          }
+
+          GoRouter.of(context).go('/schedule/${data.monthsList[index]}');
+        }
+
         final startOfMonth = Jiffy.parseFromDateTime(
           currentYearMonth.datetime,
         ).startOf(Unit.month).dateTime;
@@ -50,10 +60,24 @@ class Schedule extends HookConsumerWidget {
           currentYearMonth.datetime,
         ).endOf(Unit.month).dateTime;
 
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Calendar(from: startOfMonth, to: endOfMonth)],
+        return GestureDetector(
+          onHorizontalDragEnd: (detail) {
+            if (detail.primaryVelocity == null) {
+              return;
+            }
+
+            if (detail.primaryVelocity! > 0) {
+              goToIndexMonth(-1);
+            }
+            if (detail.primaryVelocity! < 0) {
+              goToIndexMonth(1);
+            }
+          },
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Calendar(from: startOfMonth, to: endOfMonth)],
+            ),
           ),
         );
       })(),
@@ -70,10 +94,7 @@ class Schedule extends HookConsumerWidget {
 }
 
 class ScheduleScreen extends StatelessWidget {
-  const ScheduleScreen({
-    super.key,
-    required this.yearMonth,
-  });
+  const ScheduleScreen({super.key, required this.yearMonth});
 
   final String yearMonth;
 
@@ -81,7 +102,7 @@ class ScheduleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ScheduleAppBar(yearMonth: yearMonth),
-      body: Schedule(yearMonth: yearMonth)
+      body: Schedule(yearMonth: yearMonth),
     );
   }
 }
