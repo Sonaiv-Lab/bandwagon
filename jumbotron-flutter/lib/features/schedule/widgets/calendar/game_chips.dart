@@ -32,7 +32,6 @@ class WithLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(byPlatform(android: 0.1, ios: 0.0));
     return Stack(
       alignment: Alignment.center,
       children: [

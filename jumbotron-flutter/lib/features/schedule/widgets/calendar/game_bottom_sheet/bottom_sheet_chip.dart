@@ -54,8 +54,6 @@ class WithLabel extends StatelessWidget {
       builder: (context, constraint) {
         final w = constraint.maxWidth;
 
-        print('$w, $separatorRatio');
-
         final children = [
           graph,
           Positioned(left: textSpacing, child: teamLabel(leftText)),
