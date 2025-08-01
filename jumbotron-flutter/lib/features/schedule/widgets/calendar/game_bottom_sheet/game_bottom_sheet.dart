@@ -45,7 +45,7 @@ class GameItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final BottomSheetChip chip = byGameStatus(
       result,
-      DateTime.now().isAfter(startDatetime),
+      isPlayBall,
       inProgress: OngoingBottomSheetChip(
         leftColorHex: leftPrimaryColorHex,
         rightColorHex: rightPrimaryColorHex,
