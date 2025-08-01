@@ -24,21 +24,29 @@ enum GameResult {
 
 enum GameKind {
   @JsonValue('A')
-  regularSeason, // 一軍例行賽
+  regularSeason(value: 'A', name: '一軍例行賽'),
   @JsonValue('C')
-  championshipSeries, // 一軍總冠軍賽
+  championshipSeries(value: 'C', name: '一軍總冠軍賽'),
   @JsonValue('E')
-  playoffChallenge, // 一軍季後挑戰賽
+  playoffChallenge(value: 'E', name: '一軍季後挑戰賽'),
   @JsonValue('G')
-  preseason, // 一軍熱身賽
+  preseason(value: 'G', name: '一軍熱身賽'),
   @JsonValue('B')
-  allStarGame, // 一軍明星賽
+  allStarGame(value: 'B', name: '一軍明星賽'),
   @JsonValue('D')
-  minorRegularSeason, // 二軍例行賽
+  minorRegularSeason(value: 'D', name: '二軍例行賽'),
   @JsonValue('F')
-  minorChampionshipSeries, // 二軍總冠軍賽
+  minorChampionshipSeries(value: 'F', name: '二軍總冠軍賽'),
   @JsonValue('H')
-  futureStarsGame, // 未來之星邀請賽
+  futureStarsGame(value: 'H', name: '未來之星邀請賽'),
   @JsonValue('X')
-  internationalGame, // 國際交流賽
+  internationalGame(value: 'X', name: '國際交流賽');
+
+  const GameKind({
+    required this.value,
+    required this.name,
+  });
+
+  final String value;
+  final String name;
 }

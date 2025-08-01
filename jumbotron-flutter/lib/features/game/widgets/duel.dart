@@ -6,6 +6,7 @@ import 'package:bandwagon/shared/utils/by_game_result.dart';
 import 'package:bandwagon/shared/utils/hex_color.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
 import 'package:bandwagon/shared/utils/time.dart';
+import 'package:bandwagon/shared/widgets/in_app_browser.dart';
 import 'package:bandwagon/shared/widgets/tag/game_status_tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -49,7 +50,7 @@ class Score extends StatelessWidget {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
-            color: Colors.grey
+            color: Colors.grey,
           ),
         ),
         SizedBox(
@@ -86,7 +87,6 @@ class TeamInfo extends StatelessWidget {
     return SizedBox(
       width: 56,
       child: Column(
-        
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ConstrainedBox(
@@ -118,27 +118,31 @@ class GameInfoLayout extends StatelessWidget {
     this.score,
     required this.fieldName,
     this.statusTag,
+    this.hiddenOnTap
   });
 
   final String startTimeStr;
   final String fieldName;
   final Score? score;
   final GameStatusTag? statusTag;
+  final GestureTapCallback? hiddenOnTap;
 
   @override
   Widget build(BuildContext context) {
-
     final field = Text(
-          fieldName,
-          style: TextStyle(
-            fontSize: 14,
-            decorationStyle: TextDecorationStyle.solid,
-            decoration: TextDecoration.underline,
-            decorationThickness: 1,
-          ),
+      fieldName,
+      style: TextStyle(
+        fontSize: 14,
+        decorationStyle: TextDecorationStyle.solid,
+        decoration: TextDecoration.underline,
+        decorationThickness: 1,
+      ),
     );
 
-    final startTime = Text(startTimeStr, style: TextStyle(fontSize: 12));
+    final startTime = GestureDetector(
+      onTap: hiddenOnTap,
+      child: Text(startTimeStr, style: TextStyle(fontSize: 12)),
+    );
 
     if (statusTag == null && score == null) {
       return SizedBox(
@@ -166,15 +170,8 @@ class GameInfoLayout extends StatelessWidget {
 
     return Column(
       children: [
-        
-        Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: statusTag,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: score!,
-        ),
+        Padding(padding: const EdgeInsets.only(bottom: 6), child: statusTag),
+        Padding(padding: const EdgeInsets.only(bottom: 10), child: score!),
         field,
         startTime,
       ],
@@ -209,6 +206,17 @@ class _Duel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final browser = InAppBrowser();
+    final url =
+        'https://www.cpbl.com.tw/box?year=${game.year}&kindCode=${game.gameKindCode.value}&gameSno=${game.gameNo}';
+
+    openGameWeb() {
+      // print(url);
+      browser.openUrl(
+        url,
+      );
+    }
+
     final startTimeStr = toH_MM(game.startDatetime);
     final theme = Theme.of(context);
 
@@ -228,6 +236,7 @@ class _Duel extends StatelessWidget {
       game.result,
       game.isPlayBall,
       inProgress: GameInfoLayout(
+        hiddenOnTap: openGameWeb,
         fieldName: fieldName,
         statusTag: GameStatusTag.inProgress(),
         startTimeStr: startTimeStr,
@@ -239,15 +248,18 @@ class _Duel extends StatelessWidget {
         ),
       ),
       postponed: GameInfoLayout(
+        hiddenOnTap: openGameWeb,
         fieldName: fieldName,
         statusTag: GameStatusTag.postponed(),
         startTimeStr: startTimeStr,
       ),
       pending: GameInfoLayout(
+        hiddenOnTap: openGameWeb,
         fieldName: fieldName,
         startTimeStr: startTimeStr,
       ),
       suspended: GameInfoLayout(
+        hiddenOnTap: openGameWeb,
         fieldName: fieldName,
         statusTag: GameStatusTag.suspended(),
         startTimeStr: startTimeStr,
@@ -259,6 +271,7 @@ class _Duel extends StatelessWidget {
         ),
       ),
       ended: GameInfoLayout(
+        hiddenOnTap: openGameWeb,
         fieldName: fieldName,
         statusTag: GameStatusTag.ended(),
         startTimeStr: startTimeStr,
@@ -292,11 +305,7 @@ class _Duel extends StatelessWidget {
         child: Row(
           spacing: 8,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            teamLeft,
-            gameInfo,
-            teamRight,
-          ],
+          children: [teamLeft, gameInfo, teamRight],
         ),
       ),
     );

@@ -7,6 +7,9 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/standalone.dart' as tz;
 
 Future<void> init() async {
+  // for in-app-browser
+  WidgetsFlutterBinding.ensureInitialized();
+
   await initializeDateFormatting('zh_TW', null);
   await Jiffy.setLocale('zh_TW', startOfWeek: StartOfWeek.monday);
   tz.initializeTimeZones();

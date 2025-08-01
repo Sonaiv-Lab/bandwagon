@@ -3,6 +3,7 @@ import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
 import 'package:bandwagon/shared/utils/time.dart';
 import 'package:bandwagon/shared/widgets/custom_appbar.dart';
+import 'package:bandwagon/shared/widgets/in_app_browser.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,6 +12,7 @@ class _GameScreenAppBar extends StatelessWidget {
   const _GameScreenAppBar({
     required this.gameNoStr,
     required this.dateStr,
+    required this.onExternalPressed,
     required this.onBackPressed,
     required this.onNextPressed,
     required this.onPrevPressed,
@@ -18,6 +20,7 @@ class _GameScreenAppBar extends StatelessWidget {
 
   final String gameNoStr;
   final String dateStr;
+  final void Function()? onExternalPressed;
   final void Function()? onBackPressed;
   final void Function()? onNextPressed;
   final void Function()? onPrevPressed;
@@ -31,9 +34,9 @@ class _GameScreenAppBar extends StatelessWidget {
       ),
       ],
       actions: [IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.calendar_today_rounded),
-          color: Colors.transparent,
+          onPressed: onExternalPressed,
+          icon: Icon(Icons.open_in_new),
+          color: onExternalPressed == null ? Colors.transparent : null,
         ),
       ],
       title: Row(
@@ -112,12 +115,22 @@ class GameScreenAppBar extends HookConsumerWidget
       return (getToGameByIndex(index - 1), getToGameByIndex(index + 1));
     })();
 
+    final browser = InAppBrowser();
+    final openGameWeb = game == null ? null : () {
+      final url =
+        'https://www.cpbl.com.tw/box?year=${game?.year}&kindCode=${game.gameKindCode.value}&gameSno=${game.gameNo}';
+            browser.openUrl(
+        url,
+      );
+    };
+
     return _GameScreenAppBar(
       onBackPressed: () {
         GoRouter.of(context).pop(true);
       },
       onPrevPressed: onPrevPressed,
       onNextPressed: onNextPressed,
+      onExternalPressed: openGameWeb,
       gameNoStr: game?.gameNo.toString() ?? '---',
       dateStr: (() {
         if (game == null) {
