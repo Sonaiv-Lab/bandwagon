@@ -20,5 +20,8 @@
   },
   "devDependencies": {
     "@types/luxon": "^3.6.1"
+  },
+  "volta": {
+    "extends": "../package.json"
   }
 }

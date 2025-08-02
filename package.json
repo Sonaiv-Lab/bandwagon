@@ -5,7 +5,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.9.0",
   "scripts": {
     "run:piggyback": "pnpm --filter @bandwagon/piggyback dev",
     "docker:build:piggyback": "docker build . --target piggyback --tag bandwagon/piggyback:latest",
@@ -17,5 +16,9 @@
   "engines": {
     "pnpm": ">=10",
     "node": ">=22"
+  },
+  "packageManager": "pnpm@10.9.0",
+  "volta": {
+    "node": "22.15.0"
   }
 }

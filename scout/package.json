@@ -52,5 +52,8 @@
     "esmock": "^2.7.1",
     "tsup": "^8.4.0",
     "typescript": "5.0.4"
+  },
+  "volta": {
+    "extends": "../package.json"
   }
 }
