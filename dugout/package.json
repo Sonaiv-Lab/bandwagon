@@ -35,8 +35,5 @@
   "devDependencies": {
     "@types/luxon": "^3.6.1",
     "tsup": "^8.4.0"
-  },
-  "volta": {
-    "extends": "../package.json"
   }
 }
