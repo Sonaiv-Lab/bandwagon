@@ -1,6 +1,6 @@
 import { intercept } from '#/utils/interceptNetworkFromPage';
 import { z, ZodError } from 'zod';
-import { Scheme as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
+import { kindCodeSchema as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
 import { DateTime, IANAZone } from 'luxon';
 import { request } from 'undici';
 import { GamesDatasSchema } from './schema';
@@ -9,7 +9,7 @@ import type { TGamesDatasSchema, TGamesData } from './schema';
 import { Game, GameScheme } from '@bandwagon/shared/modules/game';
 import {
   FIELD_OPTS,
-  FieldOptsScheme,
+  fieldOptsSchema,
 } from '@bandwagon/shared/constants/fieldOpts';
 
 /**
@@ -57,7 +57,7 @@ const ENDPOINT = 'https://www.cpbl.com.tw/schedule/getgamedatas';
 const Body = z
   .object({
     calendar: z.string().regex(/\d\d\d\d\/\d\d\/\d\d/), // YYYY/MM/DD
-    location: FieldOptsScheme,
+    location: fieldOptsSchema,
     kindCode: KindCodeScheme,
   })
   .required();
@@ -119,9 +119,9 @@ const toISODatetimeWithZone = (
 ): string | null => {
   const timezone = IANAZone.isValidZone(tz) ? tz : DateTime.local().zoneName;
 
-  const datetime = DateTime.fromISO(isoString);
+  const datetime = DateTime.fromISO(isoString, { zone: timezone });
 
-  return datetime.isValid ? datetime.setZone(timezone).toISO() ?? null : null;
+  return datetime.isValid ? datetime.toISO() ?? null : null;
 };
 
 const transformDuringTime = (hhmmss: string) => {

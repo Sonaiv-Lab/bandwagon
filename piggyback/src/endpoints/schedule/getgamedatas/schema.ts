@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { Scheme as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
+import { kindCodeSchema as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
 import {
-  FieldOptsScheme,
+  fieldOptsSchema,
   FieldScheme,
 } from '@bandwagon/shared/constants/fieldOpts';
 import {
@@ -12,27 +12,34 @@ import {
 const Body = z
   .object({
     calendar: z.string().regex(/\d\d\d\d\/\d\d\/\d\d/), // YYYY/MM/DD
-    location: FieldOptsScheme,
+    location: fieldOptsSchema,
     kindCode: KindCodeScheme,
   })
   .required();
 
 type TBody = z.infer<typeof Body>;
 
-const PlayerId = z.string().regex(/\d{10}/).or(z.literal(''));
+const PlayerId = z
+  .string()
+  .regex(/\d{10}/)
+  .or(z.literal(''));
 const PlayerName = z.string().or(z.literal(''));
 const ImagePath = z.string();
-const Date = z.string().datetime({ local: true })
-const NullableDate = Date.nullable()
+const Date = z.string().datetime({ local: true });
+const NullableDate = Date.nullable();
 
 const GamesData = z.object({
   PresentStatus: z.literal(1).or(z.literal(0)),
   IsGameStop: z.enum(['0', '1']),
   GameDateTimeS: Date,
   GameDateTimeE: NullableDate,
-  GameDuringTime: z.string().regex(/[\d+\s]/).length(6).or(z.literal('')),
+  GameDuringTime: z
+    .string()
+    .regex(/[\d+\s]/)
+    .length(6)
+    .or(z.literal('')),
   // HHMMSS
-  MultyGame: z.enum(['N', '']), 
+  MultyGame: z.enum(['N', '']),
   // 不知道什麼意思
   Year: z.string().regex(/\d+/).length(4),
   // YYYY
@@ -55,7 +62,7 @@ const GamesData = z.object({
       - GameDateTimeS 會是第一場比賽開始時間
       - 
   */
-  PreExeDate: Date, 
+  PreExeDate: Date,
   // 不知道什麼意思，目前都跟 GameDate 一樣
   VisitingTeamCode: teamCodeSchema,
   VisitingTeamName: teamFullNamesSchema,
@@ -84,11 +91,11 @@ const GamesData = z.object({
   ReserveDate: NullableDate,
 });
 
-const GamesDatasSchema = z.array(GamesData)
+const GamesDatasSchema = z.array(GamesData);
 
 type TGamesDatasSchema = z.infer<typeof GamesDatasSchema>;
 
-type TGamesData = z.infer<typeof GamesData>
+type TGamesData = z.infer<typeof GamesData>;
 
 export { GamesDatasSchema, Body };
 

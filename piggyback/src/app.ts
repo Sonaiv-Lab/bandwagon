@@ -73,7 +73,7 @@ const main = async () => {
   );
 
   // run once when start
-  // makeGamesData();
+  makeGamesData();
 };
 
 main();
