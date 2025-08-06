@@ -90,11 +90,11 @@ class GameItem extends StatelessWidget {
       inProgress: Row(
         spacing: 4,
         children: [
-          Text('$fieldName $startAt'),
+          Text(fieldName),
           GameStatusTag.inProgress(),
         ],
       ),
-      pending: Row(children: [Text(fieldName)]),
+      pending: Row(children: [Text('$fieldName $startAt')]),
       postponed: Row(
         spacing: 4,
         children: [
