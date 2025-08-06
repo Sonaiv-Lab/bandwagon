@@ -16,12 +16,12 @@ const KIND_CODE = {
   國際交流賽: 'X',
 } as const;
 
-type KindCode = (typeof KIND_CODE)[keyof typeof KIND_CODE];
+export type KindCodeValue = (typeof KIND_CODE)[keyof typeof KIND_CODE];
 
 const values = [...Object.values(KIND_CODE)];
 
-const Scheme = z.enum(values as [KindCode, ...KindCode[]]);
+export const kindCodeSchema = z.enum(
+  values as [KindCodeValue, ...KindCodeValue[]]
+);
 
 export default KIND_CODE;
-
-export { Scheme, type KindCode };

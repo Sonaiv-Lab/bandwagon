@@ -1,0 +1,22 @@
+{
+  "id": "schema::game@0.0.1",
+  "metadata": {
+    "type": "schema",
+    "name": "game",
+    "version": "0.0.1",
+    "config": {},
+    "info": {
+      "tags": [
+        "cpbl",
+        "gameDatas"
+      ],
+      "description": "處理來自 getgamedatas 的資料: gameDatas"
+    }
+  },
+  "gitHash": "c0bbc5782b8a469f42fcfc3690348a670cb33047",
+  "bundledHash": "menYUTfbRu8",
+  "fingerPrint": "sha1:366aebb1",
+  "resourcePath": "scout/resources/schema/schemas/game/game.resource.ts",
+  "entryPath": "scout/resources/schema/schemas/game/game.ts",
+  "buildAt": "2025-08-03T00:17:44.442+08:00"
+}

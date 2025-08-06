@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { Scheme as KindCodeScheme } from '../constants/kindCode';
-import { FieldOptsScheme } from '../constants/fieldOpts';
-import { teamCodeSchema } from "../constants/teams";
+import { kindCodeSchema as KindCodeScheme } from '../constants/kindCode';
+import { fieldOptsSchema } from '../constants/fieldOpts';
+import { teamCodeSchema } from '../constants/teams';
 
 const DatetimeScheme = z.string().datetime({ offset: true });
 
@@ -44,7 +44,7 @@ export const GameScheme = z.object({
   startDatetime: DatetimeScheme,
   endDatetime: DatetimeScheme.nullable(),
   durationSeconds: z.number(),
-  field: FieldOptsScheme,
+  field: fieldOptsSchema,
   result: ResultScheme,
   homeScore: z.number(),
   visitingScore: z.number(),

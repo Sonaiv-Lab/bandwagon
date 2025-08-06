@@ -8,7 +8,6 @@ export const TEAMS_INFO = {
     name: '統一獅',
     theme: {
       color: '#FB9611',
-      
     },
   },
   AKP011: {
@@ -51,20 +50,19 @@ export const TEAMS_INFO = {
       color: '#FF393C',
     },
   },
-} as const 
+} as const;
 
-export type TeamCode = keyof typeof TEAMS_INFO;
+export type TeamCodeValue = keyof typeof TEAMS_INFO;
 
+export type TeamInfo = (typeof TEAMS_INFO)[TeamCodeValue];
 
-export type TeamInfo = typeof TEAMS_INFO[TeamCode]
+const teamCodes = Object.keys(TEAMS_INFO) as TeamCodeValue[];
 
-const teamCodes = Object.keys(TEAMS_INFO) as TeamCode[];
-
-export const teamCodeSchema = z.enum(teamCodes as [TeamCode]);
+export const teamCodeSchema = z.enum(teamCodes as [TeamCodeValue]);
 
 const teamFullNames = Object.values(TEAMS_INFO).map(({ fullName }) => fullName);
 
-type TeamFullName = (typeof TEAMS_INFO)[TeamCode]['fullName'];
+type TeamFullName = (typeof TEAMS_INFO)[TeamCodeValue]['fullName'];
 
 //  as [TeamFullName] is zod cheating
 export const teamFullNamesSchema = z.enum(teamFullNames as [TeamFullName]);

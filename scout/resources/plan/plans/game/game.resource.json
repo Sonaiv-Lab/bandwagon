@@ -1,0 +1,27 @@
+{
+  "id": "plan::game@0.0.1",
+  "metadata": {
+    "type": "plan",
+    "name": "game",
+    "version": "0.0.1",
+    "deps": [
+      "store::games@0.0.1"
+    ],
+    "config": {
+      "input": "normalization::gameDatas@0.0.1"
+    },
+    "info": {
+      "tags": [
+        "cpbl",
+        "game"
+      ],
+      "description": "以來自 gameData 的資料建立 mutation"
+    }
+  },
+  "gitHash": "2c4f32874a279f169a96a321800ea08b97adb0ea",
+  "bundledHash": "UEsYI5ADH+A",
+  "fingerPrint": "sha1:cd3911f0",
+  "resourcePath": "scout/resources/plan/plans/game/game.resource.ts",
+  "entryPath": "scout/resources/plan/plans/game/game.ts",
+  "buildAt": "2025-08-06T21:09:18.798+08:00"
+}

@@ -7,16 +7,16 @@
   "packageManager": "pnpm@10.9.0",
   "scripts": {
     "build:node": "tsup-node ./src/app.ts",
-    "build:resource-script": "tsup-node ./resource/generate.ts --outDir ./resource/dist",
-    "start:dev": "NODE_ENV=dev tsx --tsconfig ./tsconfig.json ./src/app.ts ",
+    "build:resource-script": "tsup-node ./shared/resource/generate.ts --outDir ./dist/resource",
+    "start:dev:piggyback": "NODE_ENV=dev tsx --tsconfig ./tsconfig.json ./services/piggyback/main.ts ",
     "start:builded": "node ./dist/app.mjs",
     "pre-playwright": "pnpm exec playwright install-deps chromium && pnpm exec playwright install chromium",
     "start:docker": "pnpm scripts:secret && pnpm start:builded",
-    "dev": "pnpm start:dev",
+    "dev": "pnpm start:dev ",
     "dev:builded": "pnpm build:node && pnpm run start:builded",
     "ts-check": "tsc --project ./tsconfig.json --noEmit",
     "node": "tsx --tsconfig ./tsconfig.json",
-    "script:resource-generate": "pnpm build:resource-script && node ./resource/dist/generate.mjs"
+    "script:resource-generate": "pnpm build:resource-script && node ./dist/resource/generate.mjs"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -52,8 +52,5 @@
     "esmock": "^2.7.1",
     "tsup": "^8.4.0",
     "typescript": "5.0.4"
-  },
-  "volta": {
-    "extends": "../package.json"
   }
 }
