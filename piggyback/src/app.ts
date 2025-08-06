@@ -5,6 +5,7 @@ import { CronJob } from 'cron';
 import logger from '#/runtime/logger';
 import { serve } from '@hono/node-server'
 import { Hono } from "hono";
+import { VERSION, NAME } from "#/runtime/config";
 
 
 const makeGamesData = async () => {
@@ -52,6 +53,7 @@ app.post('/run/makeGamesData', async (c) => {
 });
 
 const main = async () => {
+  logger.info(`[${NAME}:${VERSION}]: start`);
   serve(
     {
       fetch: app.fetch,
