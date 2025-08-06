@@ -28,8 +28,6 @@ Future<ScheduleTree> getScheduleTree() async {
 }
 
 YearTreeMap parseScheduleTree(dynamic decodeJson) {
-  // final decodeJson = jsonDecode(input);
-
   if (decodeJson is! Map) {
     throw FormatException();
   }
