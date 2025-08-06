@@ -243,8 +243,8 @@ class _Duel extends StatelessWidget {
         score: Score(
           leftTeamColor: leftTeamColor,
           rightTeamColor: rightTeamColor,
-          leftTeamScore: 10,
-          rightTeamScore: 10,
+          leftTeamScore: leftTeamScore,
+          rightTeamScore: rightTeamScore,
         ),
       ),
       postponed: GameInfoLayout(
