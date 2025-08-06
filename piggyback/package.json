@@ -1,7 +1,7 @@
 {
   "name": "@bandwagon/piggyback",
   "project_name": "piggyback",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The data resource of bandwagon app",
   "private": true,
   "packageManager": "pnpm@10.9.0",
