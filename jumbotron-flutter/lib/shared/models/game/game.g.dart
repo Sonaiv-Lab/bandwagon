@@ -15,18 +15,22 @@ Game _$GameFromJson(Map<String, dynamic> json) => Game(
   gameSeriesNo: (json['gameSeriesNo'] as num).toInt(),
   isGameStop: json['isGameStop'] as bool,
   isPlayBall: json['isPlayBall'] as bool,
-  startDatetime: DateTime.parse(json['startDatetime'] as String),
-  endDatetime: json['endDatetime'] == null
-      ? null
-      : DateTime.parse(json['endDatetime'] as String),
+  startDatetime: const RFC3339TimeConverter().fromJson(
+    json['startDatetime'] as String,
+  ),
+  endDatetime: _$JsonConverterFromJson<String, DateTime>(
+    json['endDatetime'],
+    const RFC3339TimeConverter().fromJson,
+  ),
   durationSeconds: (json['durationSeconds'] as num).toInt(),
   field: json['field'] as String,
   result: $enumDecode(_$GameResultEnumMap, json['result']),
   homeScore: (json['homeScore'] as num).toInt(),
   visitingScore: (json['visitingScore'] as num).toInt(),
-  reserveDate: json['reserveDate'] == null
-      ? null
-      : DateTime.parse(json['reserveDate'] as String),
+  reserveDate: _$JsonConverterFromJson<String, DateTime>(
+    json['reserveDate'],
+    const RFC3339TimeConverter().fromJson,
+  ),
   homeTeamCode: json['homeTeamCode'] as String,
   homeTeamName: json['homeTeamName'] as String,
   homeTeamIconUrl: json['homeTeamIconUrl'] as String,
@@ -81,9 +85,15 @@ Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
   'loserPitcherName': instance.loserPitcherName,
   'closerId': instance.closerId,
   'closerName': instance.closerName,
-  'startDatetime': instance.startDatetime.toIso8601String(),
-  'endDatetime': instance.endDatetime?.toIso8601String(),
-  'reserveDate': instance.reserveDate?.toIso8601String(),
+  'startDatetime': const RFC3339TimeConverter().toJson(instance.startDatetime),
+  'endDatetime': _$JsonConverterToJson<String, DateTime>(
+    instance.endDatetime,
+    const RFC3339TimeConverter().toJson,
+  ),
+  'reserveDate': _$JsonConverterToJson<String, DateTime>(
+    instance.reserveDate,
+    const RFC3339TimeConverter().toJson,
+  ),
 };
 
 const _$GameKindEnumMap = {
@@ -98,9 +108,19 @@ const _$GameKindEnumMap = {
   GameKind.internationalGame: 'X',
 };
 
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
+
 const _$GameResultEnumMap = {
   GameResult.pending: 'pending',
   GameResult.ended: 'ended',
   GameResult.postponed: 'postponed',
   GameResult.suspended: 'suspended',
 };
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);

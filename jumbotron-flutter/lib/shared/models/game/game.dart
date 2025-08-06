@@ -1,3 +1,4 @@
+import 'package:bandwagon/shared/utils/time.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:bandwagon/shared/constants/game.dart';
 
@@ -13,13 +14,13 @@ class Game {
   final int gameSeriesNo;
   final bool isGameStop;
   final bool isPlayBall;
-  
+
   final int durationSeconds;
   final String field;
   final GameResult result;
   final int homeScore;
   final int visitingScore;
-  
+
   final String homeTeamCode;
   final String homeTeamName;
   final String homeTeamIconUrl;
@@ -40,8 +41,13 @@ class Game {
   final String closerId;
   final String closerName;
 
+  @RFC3339TimeConverter()
   final DateTime startDatetime;
+
+  @RFC3339TimeConverter()
   final DateTime? endDatetime;
+
+  @RFC3339TimeConverter()
   final DateTime? reserveDate;
 
   Game({
