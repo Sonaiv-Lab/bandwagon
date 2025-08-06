@@ -7,7 +7,7 @@
   "packageManager": "pnpm@10.9.0",
   "scripts": {
     "build:node": "tsup-node ./src/app.ts",
-    "build:scripts": "tsup-node ./scripts/* --outDir dist/scripts",
+    "build:scripts": "tsup-node ./scripts/*.ts --outDir dist/scripts",
     "build": "rm -rf ./dist && pnpm build:node && pnpm build:scripts",
     "start:dev": "NODE_ENV=dev tsx --tsconfig ./tsconfig.json ./src/app.ts ",
     "start:builded": "node ./dist/app.mjs",
