@@ -337,15 +337,15 @@ class Duel extends HookConsumerWidget {
 
       return _Duel(
         game: game,
-        leftTeamName: homeTeam.name,
-        rightTeamName: visitingTeam.name,
-        leftTeamColor: fromRGBHex(homeTeam.theme.primaryColor),
-        rightTeamColor: fromRGBHex(visitingTeam.theme.primaryColor),
+        leftTeamName: visitingTeam.name,
+        rightTeamName: homeTeam.name,
+        leftTeamColor: fromRGBHex(visitingTeam.theme.primaryColor),
+        rightTeamColor: fromRGBHex(homeTeam.theme.primaryColor),
         fieldName: field.name,
-        leftTeamIcon: SvgPicture.asset(homeTeam.assets.simplifyIconPath),
-        rightTeamIcon: SvgPicture.asset(visitingTeam.assets.simplifyIconPath),
-        leftTeamScore: game.homeScore,
-        rightTeamScore: game.visitingScore,
+        leftTeamIcon: SvgPicture.asset(visitingTeam.assets.simplifyIconPath),
+        rightTeamIcon: SvgPicture.asset(homeTeam.assets.simplifyIconPath),
+        leftTeamScore: game.visitingScore,
+        rightTeamScore: game.homeScore,
       );
     }
 
