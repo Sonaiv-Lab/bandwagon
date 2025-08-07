@@ -119,7 +119,12 @@ class ScheduleTree {
 
     return datesMap.entries.expand((entry) {
       return entry.value.map((game) => (entry.key, game));
-    }).toList();
+    }).toList().sorted((a, b) {
+        final (String dateA, _) = a;
+        final (String dateB, _) = b;
+
+        return dateA.compareTo(dateB);
+    });
   }
 }
 
