@@ -1,5 +1,6 @@
 import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
+import 'package:bandwagon/shared/widgets/custom_refresh_wrapper.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bandwagon/features/schedule/utils.dart';
@@ -60,34 +61,41 @@ class Schedule extends HookConsumerWidget {
           currentYearMonth.datetime,
         ).endOf(Unit.month).dateTime;
 
-        return GestureDetector(
-          onHorizontalDragEnd: (detail) {
-            if (detail.primaryVelocity == null) {
-              return;
-            }
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return CustomRefreshWrapper(
+              onRefresh: () async {
+                await updateScheduleTree();
+                return ref.refresh(scheduleTreeProvider.future);
+              },
+              child: GestureDetector(
+                onHorizontalDragEnd: (detail) {
+                  if (detail.primaryVelocity == null) {
+                    return;
+                  }
 
-            if (detail.primaryVelocity! > 0) {
-              goToIndexMonth(-1);
-            }
-            if (detail.primaryVelocity! < 0) {
-              goToIndexMonth(1);
-            }
+                  if (detail.primaryVelocity! > 0) {
+                    goToIndexMonth(-1);
+                  }
+                  if (detail.primaryVelocity! < 0) {
+                    goToIndexMonth(1);
+                  }
+                },
+                child: SizedBox(
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  child: Calendar(from: startOfMonth, to: endOfMonth),
+                ),
+              ),
+            );
           },
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Calendar(from: startOfMonth, to: endOfMonth)],
-            ),
-          ),
         );
       })(),
       QueryStatus.error => (() {
-        return Container(child: Center(child: Text('something went wrong')));
+        return Center(child: Text('something went wrong'));
       })(),
-      QueryStatus.loading => SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(child: CircularProgressIndicator.adaptive()),
+      QueryStatus.loading => Center(
+        child: CircularProgressIndicator.adaptive(),
       ),
     };
   }

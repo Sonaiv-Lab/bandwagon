@@ -79,25 +79,23 @@ class Calendar extends HookConsumerWidget {
       );
     }).toList();
 
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          CalendarRow(
-            isExpanded: false,
-            children: [
-              DateLabel('M'),
-              DateLabel('T'),
-              DateLabel('W'),
-              DateLabel('T'),
-              DateLabel('F'),
-              DateLabel('S'),
-              DateLabel('S'),
-            ],
-          ),
-          ...dates,
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        CalendarRow(
+          isExpanded: false,
+          children: [
+            DateLabel('M'),
+            DateLabel('T'),
+            DateLabel('W'),
+            DateLabel('T'),
+            DateLabel('F'),
+            DateLabel('S'),
+            DateLabel('S'),
+          ],
+        ),
+        ...dates,
+      ],
     );
   }
 }
