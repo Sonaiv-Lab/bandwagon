@@ -15,7 +15,10 @@ typedef YearTreeMap = Map<YYYY, MonthTreeMap>;
 typedef GameListWithDate = List<(YYYYMMDD, GameSummary)>;
 
 updateScheduleTree() async {
-  await rest.post('/schedule/tree/update');
+  await rest.post(
+    '/schedule/tree/update',
+    options: Options(receiveTimeout: Duration(seconds: 5)),
+  );
 }
 
 Future<ScheduleTree> getScheduleTree() async {
