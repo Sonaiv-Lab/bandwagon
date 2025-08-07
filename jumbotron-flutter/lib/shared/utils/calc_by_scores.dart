@@ -9,12 +9,17 @@ double calcRatioByScores({
   double limit = 5,
 }) {
   double scoreDiff = (leftScore - rightScore).toDouble();
+
   if (leftScore == 0) {
     scoreDiff = -gap;
-  }
-
+  } 
+  
   if (rightScore == 0) {
     scoreDiff = gap;
+  }
+
+  if (leftScore == 0 && rightScore == 0) {
+    scoreDiff = 0;
   }
 
   final ratio = inverseLerpDouble(-limit, limit, scoreDiff);
