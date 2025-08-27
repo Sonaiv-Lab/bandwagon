@@ -1,11 +1,9 @@
 import { Resource, ResourceInfo } from '#shared/resource';
 import { PlanMetadata, PlanResource } from '../../plan';
 // @resource(entry) import
-import entry from './game';
+import * as entry from './game';
 // @resource(json)
-import gameDatasResource from '#resources/normalization/normalizations/gameData/gameDatas.resource.json';
-// @resource(json)
-import gameStoreResource from '#resources/store/games/games.resource.json';
+import gameStoreResource from '#resources/store/stores/games/games.resource.json';
 
 import info from './game.resource.json';
 
@@ -17,16 +15,18 @@ export const metadata: PlanMetadata = {
   // 只能 import json...
   deps: [gameStoreResource.id],
   config: {
-    input: gameDatasResource.id,
+    collections: {
+      game: gameStoreResource.metadata.config.collectionName,
+    },
   },
   info: {
     tags: ['cpbl', 'game'],
-    description: '以來自 gameData 的資料建立 mutation',
+    description: '建立 game store 的 mutation',
   },
 };
 
 // 必須要有這個
-export const NormalizeGameDatas = new PlanResource(
+export const PlanGameMutation = new PlanResource(
   info as ResourceInfo<PlanMetadata>,
   entry
 );

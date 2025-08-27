@@ -21,19 +21,17 @@ function createDatetimeString(
   const timezone = IANAZone.isValidZone(tz) ? tz : DateTime.local().zoneName;
 
   const datetime = DateTime.fromISO(str) as DateTime<true>;
-  const datetimeIsoStr = datetime
-    .setZone(timezone)
-    .toISO() as string;
+  const datetimeIsoStr = datetime.setZone(timezone).toISO() as string;
 
   return brandDatetimeString(datetimeIsoStr);
 }
 
 /**
  * 這個是 input 的 schema
-*/
-export const datetimeSchemaFactory = (tz?: string) => {
+ */
+export const datetimeWithZoneSchemaFactory = (tz?: string) => {
   return z.iso
-    .datetime({local: true})
+    .datetime({ local: true })
     .refine(
       (val) => {
         const datetime = DateTime.fromISO(val);
@@ -45,25 +43,47 @@ export const datetimeSchemaFactory = (tz?: string) => {
     .transform((val) => createDatetimeString(val, tz));
 };
 
+/**
+ All the datetime in system need timezone info
+*/
 export const datetimeStringSchema = z.custom<DatetimeString>((input) => {
   const { success } = z.iso.datetime({ offset: true }).safeParse(input);
 
   return success;
 }, 'invalid datetimeString');
 
-export const createNullableDateTime = (input: string, tz: string) => {
+export const createNullableDateTimeFromStr = (input: string, tz: string) => {
   if (input === '') {
     return null;
   }
-  const schema = datetimeSchemaFactory(tz);
+  const schema = datetimeWithZoneSchemaFactory(tz);
 
   return schema.parse(input, { reportInput: true });
 };
 
-export const createDateTime = (input: string, tz: string) => {
-  const schema = datetimeSchemaFactory(tz);
+export const createDateTimeFromStr = (input: string, tz: string) => {
+  const schema = datetimeWithZoneSchemaFactory(tz);
 
-  return schema.parse(input, {reportInput: true});
+  return schema.parse(input, { reportInput: true });
 };
+
+export const createDtStrFromDateTime = (input: DateTime, tz: string) => {
+  const brandDatetimeString = (datetimeStr: string) => {
+    return datetimeStr as DatetimeString;
+  };
+
+  if (!input.isValid) {
+    throw new Error('invalid datatime')
+  }
+
+  const timezone = IANAZone.isValidZone(tz) ? tz : DateTime.local().zoneName;
+
+  const datetimeIsoStr = input.setZone(timezone).toISO() as string;
+
+  return brandDatetimeString(datetimeIsoStr);
+  
+};
+
+
 
 export const durationSecondsSchema = z.int().nonnegative();

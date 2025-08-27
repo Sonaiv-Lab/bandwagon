@@ -7,7 +7,10 @@ import {
 } from '@bandwagon/shared/constants';
 import { transformDuringTime } from './utils';
 import { gamesDatasSchema, type GameData, validate } from './validation';
-import { createNullableDateTime, createDateTime } from '#shared/utils/types';
+import {
+  createNullableDateTimeFromStr,
+  createDateTimeFromStr,
+} from '#shared/utils/types';
 import { DateTime } from 'luxon';
 import { z } from 'zod';
 
@@ -40,8 +43,8 @@ const normalizeGamePlay = (game: GameData) => {
     isGameStop: game.IsGameStop === '1' ? true : false,
     // 是不是正在比賽
     isPlayBall: game.IsPlayBall === 'Y' ? true : false,
-    startDatetime: createDateTime(game.GameDateTimeS, 'Asia/Taipei'),
-    endDatetime: createNullableDateTime(
+    startDatetime: createDateTimeFromStr(game.GameDateTimeS, 'Asia/Taipei'),
+    endDatetime: createNullableDateTimeFromStr(
       game.GameDateTimeE ?? '',
       'Asia/Taipei'
     ),
@@ -50,7 +53,10 @@ const normalizeGamePlay = (game: GameData) => {
     result: game.GameResult,
     homeScore: game.HomeScore,
     visitingScore: game.VisitingScore,
-    reserveDate: createNullableDateTime(game.ReserveDate ?? '', 'Asia/Taipei'),
+    reserveDate: createNullableDateTimeFromStr(
+      game.ReserveDate ?? '',
+      'Asia/Taipei'
+    ),
     visitingPitcherId: transformPlayerRelatedValue(game.VisitingPitcherAcnt),
     visitingPitcherName: transformPlayerRelatedValue(game.VisitingPitcherName),
     homePitcherId: transformPlayerRelatedValue(game.HomePitcherAcnt),
@@ -126,7 +132,6 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
         game: gameInfo,
         plays: [gamePlayInfo],
       };
-      
     }
   }
 

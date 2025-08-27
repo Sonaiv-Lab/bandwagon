@@ -10,7 +10,7 @@ import { z } from 'zod';
 import { type SchemaFromInterface } from '@bandwagon/shared/utils/zod';
 import * as Types from '#shared/utils/types';
 import * as GamePlayRules from './rules/gamePlay';
-import type { GameInfo, GamePlayInfo } from './types';
+import type { GameInfo, GamePlayInfo } from '#shared/model/game';
 
 /**
 要在 schema 這邊檢查「欄位之間的邏輯」典型例子：

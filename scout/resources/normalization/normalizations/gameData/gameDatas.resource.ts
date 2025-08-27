@@ -7,7 +7,7 @@ import fetchGamedatas from '#resources/fetcher/fetchers/fetchgamedatas/fetchGame
 // @resource(json)
 import gameSchemaResource from '#resources/schema/schemas/game/game.resource.json';
 
-import info from './GameDatas.resource.json';
+import info from './gameDatas.resource.json';
 
 // metadata 不能有任何 external reference
 export const metadata: NormalizationMetadata = {

@@ -1,9 +1,11 @@
 import { getApps } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import env from '#/runtime/env';
+import { FieldValue, getFirestore, Timestamp } from 'firebase-admin/firestore';
+import env from '#shared/runtime/env';
 import { ping, initByEnv } from '@bandwagon/shared/firestore';
-import type { Firestore } from '@google-cloud/firestore';
-import logger from '#/runtime/logger';
+import { DatetimeString } from '#shared/utils/types';
+import { DateTime } from 'luxon';
+
+// import logger from '#/runtime/logger';
 
 const get = async () => {
   const apps = getApps();
@@ -19,4 +21,16 @@ const get = async () => {
   return fireStore;
 };
 
-export { get as getFirestore };
+export const toFirestoreTimestamp = (dt: DatetimeString): Timestamp => {
+  return Timestamp.fromDate(DateTime.fromISO(dt).toJSDate());
+};
+
+const getServerTimestamp = FieldValue.serverTimestamp;
+
+type ServerTimestamp = ReturnType<typeof getServerTimestamp>;
+
+export { get as getFirestore, getServerTimestamp };
+
+export type { ServerTimestamp };
+
+export { Firestore, Timestamp } from '@google-cloud/firestore';

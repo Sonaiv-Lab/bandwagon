@@ -57,3 +57,7 @@ export type Game = {
   plays: GamePlay[];
   level: LevelValue;
 };
+
+export type GameInfo = Omit<Game, 'plays' | 'id'>;
+
+export type GamePlayInfo = Omit<GamePlay, 'id'>

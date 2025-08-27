@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { SchemaFromInterface } from '@bandwagon/shared/utils/zod';
-import { gameIdParts } from "./gameId";
+import { gameIdParts } from './gameId';
 
 /**
  * @example valid: 2025-cpbl-A-00001, 1995-milb-A-00354
@@ -18,13 +18,15 @@ export const gamePlayIdSchema = z.string().regex(gamePlayIdRule);
  *
  * 設計概念
  * - 需要跟 gameId 有強烈的區別，所以不能再用 - 當 seperator
- * - __ 比起 _（single underline）更有階層關係的語意 
-*/
-export type gamePlayIdParts = gameIdParts & {
-  playno: string
+ * - __ 比起 _（single underline）更有階層關係的語意
+ */
+export type GamePlayIdParts = gameIdParts & {
+  playno: string;
 };
 
-export const disassembleGamePlayId = (id: string): undefined | gamePlayIdParts => {
+export const disassembleGamePlayId = (
+  id: string
+): undefined | GamePlayIdParts => {
   const match = gamePlayIdRule.exec(id);
 
   if (!match) return;
@@ -45,8 +47,12 @@ export const disassembleGamePlayId = (id: string): undefined | gamePlayIdParts =
   return validation.success ? validation.data : undefined;
 };
 
-export const assembleGamePlayId = ({ year, level, kind, seriesno, playno }: gamePlayIdParts) => {
+export const assembleGamePlayId = ({
+  year,
+  level,
+  kind,
+  seriesno,
+  playno,
+}: GamePlayIdParts) => {
   return `${year}-${level}-${kind}-${seriesno}__${playno}`;
 };
-
-

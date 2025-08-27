@@ -1,0 +1,3 @@
+tasks:
+  docker-build:
+    command: 'echo "hi"'

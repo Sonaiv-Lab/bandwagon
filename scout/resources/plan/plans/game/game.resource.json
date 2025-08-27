@@ -8,20 +8,22 @@
       "store::games@0.0.1"
     ],
     "config": {
-      "input": "normalization::gameDatas@0.0.1"
+      "collections": {
+        "game": "game_v1"
+      }
     },
     "info": {
       "tags": [
         "cpbl",
         "game"
       ],
-      "description": "以來自 gameData 的資料建立 mutation"
+      "description": "建立 game store 的 mutation"
     }
   },
-  "gitHash": "2c4f32874a279f169a96a321800ea08b97adb0ea",
-  "bundledHash": "UEsYI5ADH+A",
-  "fingerPrint": "sha1:cd3911f0",
+  "gitHash": "fabb67fa654f1d379768d441dcb22734847cdece",
+  "bundledHash": "21RPa4+Zvq0",
+  "fingerPrint": "sha1:dc7b5ee8",
   "resourcePath": "scout/resources/plan/plans/game/game.resource.ts",
   "entryPath": "scout/resources/plan/plans/game/game.ts",
-  "buildAt": "2025-08-06T21:09:18.798+08:00"
+  "buildAt": "2025-08-14T21:00:04.377+08:00"
 }

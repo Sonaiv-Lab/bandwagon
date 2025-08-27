@@ -38,6 +38,9 @@ export type gameIdParts = {
 };
 
 export const disassembleGameId = (id: string): undefined | gameIdParts => {
+
+  console.log('id', id);
+  
   const match = gameIdRule.exec(id);
 
   if (!match) return;
@@ -48,17 +51,20 @@ export const disassembleGameId = (id: string): undefined | gameIdParts => {
       year: z.string(),
       level: z.string(),
       kind: z.string(),
-      seriesno: z.string(),
+      seriesno: z.string().transform((value) => value.replace(/^0+/, '')),
     })
     .required() satisfies SchemaFromInterface<gameIdParts>;
 
   const validation = schema.safeParse(match.groups);
 
+  
+  
+
   return validation.success ? validation.data : undefined;
 };
 
 export const assembleGameId = ({ year, level, kind, seriesno }: gameIdParts) => {
-  return `${year}-${level}-${kind}-${seriesno}`;
+  return `${year}-${level}-${kind}-${seriesno.padStart(5, '0')}`;
 };
 
 
