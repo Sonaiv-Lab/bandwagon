@@ -1,0 +1,61 @@
+name: bandwagon
+
+# x- 是指擴充欄位，不會真的被 docker 解析使用，只是自己用的。& 則是給他一個名字給後面以 <<: *build_common 作引用
+x-build-common: &build_common
+  context: .
+  dockerfile: docker/Dockerfile
+  # 下面這些選項可以讓 buildKit 明確指定 cache 的位置。沒有用 remote cache 影響還好，但可以讓 CICD build 的路徑比較一致
+  # cache_from:
+  #   - type=local,src=.cache/buildx
+  # cache_to:
+  #   - type=local,dest=.cache/buildx,mode=max
+
+services:
+  piggyback:
+    build: 
+      <<: *build_common
+      target: piggyback
+    image: bandwagon/piggyback:${PIGGYBACK_VERSION}
+    environment:
+      NODE_ENV: dev
+      DEPLOY_ENV: gcp
+    ports: ["3000:3000"]
+    profiles: ["piggyback"]
+  dugout:
+    build: 
+      <<: *build_common
+      target: dugout
+    image: bandwagon/dugout:${DUGOUT_VERSION}
+    environment:
+      NODE_ENV: dev
+      DEPLOY_ENV: gcp
+    ports: ["3000:3000"]
+    profiles: ["dugout"]
+  runner:
+    build: 
+      <<: *build_common
+      target: runner
+    image: bandwagon/runner:${SCOUT_VERSION}
+    environment:
+      NODE_ENV: dev
+      DEPLOY_ENV: gcp
+    profiles: ["runner"]
+  lineup:
+    build: 
+      <<: *build_common
+      target: lineup
+    image: bandwagon/lineup:${SCOUT_VERSION}
+    environment:
+      NODE_ENV: dev
+      DEPLOY_ENV: gcp
+    ports: ["3000:3000"]
+    profiles: ["lineup"]
+  redis:
+    image: redis
+    container_name: redis_container
+    ports: ["6379:6379"]
+    volumes: 
+      - ./data:/data
+    profiles: ["lineup"]
+
+      

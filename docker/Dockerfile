@@ -10,8 +10,6 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 
-
-
 # --- the stage "build" start build the project ---
 FROM base AS build
 COPY . /usr/src/app
@@ -23,6 +21,7 @@ RUN pnpm run -r build
 # if utils be used in project, it need to be deploy too
 RUN pnpm --filter=*piggyback --prod deploy  /piggyback
 RUN pnpm --filter=*dugout --prod deploy /dugout
+RUN pnpm --filter=*scout --prod deploy /scout
 
 # --- the stage "piggyback" only run the project piggyback
 FROM base AS piggyback
@@ -42,3 +41,17 @@ EXPOSE 8080
 CMD [ "pnpm", "start:docker" ]
 
 
+FROM base AS runner
+# caution!! here only copy the need file, that are in piggyback project directory. 
+# Be careful in using outer utility
+COPY --from=build /scout /scout
+WORKDIR /scout
+RUN pnpm pre-playwright
+CMD [ "pnpm", "start:docker:runner" ]
+
+FROM base AS lineup
+# caution!! here only copy the need file, that are in piggyback project directory. 
+# Be careful in using outer utility
+COPY --from=build /scout /scout
+WORKDIR /scout
+CMD [ "pnpm", "start:docker:lineup" ]

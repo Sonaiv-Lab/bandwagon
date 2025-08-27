@@ -2,32 +2,12 @@
 echo "brew version: $(brew -v)"
 
 # 下載 fnm
-brew install fnm
+bash <(curl -fsSL https://moonrepo.dev/install/proto.sh)
 
+echo "proton version $(proto -V)"
 
+proto install
 
-# setup the fnm init scripts
-# from https://github.com/Schniz/fnm?tab=readme-ov-file#shell-setup
-TARGET="$HOME/.zshrc"
-LINE='eval "$(fnm env --use-on-cd --shell zsh)"'
-
-# 檢查是否已存在
-if ! grep -Fxq "$LINE" "$TARGET"; then
-  echo "# fnm: nodejs version manager" >> "$TARGET"
-  echo "$LINE" >> "$TARGET"
-  echo "✅ Added fnm init line to $TARGET"
-else
-  echo "ℹ️  fnm init line already exists in $TARGET"
-fi
-
-eval "$LINE"
-
-# 檢查有沒有正常運行
-echo "fnm(node version manager) version: $(fnm --version )"
-
-
-VERSION="22.15.0"
-fnm use --install-if-missing "$VERSION"
 
 echo "node version: $(node -v)"
 echo "npm version: $(npm -v)"
@@ -43,12 +23,15 @@ corepack enable pnpm
 echo "pnpm version: $(pnpm -v)"
 
 # fvm
-
 brew tap leoafarias/fvm
 brew install fvm
 
 cd ./jumbotron-flutter
 fvm install
+
+fvm global 3.32.4
+
+flutter doctor
 
 echo
 echo "flutter install success, please install extension of your editor yourself"

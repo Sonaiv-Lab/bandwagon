@@ -7,15 +7,22 @@
   "license": "ISC",
   "scripts": {
     "run:piggyback": "pnpm --filter @bandwagon/piggyback dev",
-    "docker:build:piggyback": "docker build . --target piggyback --tag bandwagon/piggyback:latest",
     "docker:run-local:piggyback": "docker run --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/piggyback",
-    "docker:build:dugout": "docker build . --target dugout --tag bandwagon/dugout:latest",
     "docker:run-local:dugout": "docker run -p 8080:8080 --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/dugout",
+    "docker:build": "./scripts/docker-build.sh", 
+    "docker:build:piggyback": "pnpm docker:build piggyback", 
+    "docker:build:dugout": "pnpm docker:build dugout", 
+    "docker:build:runner": "pnpm docker:build runner", 
+    "docker:build:lineup": "pnpm docker:build lineup", 
+    "docker:push": "./scripts/docker-push.sh", 
+    "docker:push:piggyback": "pnpm docker:push piggyback", 
+    "docker:push:dugout": "pnpm docker:push dugout", 
+    "docker:push:runner": "pnpm docker:push runner", 
+    "docker:push:lineup": "pnpm docker:push lineup", 
     "cert": "mkcert localhost 127.0.0.1"
   },
   "engines": {
     "pnpm": ">=10",
-    "node": ">=22"
-  },
-  "packageManager": "pnpm@10.9.0"
+    "node": "22.15.0"
+  }
 }

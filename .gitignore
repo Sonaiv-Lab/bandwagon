@@ -155,3 +155,16 @@ google-services.json
 GoogleService-Info.plist
 
 .keep
+# moon
+.moon/cache
+.moon/docker
+
+
+# redis
+dump.rdb
+
+
+# terraform
+
+secret.auto.tfvars
+.terraform

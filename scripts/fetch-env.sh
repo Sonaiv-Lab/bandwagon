@@ -1,0 +1,1 @@
+gcloud secrets versions access latest --secret="bandwagon-dev"

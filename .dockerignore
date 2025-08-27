@@ -33,4 +33,5 @@
 **/.local
 **/.log
 LICENSE
+dump.rdb
 README.md

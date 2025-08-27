@@ -8,7 +8,6 @@ const getEnvStringScheme = (name: string) =>
     message: `env prop not defined: ${name}`,
   });
 
-
 /**
   TODO: 參考這個部分  https://github.com/colinhacks/zod/issues/2807#issuecomment-1977406654
   在使用 zod 時以 type 為優先，再 implement zod scheme
@@ -21,9 +20,9 @@ export const EnvSchemes = z.object({
   DEPLOY_ENV: z.enum(['local', 'gcp'], {
     message: `env prop not defined: ${'DEPLOY_ENV'}`,
   }),
-  RUNTIME_ENVIRONMENT: z.enum(['node', 'cloud'], {
-    message: `env prop not defined: ${'RUNTIME_ENVIRONMENT'}`,
-  }),
+  // RUNTIME_ENVIRONMENT: z.enum(['node', 'cloud'], {
+  //   message: `env prop not defined: ${'RUNTIME_ENVIRONMENT'}`,
+  // }),
   // NODE_ENV is the initialize environment variable that manual set by scripts or VM config. not in .env file
   NODE_ENV: z.enum(['dev', 'prod'], {
     message: `env prop not defined: ${'NODE_ENV'}`,
