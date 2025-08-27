@@ -1,0 +1,1 @@
+gcloud compute instance-groups managed list-instances spot-regional-mig --region=asia-east1
