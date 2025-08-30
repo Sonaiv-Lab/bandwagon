@@ -1,44 +1,29 @@
 #!/bin/bash
-set -euo pipefail
+set -eo pipefail
 
-gcloud auth configure-docker asia-east1-docker.pkg.dev --quiet
-
-echo $HOME
-cat ~/.docker/config.json
-
-REGISTRY="GCP artifacts"  # e.g., docker.io/username 
-
-# 拿到所有 package 的版本，這裡用相對路徑引用
+# 拿相對路徑
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source $SCRIPT_DIR/get-package-ver.sh
 
-# 改成 multi target 的
+# load env
+source $SCRIPT_DIR/load-env.sh
 
-for TARGET in "$@"; do
-  if [ "$TARGET" = "dugout" ]; then
-    VERSION=$DUGOUT_VERSION
-  elif [ "$TARGET" = "piggyback" ]; then
-    VERSION=$PIGGYBACK_VERSION
-  elif [ "$TARGET" = "runner" ]; then
-    VERSION=$SCOUT_VERSION
-  elif [ "$TARGET" = "lineup" ]; then
-    VERSION=$SCOUT_VERSION
-  else
-    VERSION=""
-     echo "未知 target: $TARGET"
-  fi
+gcloud auth configure-docker $DOCKER_REGISTRY --quiet
+
+for IMAGE in "$@"; do
+  VERSION="$($SCRIPT_DIR/get-package-ver.sh $@)"
+
+  REGISTRY_NAME="$DOCKER_REPO/$IMAGE:$VERSION"
+  IMAGE_NAME="bandwagon/$IMAGE:$VERSION"
+  
+  # echo "start build $IMAGE_NAME"
 
   # source $SCRIPT_DIR/docker-build.sh $TARGET
 
-  IMAGE_NAME="bandwagon/$TARGET:$VERSION"
+  docker tag $IMAGE_NAME $REGISTRY_NAME
 
-  IMAGE_TAG="asia-east1-docker.pkg.dev/bandwagon-457014/bandwagon-dev/$TARGET:$VERSION"
+  echo "Pushing Docker image to GCP artifacts..."
 
-  docker tag $IMAGE_TAG
-
-  echo "Pushing Docker image to $REGISTRY..."
-
-  docker push $IMAGE_TAG
+  docker push $REGISTRY_NAME
 
   echo "Push $IMAGE_NAME Done."
 done
