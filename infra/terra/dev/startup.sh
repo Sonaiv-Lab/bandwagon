@@ -1,22 +1,25 @@
 #!/bin/bash
 
-## init the unbuntu VM for docker environment
+echo "=== startup.sh started at $(date) ===" >> /var/log/startup-script.log
 
-# Update package list and install dependencies
-sudo apt update
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Install Docker
-echo "Installing Docker..."
-# Add Docker's official GPG key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-# Add Docker's APT repository
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-# Install Docker
-sudo apt update
-sudo apt install -y docker-ce
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+# install docker and dependencties
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 # Verify Docker installation
-docker --version
+sudo docker run hello-world
 
 # Optional: Add user to Docker group for non-root access (replace 'your-user' with your username)
 echo "Adding current user to the Docker group..."
@@ -37,7 +40,9 @@ gcloud --version
 echo "Installation completed successfully."
 
 echo "setting docker config"
+# 把目前的 user 加進去 docker
 sudo usermod -aG docker $USER
+# 設定目前的權限
 newgrp docker
 
 
@@ -63,3 +68,33 @@ else
 fi
 
 echo "setting docker config success"
+
+echo "=== pull project start at $(date) ===" >> /var/log/startup-script.log
+
+# 到 opt/scout 建立資料夾
+cd /opt
+# 把 .env 拉下來，但不能放 /opt/bandwagon，會跟 clone 衝突
+sudo gcloud secrets versions access latest --secret="bandwagon-dev" > /opt/.env 
+# 把 repo 拉下來
+
+## 這裡沒有 repo 的 load-env.sh，所以需要用指令讀 .env
+export $(grep -v '^#' /opt/.env | xargs) && git clone "https://oauth2:$GITHUB_REPO_PAT@github.com/Sonaiv-Lab/bandwagon.git"
+
+
+# 改權限
+sudo chown lavi_fang_gmail_com:lavi_fang_gmail_com /opt/bandwagon
+
+# 再把剛剛在外面的 .env 複製過來
+cp /opt/.env /opt/bandwagon/.env 
+
+echo "=== run project start at $(date) ===" >> /var/log/startup-script.log
+
+# === 這裡開始就有 repo 了 ===
+
+cd /opt/bandwagon
+
+./scripts/docker-pull.sh
+
+./scripts/docker-run.sh
+
+echo "=== startup.sh finished at $(date) ===" >> /var/log/startup-script.log
