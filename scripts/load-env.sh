@@ -5,6 +5,10 @@ ENV_FILE=./.env
 
 echo "use .env file from $(realpath $ENV_FILE)"
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+source $SCRIPT_DIR/env-setup.sh
+
 if [ -f "$ENV_FILE" ]; then
   echo "==== env content start ===="
 
