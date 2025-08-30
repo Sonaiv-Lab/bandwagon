@@ -68,6 +68,7 @@ resource "google_compute_instance_template" "tpl" {
   network_interface {
     network    = "default"
     subnetwork = "default"
+    access_config {}
   }
 
   # 開了這個才會依照 IAM 自動幫你登入，才能直接在 VM 使用 GCS
