@@ -7,8 +7,20 @@ export DUGOUT_VERSION=$(node -p "require('./dugout/package.json').version")
 export SCOUT_VERSION=$(node -p "require('./scout/package.json').version")
 
 
+
+is_sourced() {
+  # 比較 $0 和 ${BASH_SOURCE[0]}，確認是被 source 還是直接使用
+  [[ "${BASH_SOURCE[0]}" != "${0}" ]]
+}
+
 if [ -z "$1" ]; then
-  exit 1
+  # 如果被 source 需要用 return
+  if is_sourced; then
+    return 0
+  # 如果被直接使用，用 exit
+  else
+    exit 0
+  fi
 fi
 
 VERSION=""

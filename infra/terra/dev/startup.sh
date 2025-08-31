@@ -69,32 +69,68 @@ fi
 
 echo "setting docker config success"
 
+echo "=== set permission start at $(date) ===" >> /var/log/startup-script.log
+
+## 設定權限相關指令
+GROUP=deploy
+DIR=/opt/bandwagon
+USERS=("lavi_fang_gmail_com")
+DOCKER_USERS=("lavi_fang_gmail_com")
+
+# 建立群組
+getent group "$GROUP" >/dev/null || groupadd "$GROUP"
+
+
+# 建立資料夾, -m 設定權限：包含 setgit 2 + 775 , -0 設定 owner, -g 設定 group
+install -d -m 2775 -o root -g deploy $DIR
+
+# 這個會在 /etc/profile.d 裡面新增一個 umask_deploy.sh，內容是 umask 002，umask 002 會讓該 session 建立的檔案都是一樣的權限：file = 666 - 002 = 644, dir = 777 - 002 = 775
+grep -q 'umask 002' /etc/profile.d/umask_deploy.sh 2>/dev/null || echo 'umask 002' > /etc/profile.d/umask_deploy.sh
+
+# 自己也要執行
+umask 002
+
+# 4) 把需要的人加到 deploy 群組（root 不需要）
+
+for u in "${USERS[@]}"; do
+  id "$u" &>/dev/null && usermod -aG "$GROUP" "$u" || true
+done
+
+# 5) 把需要的人加到 docker 群組（root 不需要）
+if getent group docker >/dev/null; then
+  for u in "${DOCKER_USERS[@]}"; do
+    if id "$u" &>/dev/null; then
+      usermod -aG docker "$u"
+    fi
+  done
+fi
+
+# 設定完成
+echo "[OK] single-group sharing ready at $DIR"
+ls -ld "$DIR"
+
 echo "=== pull project start at $(date) ===" >> /var/log/startup-script.log
 
-# 到 opt/scout 建立資料夾
-cd /opt
 # 把 .env 拉下來，但不能放 /opt/bandwagon，會跟 clone 衝突
-sudo gcloud secrets versions access latest --secret="bandwagon-dev" > /opt/.env 
+sudo gcloud secrets versions access latest --secret="bandwagon-dev" > $DIR/.env 
 # 把 repo 拉下來
 
+DESTINATION=$DIR/bandwagon
+
 ## 這裡沒有 repo 的 load-env.sh，所以需要用指令讀 .env
-export $(grep -v '^#' /opt/.env | xargs) && git clone "https://oauth2:$GITHUB_REPO_PAT@github.com/Sonaiv-Lab/bandwagon.git"
+export $(grep -v '^#' $DIR/.env  | xargs) && git clone "https://oauth2:$GITHUB_REPO_PAT@github.com/Sonaiv-Lab/bandwagon.git" $DESTINATION
 
-
-# 改權限
-sudo chown lavi_fang_gmail_com:lavi_fang_gmail_com /opt/bandwagon
 
 # 再把剛剛在外面的 .env 複製過來
-cp /opt/.env /opt/bandwagon/.env 
+cp $DIR/.env $DESTINATION/.env
+
 
 echo "=== run project start at $(date) ===" >> /var/log/startup-script.log
-
 # === 這裡開始就有 repo 了 ===
 
-cd /opt/bandwagon
+cd $DESTINATION
 
-./scripts/docker-pull.sh
-
-./scripts/docker-run.sh
+./scripts/docker-pull.sh lineup
+./scripts/docker-run.sh lineup
 
 echo "=== startup.sh finished at $(date) ===" >> /var/log/startup-script.log
