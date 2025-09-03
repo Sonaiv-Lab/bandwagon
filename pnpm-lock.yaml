@@ -21,8 +21,8 @@ importers:
         specifier: ^6.0.1
         version: 6.1.0
       '@hono/node-server':
-        specifier: ^1.14.1
-        version: 1.19.0(hono@4.9.4)
+        specifier: 1.19.1
+        version: 1.19.1(hono@4.7.8)
       dotenv:
         specifier: ^16.5.0
         version: 16.6.1
@@ -37,7 +37,7 @@ importers:
         version: 9.15.1
       hono:
         specifier: ^4.7.8
-        version: 4.9.4
+        version: 4.7.8
       luxon:
         specifier: '^3.6.1 '
         version: 3.7.1
@@ -206,8 +206,8 @@ importers:
         specifier: ^6.0.1
         version: 6.1.0
       '@hono/node-server':
-        specifier: 1.14.1
-        version: 1.14.1(hono@4.7.8)
+        specifier: 1.19.1
+        version: 1.19.1(hono@4.7.8)
       commander:
         specifier: ^13.1.0
         version: 13.1.0
@@ -240,7 +240,7 @@ importers:
         version: 1.55.0
       undici:
         specifier: ^7.8.0
-        version: 7.15.0
+        version: 7.8.0
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -278,6 +278,9 @@ importers:
       '@google-cloud/secret-manager':
         specifier: ^6.0.1
         version: 6.1.0
+      '@hono/node-server':
+        specifier: 1.19.1
+        version: 1.19.1(hono@4.7.8)
       bullmq:
         specifier: ^5.58.0
         version: 5.58.2
@@ -295,7 +298,7 @@ importers:
         version: 9.15.1
       hono:
         specifier: ^4.7.8
-        version: 4.9.4
+        version: 4.7.8
       ioredis:
         specifier: ^5.7.0
         version: 5.7.0
@@ -307,7 +310,7 @@ importers:
         version: 1.55.0
       undici:
         specifier: ^7.8.0
-        version: 7.15.0
+        version: 7.8.0
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -1588,14 +1591,8 @@ packages:
   '@hapi/topo@5.1.0':
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
 
-  '@hono/node-server@1.14.1':
-    resolution: {integrity: sha512-vmbuM+HPinjWzPe7FFPWMMQMsbKE9gDPhaH0FFdqbGpkT5lp++tcWDTxwBl5EgS5y6JVgIaCdjeHRfQ4XRBRjQ==}
-    engines: {node: '>=18.14.1'}
-    peerDependencies:
-      hono: ^4
-
-  '@hono/node-server@1.19.0':
-    resolution: {integrity: sha512-1k8/8OHf5VIymJEcJyVksFpT+AQ5euY0VA5hUkCnlKpD4mr8FSbvXaHblxeTTEr90OaqWzAkQaqD80qHZQKxBA==}
+  '@hono/node-server@1.19.1':
+    resolution: {integrity: sha512-h44e5s+ByUriaRIbeS/C74O8v90m0A95luyYQGMF7KEn96KkYMXO7bZAwombzTpjQTU4e0TkU8U1WBIXlwuwtA==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
@@ -3731,10 +3728,6 @@ packages:
     resolution: {integrity: sha512-PCibtFdxa7/Ldud9yddl1G81GjYaeMYYTq4ywSaNsYbB1Lug4mwtOMJf2WXykL0pntYwmpRJeOI3NmoDgD+Jxw==}
     engines: {node: '>=16.9.0'}
 
-  hono@4.9.4:
-    resolution: {integrity: sha512-61hl6MF6ojTl/8QSRu5ran6GXt+6zsngIUN95KzF5v5UjiX/xnrLR358BNRawwIRO49JwUqJqQe3Rb2v559R8Q==}
-    engines: {node: '>=16.9.0'}
-
   html-entities@2.6.0:
     resolution: {integrity: sha512-kig+rMn/QOVRvr7c86gQ8lWXq+Hkv6CbAH1hLu+RG338StTpE8Z0b44SDVaqVu7HGKf27frdmUYEs9hTUX/cLQ==}
 
@@ -5597,10 +5590,6 @@ packages:
   undici-types@7.10.0:
     resolution: {integrity: sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag==}
 
-  undici@7.15.0:
-    resolution: {integrity: sha512-7oZJCPvvMvTd0OlqWsIxTuItTpJBpU1tcbVl24FMn3xt3+VSunwUasmfPJRE57oNO1KsZ4PgA1xTdAX4hq8NyQ==}
-    engines: {node: '>=20.18.1'}
-
   undici@7.8.0:
     resolution: {integrity: sha512-vFv1GA99b7eKO1HG/4RPu2Is3FBTWBrmzqzO0mz+rLxN3yXkE4mqRcb8g8fHxzX4blEysrNZLqg5RbJLqX5buA==}
     engines: {node: '>=20.18.1'}
@@ -7189,13 +7178,9 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  '@hono/node-server@1.14.1(hono@4.7.8)':
+  '@hono/node-server@1.19.1(hono@4.7.8)':
     dependencies:
       hono: 4.7.8
-
-  '@hono/node-server@1.19.0(hono@4.9.4)':
-    dependencies:
-      hono: 4.9.4
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
@@ -9930,8 +9915,6 @@ snapshots:
 
   hono@4.7.8: {}
 
-  hono@4.9.4: {}
-
   html-entities@2.6.0: {}
 
   html-escaper@2.0.2: {}
@@ -12250,8 +12233,6 @@ snapshots:
   undici-types@6.21.0: {}
 
   undici-types@7.10.0: {}
-
-  undici@7.15.0: {}
 
   undici@7.8.0: {}
 
