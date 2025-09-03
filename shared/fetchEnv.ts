@@ -3,11 +3,10 @@ import { GoogleAuth } from 'google-auth-library';
 
 import { z, ZodError } from 'zod';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { argv } from 'node:process';
 
 // This should be set in secret manger
 export const envSchema = z.enum(['prod', 'dev'], {
-  message: 'env only pord | dev, set NODE_ENV for these value',
+  message: 'env only prod | dev, set NODE_ENV for these value',
 });
 export const targetPathSchema = z.string({ message: 'invalid path' });
 export const certPathSchema = z.string({ message: 'invalid cert path' });

@@ -20,13 +20,11 @@ export const EnvSchemes = z.object({
   DEPLOY_ENV: z.enum(['local', 'gcp'], {
     message: `env prop not defined: ${'DEPLOY_ENV'}`,
   }),
-  // RUNTIME_ENVIRONMENT: z.enum(['node', 'cloud'], {
-  //   message: `env prop not defined: ${'RUNTIME_ENVIRONMENT'}`,
-  // }),
   // NODE_ENV is the initialize environment variable that manual set by scripts or VM config. not in .env file
   NODE_ENV: z.enum(['dev', 'prod'], {
     message: `env prop not defined: ${'NODE_ENV'}`,
   }),
+  REDIS_HOST: getEnvStringScheme('REDIS_HOST'),
 });
 
 export type Env = z.infer<typeof EnvSchemes>;

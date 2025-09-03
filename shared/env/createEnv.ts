@@ -16,7 +16,7 @@ const createEnv = (env: InputEnv) => {
         }
         const scheme = EnvSchemes.shape[prop];
 
-        const value = env?.[prop];
+        const value = process.env?.[prop] ?? env?.[prop];
         scheme.parse(value);
 
         return value;
