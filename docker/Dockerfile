@@ -30,8 +30,6 @@ FROM base AS piggyback
 COPY --from=build /piggyback /piggyback
 WORKDIR /piggyback
 RUN pnpm pre-playwright
-# CMD [ "tail", "-f", "/dev/null" ]
-# CMD [ "pnpm", "scripts:secret" ]
 CMD [ "pnpm", "start:docker" ]
 
 FROM base AS dugout
@@ -42,16 +40,14 @@ CMD [ "pnpm", "start:docker" ]
 
 
 FROM base AS runner
-# caution!! here only copy the need file, that are in piggyback project directory. 
-# Be careful in using outer utility
+# caution!! here only copy the need file
 COPY --from=build /scout /scout
 WORKDIR /scout
 RUN pnpm pre-playwright
 CMD [ "pnpm", "start:docker:runner" ]
 
 FROM base AS lineup
-# caution!! here only copy the need file, that are in piggyback project directory. 
-# Be careful in using outer utility
+# caution!! here only copy the need file
 COPY --from=build /scout /scout
 WORKDIR /scout
 CMD [ "pnpm", "start:docker:lineup" ]

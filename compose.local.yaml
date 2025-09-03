@@ -12,53 +12,29 @@ x-build-common: &build_common
 
 services:
   dugout:
-    build:
-      <<: *build_common
-      target: dugout
-    image: ${DOCKER_REPO}/dugout:${DUGOUT_VERSION}
     environment:
       NODE_ENV: dev
-      DEPLOY_ENV: gcp
+      DEPLOY_ENV: local
+      REDIS_HOST: redis
     ports: ['80:8080']
-    profiles: ['dugout']
   runner:
-    build:
-      <<: *build_common
-      target: runner
-    image: ${DOCKER_REPO}/runner:${SCOUT_VERSION}
     environment:
       NODE_ENV: dev
-      DEPLOY_ENV: gcp
+      DEPLOY_ENV: local
       REDIS_HOST: redis
-    profiles: ['runner']
-    depends_on:
-      redis:
-        condition: service_healthy
+    volumes:
+      - ./.cert:/.cert
+      - ./scout/.env.local:/scout/.env.local
   lineup:
-    build:
-      <<: *build_common
-      target: lineup
-    image: ${DOCKER_REPO}/lineup:${SCOUT_VERSION}
     environment:
       NODE_ENV: dev
-      DEPLOY_ENV: gcp
+      DEPLOY_ENV: local
       REDIS_HOST: redis
     ports: ['80:8080']
-    profiles: ['lineup']
-    depends_on:
-      redis:
-        condition: service_healthy
-  redis:
-    image: redis
     volumes:
-      - redis-data:/data
+      - ./.cert:/.cert
+      - ./scout/.env.local:/scout/.env.local
+  redis:
+    volumes:
+      - ./.temp/data:/data
       # docker 會管理名為 redis-data 的 volume，會跟 container 的 /data 作掛勾
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    profiles: ['lineup']
-
-volumes:
-  redis-data:
