@@ -61,7 +61,8 @@ resource "google_compute_instance_template" "tpl" {
   disk {
     auto_delete  = true
     boot         = true
-    source_image = "projects/ubuntu-os-cloud/global/images/ubuntu-2410-oracular-amd64-v20250708"
+    # arm, ubuntu, 然後不會什麼東西都沒有
+    source_image = "projects/ubuntu-os-cloud/global/images/ubuntu-2404-noble-amd64-v20250828"
     disk_size_gb = 30
   }
 
