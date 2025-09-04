@@ -19,6 +19,10 @@ app.post('/schedule', async (c) => {
   return c.json(job);
 });
 
+app.get('/ping', (c) => {
+  return c.text('pong');
+});
+
 
 
 async function main() {
