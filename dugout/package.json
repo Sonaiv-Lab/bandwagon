@@ -1,7 +1,7 @@
 {
   "name": "@bandwagon/dugout",
   "project_name": "dugout",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "The ",
   "private": true,
   "packageManager": "pnpm@10.9.0",
