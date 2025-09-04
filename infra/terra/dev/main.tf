@@ -14,9 +14,27 @@ provider "google" {
   region  = var.region
 }
 
+resource "google_compute_firewall" "allow_health_check" {
+  name    = "allow-health-check"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports = ["8888"]
+  }
+
+  source_ranges = [
+    "35.191.0.0/16",
+    "130.211.0.0/22"
+  ]
+
+  target_tags = ["healthz-enabled"]
+}
+
 # 健康檢查，要有這個 MIG 才會幫你 auto healing
 resource "google_compute_health_check" "http" {
   name                = "spot-mig-hc"
+  description = "Health check via http"
   check_interval_sec  = 10
   timeout_sec         = 5
   healthy_threshold   = 2
@@ -24,8 +42,8 @@ resource "google_compute_health_check" "http" {
 
   # 這個是聽 /health 這個 path，所以一定要起一個服務 http 服務
   http_health_check {
-    port_specification = "USE_SERVING_PORT"
     request_path       = "/health"
+    port = 8888
   }
 }
 
@@ -33,6 +51,9 @@ resource "google_compute_health_check" "http" {
 resource "google_compute_instance_template" "tpl" {
   name_prefix  = "spot-mig-tlp-"
   machine_type = "e2-medium"
+
+  # for healthcheck firewall rule
+  tags = ["healthz-enabled"]
 
   service_account {
     # 若未提供 email，就用 Compute Default SA
