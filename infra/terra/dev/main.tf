@@ -99,7 +99,14 @@ resource "google_compute_instance_template" "tpl" {
   }
 
   # 這個是
-  metadata_startup_script = file("${path.module}/startup.sh")
+  # metadata_startup_script = file("${path.module}/startup.sh")
+  metadata_startup_script = templatefile("${path.module}/scripts/startup.sh.tmpl", {
+    setup_gcs = file("${path.module}/scripts/setup_gcs.sh"),
+    setup_docker = file("${path.module}/scripts/setup_docker.sh"),
+    permission = file("${path.module}/scripts/permission.sh"),
+    health_check = file("${path.module}/scripts/health_check.sh"),
+    run_service = file("${path.module}/scripts/run_service.sh"),
+  })
 
   # 這個是指整個 terraform 會先建立新的 instance，然後再把舊的關掉 
   lifecycle {

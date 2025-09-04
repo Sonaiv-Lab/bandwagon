@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -exo pipefail
+
+echo "=== startup.sh started at $(date) ===" | tee -a /var/log/startup-script.log
+
+# 下載一些需要先下載的東西
+echo "=== setup and installation started at $(date) ===" | tee -a /var/log/startup-script.log
+
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg
+
+${setup_gcs}
+${setup_docker}
+
+# 可以讓 google 背景服務自動管理 ssh 的金鑰，如果有 terraform 有設定 os_login 要加上去
+apt-get install -y openssh-server
+systemctl enable --now ssh
+
+
+echo "=== setup and installation ended at $(date) ===" | tee -a /var/log/startup-script.log
+
+# be sued in the scripts below
+DIR=/opt/bandwagon
+
+echo "=== setup permission started at $(date) ===" | tee -a /var/log/startup-script.log
+${permission}
+echo "=== setup permission ended at $(date) ===" | tee -a /var/log/startup-script.log
+
+
+echo "=== setup health_check started at $(date) ===" | tee -a /var/log/startup-script.log
+${health_check}
+echo "=== setup health_check ended at $(date) ===" | tee -a /var/log/startup-script.log
+
+
+echo "=== run_service started at $(date) ===" | tee -a /var/log/startup-script.log
+${run_service}
+echo "=== run_service ended at $(date) ===" | tee -a /var/log/startup-script.log
+
+
+echo "=== startup.sh ended at $(date) ===" | tee -a /var/log/startup-script.log
