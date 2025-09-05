@@ -8,7 +8,8 @@
   "scripts": {
     "run:piggyback": "pnpm --filter @bandwagon/piggyback dev",
     "docker:run-local:piggyback": "docker run --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/piggyback",
-    "docker:run-local:dugout": "docker run -p 8080:8080 --env NODE_ENV=dev -e DEPLOY_ENV=local -e RUNTIME_ENVIRONMENT=node -v ./.cert:/.cert bandwagon/dugout",
+    "docker:run-local:dugout": "./scripts/docker-run.sh -p dugout --local",
+    "docker:run-local:lineup": "./scripts/docker-run.sh -p lineup --local",
     "docker:build": "./scripts/docker-build.sh", 
     "docker:build:piggyback": "pnpm docker:build piggyback", 
     "docker:build:dugout": "pnpm docker:build dugout", 
