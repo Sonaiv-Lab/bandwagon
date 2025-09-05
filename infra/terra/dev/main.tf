@@ -14,6 +14,10 @@ provider "google" {
   region  = var.region
 }
 
+data "google_compute_network" "default" {
+  name = "default"
+}
+
 resource "google_compute_firewall" "allow_health_check" {
   name    = "allow-health-check"
   network = "default"
@@ -119,6 +123,37 @@ resource "google_compute_address" "reserved_internal" {
   subnetwork   = "default"
   address_type = "INTERNAL"
   region       = var.region
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "google_dns_managed_zone" "internal_zone" {
+  name        = "internal-zone"
+  dns_name    = "internal.com."
+  description = "Private DNS for internal services"
+  visibility  = "private"
+
+  private_visibility_config {
+    networks {
+      network_url = data.google_compute_network.default.self_link
+    }
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+# 建立 A record 指向 reserved internal address
+resource "google_dns_record_set" "lineup_service" {
+  name         = "lineup.${google_dns_managed_zone.internal_zone.dns_name}"
+  type         = "A"
+  ttl          = 3600
+  managed_zone = google_dns_managed_zone.internal_zone.name
+
+  rrdatas = [google_compute_address.reserved_internal.address]
 }
 
 resource "google_compute_per_instance_config" "default" {
