@@ -20,30 +20,39 @@ app.post('/schedule', async (c) => {
 });
 
 app.get('/ping', (c) => {
+  console.log('header: ')
+  console.log(c.req.header());
+  
   return c.text('pong');
 });
 
 
 
 async function main() {
-  serve({
-    fetch: app.fetch,
-    port: 8080,
-  },  (info) => {
-    console.info(`Server is running on http://localhost:${info.port}`);
-  });
+  try {
+    serve(
+      {
+        fetch: app.fetch,
+        port: 8080,
+      },
+      (info) => {
+        console.info(`Lineup server is running on http://localhost:${info.port}`);
+      }
+    );
 
-  await unstableQueue.queue.upsertJobScheduler(
-    'daily-schedule',
-    {
-      pattern: '0 0,18,19,20,21,22,23,15,12 * * *',
-    },
-    schedule.createJob({
-      year: '2025',
-      kindCode: 'A',
-    })
-  );
-  
+    await unstableQueue.queue.upsertJobScheduler(
+      'daily-schedule',
+      {
+        pattern: '0 0,18,19,20,21,22,23,15,12 * * *',
+      },
+      schedule.createJob({
+        year: '2025',
+        kindCode: 'A',
+      })
+    );
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 main()
