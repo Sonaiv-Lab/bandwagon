@@ -15,6 +15,7 @@ const getEnvStringScheme = (name: string) =>
 // register the environment variable right here
 export const EnvSchemes = z.object({
   PIGGYBACK_BASE_URL: getEnvStringScheme('PIGGYBACK_BASE_URL'),
+  LINEUP_BASE_URL: getEnvStringScheme('LINEUP_BASE_URL'),
   FIRESTORE_CERT_LOCAL: getEnvStringScheme('FIRESTORE_CERT_LOCAL').optional(),
   FIRESTORE_ID: getEnvStringScheme('FIRESTORE_ID'),
   DEPLOY_ENV: z.enum(['local', 'gcp'], {
