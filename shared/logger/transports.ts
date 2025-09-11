@@ -35,7 +35,7 @@ const createGCPTransport = (env: Env, gcpLoggingConfig: Options) => {
     const cert = getLocalCert(env.FIRESTORE_CERT_LOCAL);
 
     gcpLoggingConfig.credentials = cert;
-    gcpLoggingConfig.projectId = cert.projectId;
+    gcpLoggingConfig.projectId = cert.project_id;
   }
 
   const loggingWinston = new LoggingWinston(gcpLoggingConfig);
