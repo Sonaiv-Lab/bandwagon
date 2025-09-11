@@ -3,8 +3,10 @@ set -eo pipefail
 
 # set project version to ENV variable
 export PIGGYBACK_VERSION=$(node -p "require('./piggyback/package.json').version")
-export DUGOUT_VERSION=$(node -p "require('./dugout/package.json').version")
 export SCOUT_VERSION=$(node -p "require('./scout/package.json').version")
+export LINEUP_VERSION=$(node -p "require('./scout/services/lineup/package.json').version")
+export RUNNER_VERSION=$(node -p "require('./scout/services/runner/package.json').version")
+export DUGOUT_VERSION=$(node -p "require('./scout/services/dugout/package.json').version")
 
 
 
@@ -31,9 +33,9 @@ if [ "$TARGET" = "dugout" ]; then
   elif [ "$TARGET" = "piggyback" ]; then
     VERSION=$PIGGYBACK_VERSION
   elif [ "$TARGET" = "runner" ]; then
-    VERSION=$SCOUT_VERSION
+    VERSION=$RUNNER_VERSION
   elif [ "$TARGET" = "lineup" ]; then
-    VERSION=$SCOUT_VERSION
+    VERSION=$LINEUP_VERSION
   fi
 
 # 外面也可用 stdout 接
