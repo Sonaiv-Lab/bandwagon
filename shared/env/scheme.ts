@@ -8,6 +8,17 @@ const getEnvStringScheme = (name: string) =>
     message: `env prop not defined: ${name}`,
   });
 
+const getEnvNumberScheme = (name: string) => {
+  return z
+    .string({ message: `env prop not defined: ${name}` })
+    .regex(/^\d+$/, {
+      message: `env prop is not valid number: ${name}`,
+    })
+    .transform((input) => {
+      return Number(input);
+    });
+};
+
 /**
   TODO: 參考這個部分  https://github.com/colinhacks/zod/issues/2807#issuecomment-1977406654
   在使用 zod 時以 type 為優先，再 implement zod scheme
@@ -26,6 +37,8 @@ export const EnvSchemes = z.object({
     message: `env prop not defined: ${'NODE_ENV'}`,
   }),
   REDIS_HOST: getEnvStringScheme('REDIS_HOST'),
+  DUGOUT_PORT: getEnvNumberScheme('DUGOUT_PORT'),
+  LINEUP_PORT: getEnvNumberScheme('LINEUP_PORT'),
 });
 
 export type Env = z.infer<typeof EnvSchemes>;
