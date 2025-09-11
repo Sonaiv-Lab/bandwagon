@@ -1,6 +1,7 @@
 import { getUnstableQueue } from "./utils";
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server'
+import env from '#shared/runtime/env';
 import * as schedule from "#domains/cpblRequest/resources/schedule";
 
 const unstableQueue = getUnstableQueue();
@@ -33,10 +34,12 @@ async function main() {
     serve(
       {
         fetch: app.fetch,
-        port: 8080,
+        port: env?.LINEUP_PORT ?? 8080,
       },
       (info) => {
-        console.info(`Lineup server is running on http://localhost:${info.port}`);
+        console.info(
+          `Lineup server is running on http://localhost:${info.port}`
+        );
       }
     );
 
@@ -44,7 +47,7 @@ async function main() {
       'daily-schedule',
       {
         pattern: '0 0,18,19,20,21,22,23,15,12 * * *',
-      },
+    },
       schedule.createJob({
         year: '2025',
         kindCode: 'A',
