@@ -37,8 +37,8 @@ export const EnvSchemes = z.object({
     message: `env prop not defined: ${'NODE_ENV'}`,
   }),
   REDIS_HOST: getEnvStringScheme('REDIS_HOST'),
-  DUGOUT_PORT: getEnvNumberScheme('DUGOUT_PORT'),
-  LINEUP_PORT: getEnvNumberScheme('LINEUP_PORT'),
+  DUGOUT_PORT: getEnvNumberScheme('DUGOUT_PORT').optional(),
+  LINEUP_PORT: getEnvNumberScheme('LINEUP_PORT').optional(),
 });
 
 export type Env = z.infer<typeof EnvSchemes>;

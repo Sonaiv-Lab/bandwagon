@@ -33,10 +33,10 @@ RUN pnpm pre-playwright
 CMD [ "pnpm", "start:docker" ]
 
 FROM base AS dugout
-COPY --from=build /dugout /dugout
-WORKDIR /dugout
+COPY --from=build /scout /scout
+WORKDIR /scout
 EXPOSE 8080
-CMD [ "pnpm", "start:docker" ]
+CMD [ "pnpm", "start:docker:dugout" ]
 
 
 FROM base AS runner

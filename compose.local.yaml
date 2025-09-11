@@ -17,6 +17,9 @@ services:
       DEPLOY_ENV: local
       REDIS_HOST: redis
     ports: ['80:8080']
+    volumes:
+      - ./.cert:/.cert
+      - ./scout/.env.local:/scout/.env.local
   runner:
     environment:
       NODE_ENV: dev

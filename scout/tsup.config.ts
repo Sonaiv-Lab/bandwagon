@@ -7,7 +7,7 @@ import { defineConfig } from 'tsup'
 */
 export default defineConfig({
   name: 'scout:node',
-  noExternal: ['@bandwagon'],
+  noExternal: ['@bandwagon', 'fp-ts'],
   target: 'node20',
   format: 'esm',
   platform: 'node',
