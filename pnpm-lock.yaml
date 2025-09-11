@@ -22,7 +22,7 @@ importers:
         version: 6.1.0
       '@hono/node-server':
         specifier: 1.19.1
-        version: 1.19.1(hono@4.9.6)
+        version: 1.19.1(hono@4.7.8)
       dotenv:
         specifier: ^16.5.0
         version: 16.6.1
@@ -37,7 +37,7 @@ importers:
         version: 9.15.1
       hono:
         specifier: ^4.7.8
-        version: 4.9.6
+        version: 4.7.8
       luxon:
         specifier: '^3.6.1 '
         version: 3.7.2
@@ -240,7 +240,7 @@ importers:
         version: 1.55.0
       undici:
         specifier: ^7.8.0
-        version: 7.16.0
+        version: 7.8.0
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -280,7 +280,7 @@ importers:
         version: 6.1.0
       '@hono/node-server':
         specifier: 1.19.1
-        version: 1.19.1(hono@4.9.6)
+        version: 1.19.1(hono@4.7.8)
       bullmq:
         specifier: ^5.58.0
         version: 5.58.5
@@ -293,12 +293,15 @@ importers:
       firebase-admin:
         specifier: ^13.2.0
         version: 13.5.0
+      fp-ts:
+        specifier: ^2.16.11
+        version: 2.16.11
       google-auth-library:
         specifier: ^9.15.1
         version: 9.15.1
       hono:
         specifier: ^4.7.8
-        version: 4.9.6
+        version: 4.7.8
       ioredis:
         specifier: ^5.7.0
         version: 5.7.0
@@ -310,7 +313,7 @@ importers:
         version: 1.55.0
       undici:
         specifier: ^7.8.0
-        version: 7.16.0
+        version: 7.8.0
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -3736,10 +3739,6 @@ packages:
     resolution: {integrity: sha512-PCibtFdxa7/Ldud9yddl1G81GjYaeMYYTq4ywSaNsYbB1Lug4mwtOMJf2WXykL0pntYwmpRJeOI3NmoDgD+Jxw==}
     engines: {node: '>=16.9.0'}
 
-  hono@4.9.6:
-    resolution: {integrity: sha512-doVjXhSFvYZ7y0dNokjwwSahcrAfdz+/BCLvAMa/vHLzjj8+CFyV5xteThGUsKdkaasgN+gF2mUxao+SGLpUeA==}
-    engines: {node: '>=16.9.0'}
-
   html-entities@2.6.0:
     resolution: {integrity: sha512-kig+rMn/QOVRvr7c86gQ8lWXq+Hkv6CbAH1hLu+RG338StTpE8Z0b44SDVaqVu7HGKf27frdmUYEs9hTUX/cLQ==}
 
@@ -5602,10 +5601,6 @@ packages:
   undici-types@7.10.0:
     resolution: {integrity: sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag==}
 
-  undici@7.16.0:
-    resolution: {integrity: sha512-QEg3HPMll0o3t2ourKwOeUAZ159Kn9mx5pnzHRQO8+Wixmh88YdZRiIwat0iNzNNXn0yoEtXJqFpyW7eM8BV7g==}
-    engines: {node: '>=20.18.1'}
-
   undici@7.8.0:
     resolution: {integrity: sha512-vFv1GA99b7eKO1HG/4RPu2Is3FBTWBrmzqzO0mz+rLxN3yXkE4mqRcb8g8fHxzX4blEysrNZLqg5RbJLqX5buA==}
     engines: {node: '>=20.18.1'}
@@ -7193,10 +7188,6 @@ snapshots:
     dependencies:
       hono: 4.7.8
 
-  '@hono/node-server@1.19.1(hono@4.9.6)':
-    dependencies:
-      hono: 4.9.6
-
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -7826,9 +7817,7 @@ snapshots:
       metro-runtime: 0.82.3
     transitivePeerDependencies:
       - '@babel/core'
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   '@react-native/normalize-colors@0.79.2': {}
 
@@ -9949,8 +9938,6 @@ snapshots:
       react-is: 16.13.1
 
   hono@4.7.8: {}
-
-  hono@4.9.6: {}
 
   html-entities@2.6.0: {}
 
@@ -12270,8 +12257,6 @@ snapshots:
   undici-types@6.21.0: {}
 
   undici-types@7.10.0: {}
-
-  undici@7.16.0: {}
 
   undici@7.8.0: {}
 
