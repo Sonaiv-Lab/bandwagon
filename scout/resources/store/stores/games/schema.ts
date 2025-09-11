@@ -13,8 +13,6 @@ import type { GamePlay, Game } from '#shared/model/game';
 import { DateTime } from 'luxon';
 import {
   Timestamp,
-  ServerTimestamp,
-  getServerTimestamp,
 } from '#shared/external/firestore';
 
 
@@ -82,19 +80,19 @@ export const gameDataSchema = z
   })
   .required({ id: true }) satisfies SchemaFromInterface<GameStore>;
 
-const gamePlayDocSchema = z
-  .object({
-    ...gamePlayDataSchema.shape,
-    createdAt: z.instanceof(Timestamp),
-    updatedAt: z.instanceof(Timestamp),
-  })
-  .transform((play) => {
-    return {
-      ...play,
-      createdAt: fsTimestampToDt(play.createdAt),
-      updatedAt: fsTimestampToDt(play.createdAt),
-    };
-  });
+const gamePlayDocSchema = z.object({
+  ...gamePlayDataSchema.shape,
+  createdAt: z.instanceof(Timestamp),
+  updatedAt: z.instanceof(Timestamp),
+});
+
+const gamePlayDocSchemaTransformed = gamePlayDocSchema.transform((play) => {
+  return {
+    ...play,
+    createdAt: fsTimestampToDt(play.createdAt),
+    updatedAt: fsTimestampToDt(play.createdAt),
+  };
+});
 
 export const gameDocSchema = z.object({
   ...gameDataSchema.shape,
@@ -103,6 +101,12 @@ export const gameDocSchema = z.object({
   }),
   createdAt: z.instanceof(Timestamp),
   updatedAt: z.instanceof(Timestamp),
+})
+
+export const gameDocSchemaTransformed = gameDocSchema.extend({
+  plays: z.record(z.string().regex(/^\d+$/), gamePlayDocSchemaTransformed).transform((map) => {
+    return Object.values(map);
+  }),
 }).transform((game) => {
   return {
     ...game,

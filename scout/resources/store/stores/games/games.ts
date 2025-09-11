@@ -1,15 +1,17 @@
-import { Firestore, getServerTimestamp } from '#shared/external/firestore';
+import {
+  Firestore,
+  getServerTimestamp,
+  Timestamp,
+} from '#shared/external/firestore';
 import {
   gameDataSchema,
   GameStore,
-  GameDocument,
-  GamePlayStore,
-  gameDocSchema
+  gameDocSchema,
+  gameDocSchemaTransformed
 } from './schema';
 import resourceJson from './games.resource.json';
 import { createFsMapFromArr, DeepPartial, GameId } from '#shared/utils/types';
 
-// 既然都是一個 docuemnt...那就一起更新吧，這裡的 upsert 應該要以 Document
 
 // plan 階段要排序，這個階段不保證資料正確性
 const COLLECTION_NAME = resourceJson.metadata.config.collectionName;
@@ -20,13 +22,11 @@ async function upsertGame(store: Firestore, gameDocument: GameStore) {
   });
 
   const { id } = gameDocument;
-
   const doc = store.collection(COLLECTION_NAME).doc(id);
-  const docRef = await doc.get();
+  
+  const prevGame = await getGame(store, id, { metaRaw: true });
 
-  const isExist = docRef.exists;
-
-  if (!isExist) {
+  if (!prevGame) {
     const plays = validGameDocument.plays.map((play) => {
       return {
         ...play,
@@ -45,45 +45,59 @@ async function upsertGame(store: Firestore, gameDocument: GameStore) {
     return await doc.set(newDoc);
   }
 
+  // 這裡也要做 createdAt 的 merge
   const plays = validGameDocument.plays.map((play) => {
+    const prevPlay = (prevGame?.plays ?? []).find(
+      (existedPlay) => play.id === existedPlay.id
+    );
+
+    // 這裡有問題
+    if (prevPlay) {
+      return {
+        ...prevPlay,
+        ...play,
+        updatedAt: getServerTimestamp(),
+      };
+    }
+
     return {
       ...play,
       updatedAt: getServerTimestamp(),
+      createdAt: getServerTimestamp(),
     };
   });
 
-  type A  = GameDocument['plays']
-
-  const playsMap = createFsMapFromArr(plays)
+  const playsMap = createFsMapFromArr(plays);
 
   const newDoc = {
+    ...prevGame,
     ...validGameDocument,
     plays: playsMap,
     updatedAt: getServerTimestamp(),
   };
 
-  const res = await doc.set(newDoc, { merge: true });
 
-  console.log('upsertGame:res', res);
-  
+  const res = await doc.set(newDoc);
 }
 
-async function getGame(store: Firestore, id: GameId) {
+async function getGame(
+  store: Firestore,
+  id: GameId,
+  // metaData 不轉換格式，目前主要是 createAt, updatedAt 的 timestamp
+  options?: { metaRaw: boolean }
+) {
   const gameRef = store.collection(COLLECTION_NAME).doc(id);
-  // const gameRef = store.collection(COLLECTION_NAME).doc(id);
   const doc = await gameRef.get();
-
-  console.log(doc);
 
   if (!doc.exists) {
     return;
   }
 
-  const data  = doc.data();
+  const data = doc.data();
 
-  console.log('data', data);
-  
-  const validData = gameDocSchema.parse(data);
+  const validData = options?.metaRaw
+    ? gameDocSchema.parse(data)
+    : gameDocSchemaTransformed.parse(data);
 
   return validData;
 }
