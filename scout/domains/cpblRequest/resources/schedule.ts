@@ -84,11 +84,7 @@ const processor: CPBLRequestProcessor<Payload> = async (
   
     const res = await Promise.allSettled(executions);
 
-    console.log(res);
-    
-  
     return res
-
   } catch (err) {
     throw err
   }

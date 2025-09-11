@@ -1,2 +1,2 @@
 export type { GameStore as GameDocument } from './schema';
-export { GameStore } from './games.resource';
+export { getGame, upsertGame } from './games.resource';

@@ -23,8 +23,10 @@ export const metadata: StoreMetadata = {
   },
 };
 
-// 必須要有這個
-export const GameStore = new Resource(
-  info as ResourceInfo<StoreMetadata>,
-  entry
-);
+// 先直接使用，不使用 resource 概念，之後架構穩定再處理
+// export const GameStore = new Resource(
+//   info as ResourceInfo<StoreMetadata>,
+//   entry
+// );
+
+export { upsertGame, getGame } from './games'

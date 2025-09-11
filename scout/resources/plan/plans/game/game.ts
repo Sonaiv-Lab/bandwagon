@@ -1,12 +1,8 @@
 import {
   Firestore,
-  getFirestore,
-  toFirestoreTimestamp,
 } from '#shared/external/firestore';
-import { getServerTimestamp } from '#shared/external/firestore';
-import { GameDocument, GameStore } from '#resources/store/stores/games';
+import { GameDocument, getGame, upsertGame } from '#resources/store/stores/games';
 import { GameInfo, GamePlayInfo } from '#shared/model/game';
-import resourceJson from './game.resource.json';
 import {
   assembleGameId,
   assembleGamePlayId,
@@ -15,10 +11,6 @@ import {
   GamePlayIdParts,
 } from '#shared/utils/types';
 import { DateTime } from 'luxon';
-
-const { getGame, upsertGame } = GameStore.use;
-
-const GAME_COLLECTION = resourceJson.metadata.config.collections.game;
 
 const useChangeNotify = <T>(base: T, incoming: T) => {
   if (String(base) !== String(incoming)) {
