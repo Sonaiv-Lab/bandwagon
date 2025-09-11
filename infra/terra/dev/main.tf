@@ -20,7 +20,7 @@ data "google_compute_network" "default" {
 
 resource "google_compute_firewall" "allow_health_check" {
   name    = "allow-health-check"
-  network = "default"
+  network = data.google_compute_network.default.self_link
 
   allow {
     protocol = "tcp"
@@ -105,7 +105,7 @@ resource "google_compute_instance_template" "tpl" {
   }
 
   network_interface {
-    network    = "default"
+    network = data.google_compute_network.default.self_link
     subnetwork = "default"
     access_config {}
   }
@@ -124,7 +124,7 @@ resource "google_compute_instance_template" "tpl" {
     run_service  = file("${path.module}/scripts/run_service.sh"),
   })
 
-  # 這個是指整個 terraform 會先建立新的 instance，然後再把舊的關掉 
+  # 這個是指整個 terraform 會先建立新的 instance，然後再把舊的關掉。非常重要，不然會有 Error waiting for Deleting Instance Template:
   lifecycle {
     create_before_destroy = true
   }
