@@ -1,1 +1,0 @@
-export type JSONlike = Record<string | number, unknown>
