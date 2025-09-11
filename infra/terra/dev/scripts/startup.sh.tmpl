@@ -29,6 +29,9 @@ echo "=== setup health_check started at $(date) ===" | tee -a /var/log/startup-s
 ${health_check}
 echo "=== setup health_check ended at $(date) ===" | tee -a /var/log/startup-script.log
 
+echo "=== setup setup_disk started at $(date) ===" | tee -a /var/log/startup-script.log
+${setup_disk}
+echo "=== setup setup_disk ended at $(date) ===" | tee -a /var/log/startup-script.log
 
 echo "=== run_service started at $(date) ===" | tee -a /var/log/startup-script.log
 ${run_service}

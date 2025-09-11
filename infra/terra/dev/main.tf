@@ -52,6 +52,18 @@ resource "google_compute_health_check" "http" {
   }
 }
 
+resource "google_compute_disk" "data" {
+  name  = "core-data-disk"
+  zone  = var.zone
+  type  = "pd-ssd"
+  size  = 50
+
+  # 關鍵：避免 terraform destroy 直接把它刪掉
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 
 resource "google_compute_instance_template" "tpl" {
   name_prefix  = "spot-mig-tlp-"
@@ -108,6 +120,7 @@ resource "google_compute_instance_template" "tpl" {
     setup_docker = file("${path.module}/scripts/setup_docker.sh"),
     permission   = file("${path.module}/scripts/permission.sh"),
     health_check = file("${path.module}/scripts/health_check.sh"),
+    setup_disk   = file("${path.module}/scripts/setup_disk.sh"),
     run_service  = file("${path.module}/scripts/run_service.sh"),
   })
 
@@ -167,6 +180,12 @@ resource "google_compute_per_instance_config" "default" {
       ip_address {
         address = google_compute_address.reserved_internal.id
       }
+    }
+
+    disk {
+    device_name = google_compute_disk.data.name
+    source      = google_compute_disk.data.id
+    delete_rule = "NEVER" # 重要：永不自動刪此資料碟
     }
   }
 }

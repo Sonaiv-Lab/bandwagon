@@ -19,6 +19,8 @@ TEMP_ENV=$WORKING_DIR/.env
 # 建立 ENV 暫存檔
 sudo gcloud secrets versions access latest --secret="bandwagon-dev" > $TEMP_ENV
 
+git config credential.helper store
+
 if [ ! -d "$REPO_DIR" ] ; then
   rm -rf "$REPO_DIR"
 
