@@ -25,7 +25,7 @@ services:
     build:
       <<: *build_common
       target: runner
-    image: ${DOCKER_REPO}/runner:${SCOUT_VERSION}
+    image: ${DOCKER_REPO}/runner:${RUNNER_VERSION}
     environment:
       NODE_ENV: dev
       DEPLOY_ENV: gcp
@@ -38,7 +38,7 @@ services:
     build:
       <<: *build_common
       target: lineup
-    image: ${DOCKER_REPO}/lineup:${SCOUT_VERSION}
+    image: ${DOCKER_REPO}/lineup:${LINEUP_VERSION}
     environment:
       NODE_ENV: dev
       DEPLOY_ENV: gcp
