@@ -66,7 +66,7 @@ const processor: CPBLRequestProcessor<Payload> = async (
     const dataText = await fetchFromCpblRequest(job.data);
     const gamesData = NormalizeGameDatas.use(dataText);
   
-    const output = [gamesData[0]]
+    const output = [...gamesData]
   
     const mutations = output.map(({ game, plays }) => {
       return planGameMutation({ game, plays }, store);
