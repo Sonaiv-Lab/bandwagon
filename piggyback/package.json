@@ -41,7 +41,7 @@
     "playwright": "^1.51.1",
     "undici": "^7.8.0",
     "winston": "^3.17.0",
-    "zod": "^4.0.10"
+    "zod": "^4.1.0"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.41.0",
