@@ -39,4 +39,4 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-COMPOSE_PROFILES="$COMPOSE_PROFILES" docker compose pull
+COMPOSE_PROFILES="$COMPOSE_PROFILES" docker compose pull "$@"
