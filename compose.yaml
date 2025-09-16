@@ -52,7 +52,7 @@ services:
     image: redis:7
     volumes:
       - ./infra/config/redis.conf/:/usr/local/etc/redis/redis.conf
-      - redis-data:/mnt/data/redis
+      - /mnt/data/redis:/data
       # docker 會管理名為 redis-data 的 volume，會跟 container 的 /data 作掛勾
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
