@@ -50,7 +50,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-if [ $PULL == 1]; then
+if [ $PULL == 1 ]; then
   COMPOSE_PROFILES="$COMPOSE_PROFILES" docker compose pull
 fi
 
