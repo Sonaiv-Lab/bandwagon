@@ -169,6 +169,8 @@ resource "google_dns_record_set" "lineup_service" {
   rrdatas = [google_compute_address.reserved_internal.address]
 }
 
+# TODO
+# 這裡有問題，當下 terraform apply 時會出現 cant modified 的錯誤，直到 vm 被完整刪掉之後再 apply 一次才會成功
 resource "google_compute_per_instance_config" "default" {
   instance_group_manager = google_compute_instance_group_manager.mig.name
   zone                   = var.zone
