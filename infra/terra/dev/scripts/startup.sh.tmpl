@@ -2,6 +2,12 @@
 
 set -exo pipefail
 
+# 把 start-script 的 log 也弄一份下來
+exec > >(tee -a /var/log/startup.log) 2>&1
+
+# 在 GCE 的 startup-script 預設是 root 執行<，補上 HOME 避免問題
+export HOME=/root
+
 echo "=== startup.sh started at $(date) ===" | tee -a /var/log/startup-script.log
 
 # 下載一些需要先下載的東西
