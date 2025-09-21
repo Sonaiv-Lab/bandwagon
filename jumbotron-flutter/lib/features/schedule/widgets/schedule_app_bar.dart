@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:bandwagon/features/schedule/utils.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
-import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
+import 'package:bandwagon/shared/data/v1/schedule_tree.dart';
 
 class _ScheduleAppBar extends StatelessWidget {
   const _ScheduleAppBar({

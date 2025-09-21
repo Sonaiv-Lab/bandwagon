@@ -1,7 +1,8 @@
 import 'package:bandwagon/features/schedule/widgets/calendar/game_bottom_sheet/game_bottom_sheet.dart';
 import 'package:bandwagon/features/schedule/widgets/calendar/game_chips.dart';
-import 'package:bandwagon/shared/constants/game.dart';
-import 'package:bandwagon/shared/models/game_summary/game_summary.dart';
+import 'package:bandwagon/shared/models/v1/summary/summary.dart'
+    as game_summary_v1;
+
 import 'package:bandwagon/shared/utils/by_game_result.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
 import 'package:bandwagon/shared/utils/time.dart';
@@ -15,7 +16,8 @@ import 'package:collection/collection.dart';
 
 import 'package:bandwagon/shared/data/team_info_map.dart';
 import 'package:bandwagon/shared/data/field_info_map.dart';
-import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
+import 'package:bandwagon/shared/data/v1/schedule_tree.dart'
+    as schedule_tree_v1;
 
 class DateLabel extends StatelessWidget {
   const DateLabel(this.text, {super.key});
@@ -40,7 +42,9 @@ class Calendar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scheduleTree = resolveAsyncValue(ref.watch(scheduleTreeProvider));
+    final scheduleTreeV1 = resolveAsyncValue(
+      ref.watch(schedule_tree_v1.scheduleTreeProvider),
+    );
 
     final displayStart = Jiffy.parseFromDateTime(from).startOf(Unit.week);
     final displayEnd = Jiffy.parseFromDateTime(to).endOf(Unit.week);
@@ -64,9 +68,12 @@ class Calendar extends HookConsumerWidget {
         isExpanded: true,
         isLastRow: weekIndex + 1 >= datesIndex.length,
         children: weekIndexes.map((int dayIndex) {
-          final (_, data, error) = scheduleTree;
+          final (_, dataV1, errorV1) = scheduleTreeV1;
 
-          if (data == null) {
+          print('errorV1');
+          print(errorV1);
+
+          if (dataV1 == null) {
             return Container();
           }
 
@@ -109,32 +116,32 @@ class Date extends HookConsumerWidget {
     final (teamInfoMapStatus, teamInfoMap, _) = resolveAsyncValue(
       ref.watch(teamInfoMapProvider),
     );
-    final (scheduleTreeStatus, scheduleTree, _) = resolveAsyncValue(
-      ref.watch(scheduleTreeProvider),
+    final (scheduleTreeStatusV1, scheduleTreeV1, _) = resolveAsyncValue(
+      ref.watch(schedule_tree_v1.scheduleTreeProvider),
     );
 
     final (fieldInfoMapStatus, fieldInfoMap, _) = resolveAsyncValue(
       ref.watch(fieldInfoMapProvider),
     );
 
-    if (teamInfoMap != null && scheduleTree != null && fieldInfoMap != null) {
+    if (teamInfoMap != null && scheduleTreeV1 != null && fieldInfoMap != null) {
       final dateStr = toYYYY_MM_DD(date);
 
-      final games = scheduleTree.datesMap[dateStr] ?? [];
+      final plays = scheduleTreeV1.datesMap[dateStr] ?? [];
 
-      final chips = games.map((game) {
-        final GameSummary(:homeTeamCode, :visitingTeamCode) = game;
+      final chips = plays.map((play) {
+        final game_summary_v1.Summary(:homeTeamCode, :visitingTeamCode) = play;
         final homeTeamInfo = teamInfoMap[homeTeamCode]!;
         final visitingTeamInfo = teamInfoMap[visitingTeamCode]!;
 
         return byGameStatus(
-          game.result,
-          game.isPlayBall,
+          play.result,
+          play.isPlayBall,
           inProgress: OngoingGameChip(
             leftColorHex: visitingTeamInfo.theme.primaryColor,
             rightColorHex: homeTeamInfo.theme.primaryColor,
-            leftScore: game.visitingScore,
-            rightScore: game.homeScore,
+            leftScore: play.visitingScore,
+            rightScore: play.homeScore,
           ),
           pending: PendingGameChip(
             leftColorHex: visitingTeamInfo.theme.primaryColor,
@@ -147,43 +154,43 @@ class Date extends HookConsumerWidget {
           suspended: OngoingGameChip(
             leftColorHex: visitingTeamInfo.theme.subtleColor,
             rightColorHex: homeTeamInfo.theme.subtleColor,
-            leftScore: game.visitingScore,
-            rightScore: game.homeScore,
+            leftScore: play.visitingScore,
+            rightScore: play.homeScore,
           ),
           ended: EndedGameChip(
             leftColorHex: visitingTeamInfo.theme.primaryColor,
             rightColorHex: homeTeamInfo.theme.primaryColor,
-            leftScore: game.visitingScore,
-            rightScore: game.homeScore,
+            leftScore: play.visitingScore,
+            rightScore: play.homeScore,
           ),
         );
       }).toList();
 
-      final modalGameItems = games.map((game) {
-        final GameSummary(:homeTeamCode, :visitingTeamCode) = game;
+      final modalGameItems = plays.map((play) {
+        final game_summary_v1.Summary(:homeTeamCode, :visitingTeamCode) = play;
         final homeTeamInfo = teamInfoMap[homeTeamCode]!;
         final visitingTeamInfo = teamInfoMap[visitingTeamCode]!;
-        final field = fieldInfoMap[game.field]!;
+        final field = fieldInfoMap[play.field]!;
 
         return GameItem(
           onGameItemTap: () {
             GoRouter.of(context).pop();
-            GoRouter.of(context).push('/game/${game.id}');
+            GoRouter.of(context).push('/game/${play.playId}');
           },
-          gameNo: 'No. ${game.gameNo.toString()}',
+          gameNo: 'No. ${play.seriesNo.toString()}',
           fieldName: field.name,
-          isPlayBall: game.isPlayBall,
-          startAt: toH_MM(game.startDatetime),
+          isPlayBall: play.isPlayBall,
+          startAt: toH_MM(play.startDatetime),
           leftPrimaryColorHex: visitingTeamInfo.theme.primaryColor,
           leftSubtleColorHex: visitingTeamInfo.theme.subtleColor,
           leftTeamName: visitingTeamInfo.name,
-          leftScore: game.visitingScore,
+          leftScore: play.visitingScore,
           rightPrimaryColorHex: homeTeamInfo.theme.primaryColor,
           rightSubtleColorHex: homeTeamInfo.theme.subtleColor,
           rightTeamName: homeTeamInfo.name,
-          rightScore: game.homeScore,
-          result: game.result,
-          startDatetime: game.startDatetime,
+          rightScore: play.homeScore,
+          result: play.result,
+          startDatetime: play.startDatetime,
         );
       }).toList();
 

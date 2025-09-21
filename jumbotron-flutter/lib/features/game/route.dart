@@ -11,16 +11,18 @@ final gameRoute = GoRoute(
   },
   routes: [
     GoRoute(
-      path: ':gameId',
+      path: ':playId',
       pageBuilder: (context, GoRouterState state) {
-        final gameId = state.pathParameters['gameId']!;
+        final playId = state.pathParameters['playId']!;
 
         // 如果有資料 => Game PAge
         // 如果沒有資料 => Not Found
 
         // 這裡要拿資料
+
+        // TODO 這裡要改成 Play Screen... 幹有夠麻煩
         return pageBuilderFactory(
-          child: GameScreen(gameId: gameId),
+          child: GameScreen(playId: playId),
           key: state.pageKey,
         );
       },

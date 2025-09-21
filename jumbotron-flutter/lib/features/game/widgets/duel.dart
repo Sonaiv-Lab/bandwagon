@@ -1,7 +1,7 @@
+import 'package:bandwagon/shared/constants/game.dart';
 import 'package:bandwagon/shared/data/field_info_map.dart';
-import 'package:bandwagon/shared/data/game.dart';
+import 'package:bandwagon/shared/data/v1/play.dart';
 import 'package:bandwagon/shared/data/team_info_map.dart';
-import 'package:bandwagon/shared/models/game/game.dart';
 import 'package:bandwagon/shared/utils/by_game_result.dart';
 import 'package:bandwagon/shared/utils/hex_color.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
@@ -118,7 +118,7 @@ class GameInfoLayout extends StatelessWidget {
     this.score,
     required this.fieldName,
     this.statusTag,
-    this.hiddenOnTap
+    this.hiddenOnTap,
   });
 
   final String startTimeStr;
@@ -181,9 +181,14 @@ class GameInfoLayout extends StatelessWidget {
 
 class _Duel extends StatelessWidget {
   const _Duel({
-    required this.game,
+    required this.serialNo,
+    required this.result,
+    required this.isPlayBall,
     required this.fieldName,
+    required this.startDatetime,
+    required this.year,
     required this.leftTeamName,
+    required this.gameKindCodeValue,
     required this.leftTeamColor,
     required this.rightTeamColor,
     required this.rightTeamName,
@@ -193,14 +198,19 @@ class _Duel extends StatelessWidget {
     required this.rightTeamScore,
   });
 
-  final Game game;
-  final String leftTeamName;
+  final bool isPlayBall;
   final Color leftTeamColor;
   final Color rightTeamColor;
-  final String rightTeamName;
-  final String fieldName;
+  final DateTime startDatetime;
+  final GameResult result;
+  final int serialNo;
   final int leftTeamScore;
   final int rightTeamScore;
+  final String year;
+  final String fieldName;
+  final String gameKindCodeValue;
+  final String leftTeamName;
+  final String rightTeamName;
   final Widget leftTeamIcon;
   final Widget rightTeamIcon;
 
@@ -208,17 +218,13 @@ class _Duel extends StatelessWidget {
   Widget build(BuildContext context) {
     final browser = InAppBrowser();
     final url =
-        'https://www.cpbl.com.tw/box?year=${game.year}&kindCode=${game.gameKindCode.value}&gameSno=${game.gameNo}';
+        'https://www.cpbl.com.tw/box?year=${year}&kindCode=${gameKindCodeValue}&gameSno=${serialNo.toString()}';
 
     openGameWeb() {
-      // print(url);
-      browser.openUrl(
-        url,
-      );
+      browser.openUrl(url);
     }
 
-    final startTimeStr = toH_MM(game.startDatetime);
-    final theme = Theme.of(context);
+    final startTimeStr = toH_MM(startDatetime);
 
     final teamLeft = TeamInfo(
       teamIcon: leftTeamIcon,
@@ -233,8 +239,8 @@ class _Duel extends StatelessWidget {
     );
 
     final gameInfo = byGameStatus(
-      game.result,
-      game.isPlayBall,
+      result,
+      isPlayBall,
       inProgress: GameInfoLayout(
         hiddenOnTap: openGameWeb,
         fieldName: fieldName,
@@ -313,14 +319,14 @@ class _Duel extends StatelessWidget {
 }
 
 class Duel extends HookConsumerWidget {
-  const Duel({super.key, required this.gameId});
+  const Duel({super.key, required this.playId});
 
-  final String gameId;
+  final String playId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final (gameStatus, game, _) = resolveAsyncValue(
-      ref.watch(getGameProvider(gameId)),
+    final (playStatus, play, _) = resolveAsyncValue(
+      ref.watch(getPlayProvider(playId)),
     );
 
     final (teamInfoMapStatus, teamInfoMap, _) = resolveAsyncValue(
@@ -330,26 +336,31 @@ class Duel extends HookConsumerWidget {
       ref.watch(fieldInfoMapProvider),
     );
 
-    if (game != null && teamInfoMap != null && fieldInfoMap != null) {
-      final homeTeam = teamInfoMap[game.homeTeamCode]!;
-      final visitingTeam = teamInfoMap[game.visitingTeamCode]!;
-      final field = fieldInfoMap[game.field]!;
+    if (play != null && teamInfoMap != null && fieldInfoMap != null) {
+      final homeTeam = teamInfoMap[play.game.homeTeamCode]!;
+      final visitingTeam = teamInfoMap[play.game.visitingTeamCode]!;
+      final field = fieldInfoMap[play.field]!;
 
       return _Duel(
-        game: game,
+        isPlayBall: play.isPlayBall,
+        year: play.game.year,
+        serialNo: play.game.seriesNo,
         leftTeamName: visitingTeam.name,
+        gameKindCodeValue: play.game.kind.value,
+        result: play.result,
+        startDatetime: play.startDatetime,
         rightTeamName: homeTeam.name,
         leftTeamColor: fromRGBHex(visitingTeam.theme.primaryColor),
         rightTeamColor: fromRGBHex(homeTeam.theme.primaryColor),
         fieldName: field.name,
         leftTeamIcon: SvgPicture.asset(visitingTeam.assets.simplifyIconPath),
         rightTeamIcon: SvgPicture.asset(homeTeam.assets.simplifyIconPath),
-        leftTeamScore: game.visitingScore,
-        rightTeamScore: game.homeScore,
+        leftTeamScore: play.visitingScore,
+        rightTeamScore: play.homeScore,
       );
     }
 
-    if (gameStatus == QueryStatus.loading ||
+    if (playStatus == QueryStatus.loading ||
         teamInfoMapStatus == QueryStatus.loading ||
         fieldInfoMapStatus == QueryStatus.loading) {
       return Center(child: CircularProgressIndicator.adaptive());

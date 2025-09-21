@@ -1,4 +1,4 @@
-import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
+import 'package:bandwagon/shared/data/v1/schedule_tree.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
 import 'package:bandwagon/shared/widgets/custom_refresh_wrapper.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +97,8 @@ class Schedule extends HookConsumerWidget {
     final (status, data, error) = resolveAsyncValue(
       ref.watch(scheduleTreeProvider),
     );
+
+    print(error);
 
     return switch (status) {
       QueryStatus.success => (() {

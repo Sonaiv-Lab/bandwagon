@@ -1,5 +1,5 @@
-import 'package:bandwagon/shared/data/game.dart' show getGameProvider;
-import 'package:bandwagon/shared/data/schedule_tree/schedule_tree.dart';
+import 'package:bandwagon/shared/data/v1/play.dart';
+import 'package:bandwagon/shared/data/v1/schedule_tree.dart';
 import 'package:bandwagon/shared/utils/resolve-async-value.dart';
 import 'package:bandwagon/shared/utils/time.dart';
 import 'package:bandwagon/shared/widgets/custom_appbar.dart';
@@ -28,12 +28,11 @@ class _GameScreenAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomAppBar(
-      leadings: [ IconButton(
-        onPressed: onBackPressed,
-        icon: Icon(Icons.arrow_back),
-      ),
+      leadings: [
+        IconButton(onPressed: onBackPressed, icon: Icon(Icons.arrow_back)),
       ],
-      actions: [IconButton(
+      actions: [
+        IconButton(
           onPressed: onExternalPressed,
           icon: Icon(Icons.open_in_new),
           color: onExternalPressed == null ? Colors.transparent : null,
@@ -72,17 +71,17 @@ class _GameScreenAppBar extends StatelessWidget {
 
 class GameScreenAppBar extends HookConsumerWidget
     implements PreferredSizeWidget {
-  const GameScreenAppBar({super.key, required this.gameId});
+  const GameScreenAppBar({super.key, required this.playId});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
-  final String gameId;
+  final String playId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final (gameStatus, game, _) = resolveAsyncValue(
-      ref.watch(getGameProvider(gameId)),
+    final (playStatus, play, _) = resolveAsyncValue(
+      ref.watch(getPlayProvider(playId)),
     );
 
     final (scheduleTreeStatus, scheduleTree, _) = resolveAsyncValue(
@@ -90,38 +89,38 @@ class GameScreenAppBar extends HookConsumerWidget
     );
 
     final (onPrevPressed, onNextPressed) = (() {
-      if (game == null || scheduleTree == null) {
+      if (play == null || scheduleTree == null) {
         return (null, null);
       }
 
-      final list = scheduleTree.gameListWithDate;
+      final list = scheduleTree.listWithDate;
 
       final index = list.indexWhere((record) {
-        final (_, game) = record;
-        return game.id == gameId;
+        final (_, play) = record;
+        return play.playId == playId;
       });
 
-      void Function()? getToGameByIndex(int index) {
+      void Function()? getToPlayByIndex(int index) {
         if (index >= list.length || index < 0) {
           return null;
         }
         return () {
-          final (_, game) = list[index];
-          GoRouter.of(context).pushReplacement('/game/${game.id}');
+          final (_, play) = list[index];
+          GoRouter.of(context).pushReplacement('/game/${play.playId}');
         };
       }
 
-      return (getToGameByIndex(index - 1), getToGameByIndex(index + 1));
+      return (getToPlayByIndex(index - 1), getToPlayByIndex(index + 1));
     })();
 
     final browser = InAppBrowser();
-    final openGameWeb = game == null ? null : () {
-      final url =
-        'https://www.cpbl.com.tw/box?year=${game?.year}&kindCode=${game.gameKindCode.value}&gameSno=${game.gameNo}';
-            browser.openUrl(
-        url,
-      );
-    };
+    final openGameWeb = play == null
+        ? null
+        : () {
+            final url =
+                'https://www.cpbl.com.tw/box?year=${play.game.year}&kindCode=${play.game.kind.value}&gameSno=${play.game.seriesNo.toString()}';
+            browser.openUrl(url);
+          };
 
     return _GameScreenAppBar(
       onBackPressed: () {
@@ -130,12 +129,12 @@ class GameScreenAppBar extends HookConsumerWidget
       onPrevPressed: onPrevPressed,
       onNextPressed: onNextPressed,
       onExternalPressed: openGameWeb,
-      gameNoStr: game?.gameNo.toString() ?? '---',
+      gameNoStr: play?.game.seriesNo.toString() ?? '---',
       dateStr: (() {
-        if (game == null) {
+        if (play == null) {
           return '';
         }
-        return toYYYY_MM_DD__EEE(game.startDatetime);
+        return toYYYY_MM_DD__EEE(play.startDatetime);
       })(),
     );
   }

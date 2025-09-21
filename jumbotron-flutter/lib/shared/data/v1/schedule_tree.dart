@@ -1,5 +1,5 @@
 import 'package:bandwagon/shared/network/rest.dart';
-import 'package:bandwagon/shared/models/game_summary/game_summary.dart';
+import 'package:bandwagon/shared/models/v1/summary/summary.dart';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,21 +8,21 @@ typedef YYYY = String;
 typedef YYYYMM = String;
 typedef YYYYMMDD = String;
 
-typedef DateTreeMap = Map<YYYYMMDD, List<GameSummary>>;
+typedef DateTreeMap = Map<YYYYMMDD, List<Summary>>;
 typedef MonthTreeMap = Map<YYYYMM, DateTreeMap>;
 typedef YearTreeMap = Map<YYYY, MonthTreeMap>;
 
-typedef GameListWithDate = List<(YYYYMMDD, GameSummary)>;
+typedef ListWithDate = List<(YYYYMMDD, Summary)>;
 
 updateScheduleTree() async {
   await rest.post(
-    '/schedule/tree/update',
+    '/v1/schedule/tree',
     options: Options(receiveTimeout: Duration(seconds: 5)),
   );
 }
 
 Future<ScheduleTree> getScheduleTree() async {
-  final scheduleTreeResponse = await rest.get('/schedule/tree');
+  final scheduleTreeResponse = await rest.get('/v1/schedule/tree');
   final Response(:data) = scheduleTreeResponse;
 
   final scheduleTree = parseScheduleTree(data);
@@ -40,9 +40,12 @@ YearTreeMap parseScheduleTree(dynamic decodeJson) {
   for (final year in decodeJson.entries) {
     final monthMap = year.value;
 
-    // skip it
-
     final MonthTreeMap monthSerializedMap = {};
+
+    assert(
+      monthMap is Map,
+      'Expected monthMap for year ${year.key} to be Map but got ${monthMap.runtimeType}',
+    );
 
     if (monthMap is! Map) continue;
 
@@ -51,15 +54,26 @@ YearTreeMap parseScheduleTree(dynamic decodeJson) {
 
       final DateTreeMap dateSerializedMap = {};
 
+      assert(
+        dateMap is Map,
+        'Expected dateMap for month ${month.key} to be Map but got ${dateMap.runtimeType}',
+      );
+
       if (dateMap is! Map) continue;
 
       for (final date in dateMap.entries) {
         final gameList = date.value;
+
+        assert(
+          gameList is List,
+          'Expected gameList for date ${date.key} to be Map but got ${gameList.runtimeType}',
+        );
+
         if (gameList is! List) continue;
 
-        final List<GameSummary> gameSummaries = gameList
+        final List<Summary> gameSummaries = gameList
             .whereType<Map<String, dynamic>>()
-            .map((data) => GameSummary.fromJson(data))
+            .map((data) => Summary.fromJson(data))
             .toList();
 
         dateSerializedMap[date.key] = gameSummaries;
@@ -108,7 +122,7 @@ class ScheduleTree {
   }
 
   DateTreeMap get datesMap {
-    final Iterable<MapEntry<YYYYMMDD, List<GameSummary>>> dateMapEntries = _data
+    final Iterable<MapEntry<YYYYMMDD, List<Summary>>> dateMapEntries = _data
         .values
         .expand(
           (monthMap) => monthMap.values.expand((dateMap) => dateMap.entries),
@@ -117,17 +131,20 @@ class ScheduleTree {
     return {for (final e in dateMapEntries) e.key: e.value};
   }
 
-  GameListWithDate get gameListWithDate {
-    final datesMap =  this.datesMap;
+  ListWithDate get listWithDate {
+    final datesMap = this.datesMap;
 
-    return datesMap.entries.expand((entry) {
-      return entry.value.map((game) => (entry.key, game));
-    }).toList().sorted((a, b) {
-        final (String dateA, _) = a;
-        final (String dateB, _) = b;
+    return datesMap.entries
+        .expand((entry) {
+          return entry.value.map((game) => (entry.key, game));
+        })
+        .toList()
+        .sorted((a, b) {
+          final (String dateA, _) = a;
+          final (String dateB, _) = b;
 
-        return dateA.compareTo(dateB);
-    });
+          return dateA.compareTo(dateB);
+        });
   }
 }
 
