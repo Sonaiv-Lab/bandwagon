@@ -11,10 +11,15 @@ COMPOSE_PROFILES=$(IFS=,; echo "$*")
 
 LOCAL=0
 COMPOSE_PROFILES=""
+PULL=0
 
 while [ $# -gt 0 ]; do
   # echo "$#"
   case "${1:-}" in
+    --pull) 
+        PULL=1
+        shift
+      ;;
     --local) 
         LOCAL=1
         shift
@@ -44,6 +49,10 @@ while [ $# -gt 0 ]; do
       ;;
   esac
 done
+
+if [ $PULL == 1]; then
+  COMPOSE_PROFILES="$COMPOSE_PROFILES" docker compose pull
+fi
 
 if [ $LOCAL == 1 ]; then
   COMPOSE_PROFILES="$COMPOSE_PROFILES" docker compose -f compose.yaml -f compose.local.yaml up -d "$@"
