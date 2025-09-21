@@ -2,18 +2,29 @@ import { Timestamp } from '@google-cloud/firestore';
 
 export type Branding<Type, Name extends string> = Type & { __brand: Name };
 
-type IsBrand<T> = T extends { __brand: infer _ } ? true : false;
+type IsBrand<T> = [T] extends [{ __brand: infer _ }] ? true : false;
 
-export type IsPlainObject<T> = [T] extends [object]
-  ? [T] extends [Function]
+type Unbrand<T> = T extends infer U & { __brand: any } ? U : T;
+
+type HasNumericIndex<T> = number extends keyof T ? true : false
+
+export type IsPlainObject<T> = [Unbrand<T>] extends [object]
+  ? [Unbrand<T>] extends [Function]
     ? false
     : [T] extends [Array<infer U>]
     ? false
-    : [T] extends [{ [k: number]: infer V }]
-    ? true
-    : T extends Date
+    : // 他媽的這個一定要在前面，因為如果是 branded string，
+    HasNumericIndex<Unbrand<T>> extends true
     ? false
     : IsBrand<T> extends true
+    ? false
+    : T extends
+        | Date
+        | RegExp
+        | Map<any, any>
+        | Set<any>
+        | WeakMap<any, any>
+        | WeakSet<any>
     ? false
     : true
   : false;
@@ -46,6 +57,5 @@ export type DeepPartial<T> = [T] extends [
       [K in keyof T]?: DeepPartial<T[K]>;
     }
   : T;
-
 
 export type JSONlike = Record<string | number, unknown>

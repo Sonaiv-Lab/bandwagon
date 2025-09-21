@@ -4,7 +4,7 @@ import { SchemaMetadata, SchemaResource } from '../../schema';
 import { Resource, ResourceInfo } from '#shared/resource';
 import info from './game.resource.json';
 // @resource: entry import
-import * as entry from './game';
+// import * as entry from './game';
 
 
 // metadata 不能有任何 external reference
@@ -21,7 +21,10 @@ export const metadata: SchemaMetadata = {
 };
 
 // 必須要有這個
-export const GameSchema = new SchemaResource(
-  info as ResourceInfo<SchemaMetadata>,
-  entry
-);
+// export const GameSchema = new SchemaResource(
+//   info as ResourceInfo<SchemaMetadata>,
+//   entry
+// );
+
+
+export * from './game';

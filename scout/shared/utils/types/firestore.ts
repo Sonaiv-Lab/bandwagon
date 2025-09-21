@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { Timestamp, FieldValue } from '@google-cloud/firestore';
+import { ServerTimestamp, FsTimestamp } from '#shared/external/firestore';
 import type { IsPlainObject, Branding } from './types';
+import { DatetimeString } from './time';
 
 type FsMap<T> = Branding<Record<number, T>, 'firestore_map'>;
 
@@ -14,13 +15,28 @@ export const createFsMapFromArr = <T>(arr: Array<T>) => {
   return fsMap;
 };
 
+type RecordedArray<TElement extends Record<string, unknown>> = Array<TElement>;
+
 export type ToFirestoreDoc<T> = {
-  // firestore 的 Array 有限制，全部存成 Map (JS 的 object with numeric key )
-  [K in keyof T]: T[K] extends Array<infer U>
+  // firestore 的 element Array 有限制，全部存成 Map (JS 的 object with numeric key )
+  [K in keyof T]: T[K] extends RecordedArray<infer U>
     ? FsMap<ToFirestoreDoc<U>>
     : IsPlainObject<T[K]> extends true
     ? ToFirestoreDoc<T[K]>
     : T[K];
-} & { createdAt: FieldValue; updatedAt: FieldValue };
+} & {
+  createdAt: FsTimestamp | ServerTimestamp;
+  updatedAt: FsTimestamp | ServerTimestamp;
+};
 
-export const firestoreTimestampSchema = z.instanceof(Timestamp);
+export type ToFirestoreDocJson<T> = {
+  // firestore 的 element Array 有限制，全部存成 Map (JS 的 object with numeric key )
+  [K in keyof T]: T[K] extends RecordedArray<infer U>
+    ? FsMap<ToFirestoreDocJson<U>>
+    : IsPlainObject<T[K]> extends true
+    ? ToFirestoreDocJson<T[K]>
+    : T[K];
+} & {
+  createdAt: DatetimeString;
+  updatedAt: DatetimeString;
+};

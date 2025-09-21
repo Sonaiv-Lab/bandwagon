@@ -1,12 +1,8 @@
 import { BulkJobOptions, Job, Processor, Queue } from 'bullmq';
-import type { KindCodeValue } from '@bandwagon/shared/constants/kindCode';
 import {
-  fetchFromCpblRequest,
   type CpblRequestInfo,
   type CpblPayload,
 } from '#resources/fetcher/fetchers/fetchFromCpblRequest';
-
-import { NormalizeGameDatas } from '#resources/normalization/normalizations/gameData';
 
 type BulkJob<T extends CpblPayload> = {
   name: string;

@@ -37,28 +37,21 @@ export type gameIdParts = {
   seriesno: string;
 };
 
-export const disassembleGameId = (id: string): undefined | gameIdParts => {
+export const gameIdPartsSchema =  z
+.object({
+  year: z.string(),
+  level: z.string(),
+  kind: z.string(),
+  seriesno: z.string().transform((value) => value.replace(/^0+/, '')),
+})
+.required() satisfies SchemaFromInterface<gameIdParts>;
 
-  console.log('id', id);
-  
+export const disassembleGameId = (id: string): undefined | gameIdParts => {
   const match = gameIdRule.exec(id);
 
   if (!match) return;
 
-  // just simple test for type
-  const schema = z
-    .object({
-      year: z.string(),
-      level: z.string(),
-      kind: z.string(),
-      seriesno: z.string().transform((value) => value.replace(/^0+/, '')),
-    })
-    .required() satisfies SchemaFromInterface<gameIdParts>;
-
-  const validation = schema.safeParse(match.groups);
-
-  
-  
+  const validation = gameIdPartsSchema.safeParse(match.groups);
 
   return validation.success ? validation.data : undefined;
 };

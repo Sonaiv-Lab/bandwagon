@@ -5,9 +5,18 @@ import { DateTime } from 'luxon';
 import { request } from 'undici';
 import * as A from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
+import {
+  Game as GameV0,
+  GameSeason as GameSeasonV0,
+  Result as ResultV0,
+} from '@bandwagon/shared/modules/game';
+import { FieldOptsValue } from '@bandwagon/shared/constants/fieldOpts';
 import env from '#shared/runtime/env';
-import { Game } from '@bandwagon/shared/modules/game';
-import type { GameSummary } from '@bandwagon/shared/modules/schedule'
+import { getPlays } from '#resources/store/stores/plays';
+import * as Types from '#shared/utils/types';
+import { getGames } from '#resources/store/stores/games/games';
+import { Game, GamePlay } from '#shared/model/game';
+import { TEAMS_INFO } from '@bandwagon/shared/constants';
 
 /**
 TODO list
@@ -15,29 +24,51 @@ TODO list
 - [ ] decouple the data source and the process func, accept the multi source game
 */
 
-// type GameSummary = any;
+export type Calendar = Record<
+  Types.Year,
+  Record<Types.MonthString, Types.DateYYYY_MM_DD[]>
+>;
 
-type Tree = Record<
-string,
-Record<string, Record<string, GameSummary[]>>
->
+export type GameSummaryV0 = {
+  id: string;
+  isPlayBall: boolean;
 
-const tree = new Hono();
-tree.post('/tree/update', async (c) => {
-  const baseUrl = env.PIGGYBACK_BASE_URL
+  startDatetime: Types.ISODateTimeString;
+  endDatetime: Types.ISODateTimeString | null;
+  year: Types.Year;
+  homeTeamName: string;
+  homeTeamCode: string;
+  homeScore: number;
+  visitingTeamName: string;
+  visitingScore: number;
+  visitingTeamCode: string;
+  gameKindCode: string;
+  gameSeason: GameSeasonV0;
+  gameNo: number;
+  result: ResultV0;
+  field: FieldOptsValue;
+};
+
+export type DailySchedule = Record<Types.DateYYYY_MM_DD, GameSummaryV0[]>;
+
+type TreeV0 = Record<string, Record<string, Record<string, GameSummaryV0[]>>>;
+
+const treeV0 = new Hono();
+treeV0.post('/tree/update', async (c) => {
+  const baseUrl = env.PIGGYBACK_BASE_URL;
   await request(baseUrl + '/run/makeGamesData', { method: 'POST' });
 
   return c.text('success');
-})
+});
 
-tree.get('/tree', async (c) => {
+treeV0.get('/tree', async (c) => {
   const firestore = await getFirestore();
   const gamesRes = await firestore.collection('games').get();
 
-  const games: Tree = pipe(
+  const games: TreeV0 = pipe(
     gamesRes.docs,
     A.map((game: FirebaseFirestore.QueryDocumentSnapshot) => game.data()),
-    A.map(({ data }) => data as Game),
+    A.map(({ data }) => data as GameV0),
     A.map(
       ({
         id,
@@ -56,7 +87,7 @@ tree.get('/tree', async (c) => {
         gameNo,
         result,
         field,
-      }: Game): GameSummary => ({
+      }: GameV0): GameSummaryV0 => ({
         id,
         startDatetime,
         endDatetime,
@@ -90,8 +121,8 @@ tree.get('/tree', async (c) => {
         game,
       ] as const);
     }),
-    (input: (readonly [string, string, string, GameSummary])[]) => {
-      const tree: Tree = {};
+    (input: (readonly [string, string, string, GameSummaryV0])[]) => {
+      const tree: TreeV0 = {};
 
       for (const [year, month, date, games] of input) {
         tree[year] ??= {};
@@ -108,4 +139,134 @@ tree.get('/tree', async (c) => {
   return c.json(games);
 });
 
-export { tree };
+type PlaySummary = {
+  gameId: Game['id'];
+  playId: GamePlay['id'];
+  year: Game['year'];
+  kind: Game['kind'];
+  level: Game['level'];
+  season: Game['season'];
+  seriesNo: Game['seriesNo'];
+  homeTeamCode: Game['homeTeamCode'];
+  visitingTeamCode: Game['visitingTeamCode'];
+  isGameStop: GamePlay['isGameStop'];
+  isPlayBall: GamePlay['isPlayBall'];
+  startDatetime: GamePlay['startDatetime'];
+  endDatetime: GamePlay['endDatetime'];
+  homeScore: GamePlay['homeScore'];
+  visitingScore: GamePlay['visitingScore'];
+  field: GamePlay['field'];
+  result: GamePlay['result'];
+};
+
+const treeV1 = new Hono();
+
+type TreeV1 = Record<string, Record<string, Record<string, PlaySummary[]>>>;
+
+// type Tree = Record<string, Record<string, Record<string, GameSummaryV0[]>>>;
+
+treeV1.post('/tree', async (c) => {
+  const baseUrl = env.LINEUP_BASE_URL;
+  await request(baseUrl + '/schedule', {
+    method: 'POST',
+    body: JSON.stringify({
+      year: '2025',
+      kindCode: 'A',
+    }),
+  });
+
+  return c.text('success');
+});
+
+
+treeV1.get('/tree', async (c) => {
+  const firestore = await getFirestore();
+  const playsDoc = await getPlays(firestore, { json: true });
+
+  const gamesDoc = await getGames(firestore, { json: true });
+
+  if (!playsDoc) {
+    throw new Error('plays not found');
+  }
+
+  if (!gamesDoc) {
+    throw new Error('games not found');
+  }
+
+  const gamesRecord = gamesDoc.reduce((records, game) => {
+    records[game.id] = game;
+    return records;
+  }, {} as Record<Types.GameId, Game>);
+
+  const playsWithGameInfo: TreeV1 = pipe(
+    playsDoc,
+    A.map(
+      ({
+        id,
+        startDatetime,
+        endDatetime,
+        isPlayBall,
+        isGameStop,
+        homeScore,
+        visitingScore,
+        result,
+        field,
+        gameId,
+      }): PlaySummary => {
+        const game = gamesRecord[gameId];
+
+        return {
+          playId: id,
+          startDatetime,
+          endDatetime,
+          isPlayBall,
+          year: game.year,
+          homeTeamCode: game.homeTeamCode,
+          homeScore,
+          visitingScore,
+          visitingTeamCode: game.visitingTeamCode,
+          kind: game.kind,
+          season: game.season,
+          seriesNo: game.seriesNo,
+          result,
+          field,
+          level: game.level,
+          gameId,
+          isGameStop,
+        };
+      }
+    ),
+    A.filterMap((play) => {
+      const { startDatetime } = play;
+      const date = DateTime.fromISO(startDatetime);
+
+      if (!date.isValid) {
+        return O.none;
+      }
+
+      return O.some([
+        String(date.get('year')),
+        date.toFormat('yyyy-MM'),
+        date.toISODate(),
+        play,
+      ] as const);
+    }),
+    (input: (readonly [string, string, string, PlaySummary])[]) => {
+      const tree: TreeV1 = {};
+
+      for (const [year, month, date, games] of input) {
+        tree[year] ??= {};
+        tree[year][month] ??= {};
+        tree[year][month][date] ??= [];
+
+        tree[year][month][date] = tree[year][month][date].concat(games);
+      }
+
+      return tree;
+    }
+  );
+
+  return c.json(playsWithGameInfo);
+});
+
+export { treeV0, treeV1 };

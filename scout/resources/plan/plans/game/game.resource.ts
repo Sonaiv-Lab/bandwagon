@@ -1,11 +1,7 @@
-import { Resource, ResourceInfo } from '#shared/resource';
-import { PlanMetadata, PlanResource } from '../../plan';
+import { PlanMetadata } from '../../plan';
 // @resource(entry) import
-import * as entry from './game';
 // @resource(json)
-import gameStoreResource from '#resources/store/stores/games/games.resource.json';
-
-import info from './game.resource.json';
+import { metadata as gameStoreResource } from '#resources/store/stores/games/games.resource';
 
 // metadata 不能有任何 external reference
 export const metadata: PlanMetadata = {
@@ -13,10 +9,11 @@ export const metadata: PlanMetadata = {
   name: 'game',
   version: '0.0.1',
   // 只能 import json...
-  deps: [gameStoreResource.id],
+  // deps: [gameStoreResource.id],
+  deps: [],
   config: {
     collections: {
-      game: gameStoreResource.metadata.config.collectionName,
+      game: gameStoreResource.config.collectionName,
     },
   },
   info: {
@@ -25,8 +22,8 @@ export const metadata: PlanMetadata = {
   },
 };
 
-// 必須要有這個
-export const PlanGameMutation = new PlanResource(
-  info as ResourceInfo<PlanMetadata>,
-  entry
-);
+// 先暫時不用 resource，之後規劃
+// export const PlanGameMutation = new PlanResource(
+//   info as ResourceInfo<PlanMetadata>,
+//   entry
+// );

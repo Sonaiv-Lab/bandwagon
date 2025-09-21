@@ -1,13 +1,4 @@
-import { Resource, ResourceInfo } from '#shared/resource';
-import { NormalizationMetadata, NormalizationResource } from '../../normalization';
-// @resource(entry) import
-import entry from './gameDatas';
-// @resource(json)
-import fetchGamedatas from '#resources/fetcher/fetchers/fetchgamedatas/fetchGamedatas.resource.json';
-// @resource(json)
-import gameSchemaResource from '#resources/schema/schemas/game/game.resource.json';
-
-import info from './gameDatas.resource.json';
+import { NormalizationMetadata } from '../../normalization';
 
 // metadata 不能有任何 external reference
 export const metadata: NormalizationMetadata = {
@@ -15,9 +6,9 @@ export const metadata: NormalizationMetadata = {
   name: 'gameDatas',
   version: '0.0.1',
   // 只能 import json...
-  deps: [gameSchemaResource.id],
+  deps: [],
   config: {
-    from: fetchGamedatas.id,
+    from: '',
     to: '', // 這個好像子不太對，再調整一下這裡要改什麼
   },
   info: {
@@ -26,8 +17,4 @@ export const metadata: NormalizationMetadata = {
   },
 };
 
-// 必須要有這個
-export const NormalizeGameDatas = new NormalizationResource(
-  info as ResourceInfo<NormalizationMetadata>,
-  entry
-);
+export * from './gameDatas';

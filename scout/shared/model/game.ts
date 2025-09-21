@@ -4,7 +4,7 @@ import type {
   LevelValue,
   TeamCodeValue,
   FieldOptsValue,
-  GameResultValue,
+  GameResult
 } from '@bandwagon/shared/constants';
 
 import * as Types from '#shared/utils/types';
@@ -17,6 +17,7 @@ import * as Types from '#shared/utils/types';
  * GamePlay 指的是「實際比賽的場次」，因為可能會延賽、保留等。所以一場比賽，可能會實際打多個場次
  */
 export type GamePlay = {
+  gameId: Types.GameId;
   id: Types.GamePlayId;
   isGameStop: boolean;
   // 是不是正在比賽
@@ -25,7 +26,7 @@ export type GamePlay = {
   endDatetime: Types.NullableDatetimeString;
   durationSeconds: number;
   field: FieldOptsValue;
-  result: GameResultValue;
+  result: GameResult;
   homeScore: number;
   visitingScore: number;
   reserveDate: Types.NullableDatetimeString;
@@ -54,10 +55,10 @@ export type Game = {
   kind: KindCodeValue;
   season: GameSeasonValue;
   seriesNo: number;
-  plays: GamePlay[];
+  plays: Types.GamePlayId[];
   level: LevelValue;
 };
 
 export type GameInfo = Omit<Game, 'plays' | 'id'>;
 
-export type GamePlayInfo = Omit<GamePlay, 'id'>
+export type GamePlayInfo = Omit<GamePlay, 'id' | 'gameId'>;

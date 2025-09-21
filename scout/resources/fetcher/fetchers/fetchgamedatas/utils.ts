@@ -7,7 +7,7 @@ import {
   KindCodeValue,
 } from '@bandwagon/shared/constants/kindCode';
 import type { SchemaFromInterface } from '@bandwagon/shared/utils/zod';
-import type { DateYYYY_MM_DD } from '@bandwagon/shared/types/date';
+import type { DateYYYY_MM_DD } from '#shared/utils/types';
 
 import { z } from 'zod';
 

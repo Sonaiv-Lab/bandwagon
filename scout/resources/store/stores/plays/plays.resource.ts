@@ -2,16 +2,14 @@ import type { StoreMetadata } from '../../types';
 
 export const metadata = {
   type: 'store',
-  name: 'games',
+  name: 'plays',
   version: '0.0.1',
   config: {
-    collectionName: 'games_v1',
+    collectionName: 'plays_v1',
   },
   deps: [],
   info: {
-    tags: ['games'],
-    description: '儲存場次資料',
+    tags: ['plays'],
+    description: '儲存賽次資料',
   },
 } as const satisfies StoreMetadata;
-
-

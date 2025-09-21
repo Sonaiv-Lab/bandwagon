@@ -1,7 +1,7 @@
 import {
   kindCodeSchema,
   gameSeasonSchema,
-  gameResultValueSchema,
+  gameResultSchema,
   fieldOptsSchema,
   teamCodeSchema,
   levelSchema,
@@ -9,7 +9,7 @@ import {
 import { z } from 'zod';
 import { type SchemaFromInterface } from '@bandwagon/shared/utils/zod';
 import * as Types from '#shared/utils/types';
-import * as GamePlayRules from './rules/gamePlay';
+import * as rules from './rules';
 import type { GameInfo, GamePlayInfo } from '#shared/model/game';
 
 /**
@@ -32,7 +32,7 @@ const gamePlaySchema = z
     endDatetime: dtStrSchema.nullable(),
     durationSeconds: Types.durationSecondsSchema,
     field: fieldOptsSchema,
-    result: gameResultValueSchema,
+    result: gameResultSchema,
     homeScore: Types.scoreSchema,
     visitingScore: Types.scoreSchema,
     reserveDate: dtStrSchema.nullable(),
@@ -56,10 +56,10 @@ export const createGamePlayInfo = (
   gamePlayInput: GamePlayInfo
 ): GamePlayInfo => {
   const validGamePlayInput = gamePlaySchema
-    .refine(...GamePlayRules.datetimeOrder)
-    .refine(...GamePlayRules.pendingEndDatetime)
-    .refine(...GamePlayRules.pendingScore)
-    .refine(...GamePlayRules.checkPlayerRelatedFieldWithGameResult)
+    .refine(...rules.datetimeOrder)
+    .refine(...rules.pendingEndDatetime)
+    .refine(...rules.pendingScore)
+    .refine(...rules.checkPlayerRelatedFieldWithGameResult)
     .parse(gamePlayInput, {
       reportInput: true,
       error: (issue) => {

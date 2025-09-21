@@ -1,116 +1,85 @@
 import {
   kindCodeSchema,
   gameSeasonSchema,
-  gameResultValueSchema,
-  fieldOptsSchema,
   teamCodeSchema,
   levelSchema,
 } from '@bandwagon/shared/constants';
 import { z } from 'zod';
 import * as Types from '#shared/utils/types';
 import type { SchemaFromInterface } from '@bandwagon/shared/utils/zod';
-import type { GamePlay, Game } from '#shared/model/game';
-import { DateTime } from 'luxon';
+import type { Game } from '#shared/model/game';
 import {
-  Timestamp,
+  fsTimestampSchemaInput,
+  fsTimestampSchemaOutput,
 } from '#shared/external/firestore';
 
-
-// 不轉時間了，會掉時區資訊
-export type GamePlayStore = GamePlay;
-
-// 只有真正在 firebase 存成 document 的，才叫作「Document」
+// 在 firebase 的資料稱作 Document，單純的資料稱作 Store，用命名作出區隔
 export type GameStore = Game;
+export type GameDoc = Types.ToFirestoreDoc<GameStore>;
+export type GameDocJson = Types.ToFirestoreDocJson<GameStore>;
 
-export type GameDocument = Types.ToFirestoreDoc<GameStore>;
-
-const dtToFSTimestamp = (datetime: Types.DatetimeString) => {
-  return Timestamp.fromDate(DateTime.fromISO(datetime).toJSDate());
-};
-
-const fsTimestampToDt = (timestamp: Timestamp) => {
-  return Types.createDtStrFromDateTime(
-    DateTime.fromJSDate(timestamp.toDate()),
-    'Asia/Taipei'
-  );
-};
-
-const gamePlayDataSchema = z.object({
-  id: z.string(),
-  isGameStop: z.boolean(),
-  // 是不是正在比賽
-  isPlayBall: z.boolean(),
-  startDatetime: Types.datetimeStringSchema,
-  endDatetime: Types.datetimeStringSchema.nullable(),
-  durationSeconds: Types.durationSecondsSchema,
-  field: fieldOptsSchema,
-  result: gameResultValueSchema,
-  homeScore: Types.scoreSchema,
-  visitingScore: Types.scoreSchema,
-  reserveDate: Types.datetimeStringSchema.nullable(),
-  visitingPitcherId: z.string().nullable(),
-  visitingPitcherName: z.string().nullable(),
-  homePitcherId: z.string().nullable(),
-  homePitcherName: z.string().nullable(),
-  winningPitcherId: z.string().nullable(),
-  winningPitcherName: z.string().nullable(),
-  loserPitcherId: z.string().nullable(),
-  loserPitcherName: z.string().nullable(),
-  closerId: z.string().nullable(),
-  closerName: z.string().nullable(),
-  mvpPlayerId: z.string().nullable(),
-  mvpPlayerName: z.string().nullable(),
-  mvpCount: z.int().nullable(),
-}) satisfies SchemaFromInterface<GamePlay>;
-
-export const gameDataSchema = z
+export const gameStoreSchema = z
   .object({
     id: z.string(),
     year: z.string(),
-    // 外面先有一層，裡面保險起見有留一層，雖然我不知道會不會有季中改名的可能
     homeTeamCode: teamCodeSchema,
     visitingTeamCode: teamCodeSchema,
     kind: kindCodeSchema,
     season: gameSeasonSchema,
     level: levelSchema,
     seriesNo: z.int(),
-    plays: gamePlayDataSchema.array(),
-    // createdAt: z.instanceof(Timestamp),
-    // updatedAt: z.instanceof(Timestamp),
+    plays: z.string().array(),
   })
   .required({ id: true }) satisfies SchemaFromInterface<GameStore>;
 
-const gamePlayDocSchema = z.object({
-  ...gamePlayDataSchema.shape,
-  createdAt: z.instanceof(Timestamp),
-  updatedAt: z.instanceof(Timestamp),
+export const gameDocSchemaDomain = z.object({
+  ...gameStoreSchema.shape,
+  createdAt: fsTimestampSchemaInput,
+  updatedAt: fsTimestampSchemaInput,
+}) satisfies SchemaFromInterface<GameDoc>;
+
+export const gameDocSchemaRaw = z.object({
+  id: gameDocSchemaDomain.shape['id'],
+  year: gameDocSchemaDomain.shape['year'],
+  home_team_code: gameDocSchemaDomain.shape['homeTeamCode'],
+  visiting_team_code: gameDocSchemaDomain.shape['visitingTeamCode'],
+  kind: gameDocSchemaDomain.shape['kind'],
+  season: gameDocSchemaDomain.shape['season'],
+  series_no: gameDocSchemaDomain.shape['seriesNo'],
+  plays: gameDocSchemaDomain.shape['plays'],
+  level: gameDocSchemaDomain.shape['level'],
+  created_at: fsTimestampSchemaOutput,
+  updated_at: fsTimestampSchemaOutput,
 });
 
-const gamePlayDocSchemaTransformed = gamePlayDocSchema.transform((play) => {
+export const toRaw = (gameDocDomain: z.infer<typeof gameDocSchemaDomain>) => {
   return {
-    ...play,
-    createdAt: fsTimestampToDt(play.createdAt),
-    updatedAt: fsTimestampToDt(play.createdAt),
+    id: gameDocDomain['id'],
+    year: gameDocDomain['year'],
+    home_team_code: gameDocDomain['homeTeamCode'],
+    visiting_team_code: gameDocDomain['visitingTeamCode'],
+    kind: gameDocDomain['kind'],
+    season: gameDocDomain['season'],
+    series_no: gameDocDomain['seriesNo'],
+    plays: gameDocDomain['plays'],
+    level: gameDocDomain['level'],
+    created_at: gameDocDomain['createdAt'],
+    updated_at: gameDocDomain['updatedAt'],
   };
-});
+};
 
-export const gameDocSchema = z.object({
-  ...gameDataSchema.shape,
-  plays: z.record(z.string().regex(/^\d+$/), gamePlayDocSchema).transform((map) => {
-    return Object.values(map);
-  }),
-  createdAt: z.instanceof(Timestamp),
-  updatedAt: z.instanceof(Timestamp),
-})
-
-export const gameDocSchemaTransformed = gameDocSchema.extend({
-  plays: z.record(z.string().regex(/^\d+$/), gamePlayDocSchemaTransformed).transform((map) => {
-    return Object.values(map);
-  }),
-}).transform((game) => {
+export const toDomain = (gameDocRaw: z.infer<typeof gameDocSchemaRaw>) => {
   return {
-    ...game,
-    createdAt: fsTimestampToDt(game.createdAt),
-    updatedAt: fsTimestampToDt(game.createdAt),
+    id: gameDocRaw['id'],
+    year: gameDocRaw['year'],
+    homeTeamCode: gameDocRaw['home_team_code'],
+    visitingTeamCode: gameDocRaw['visiting_team_code'],
+    kind: gameDocRaw['kind'],
+    season: gameDocRaw['season'],
+    seriesNo: gameDocRaw['series_no'],
+    plays: gameDocRaw['plays'],
+    level: gameDocRaw['level'],
+    createdAt: gameDocRaw['created_at'],
+    updatedAt: gameDocRaw['updated_at'],
   };
-});
+};

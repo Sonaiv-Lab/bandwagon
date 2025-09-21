@@ -43,6 +43,11 @@ async function main() {
       }
     );
 
+    schedule.createJob({
+      year: '2025',
+      kindCode: 'A',
+    })
+
     await unstableQueue.queue.upsertJobScheduler(
       'daily-schedule',
       {

@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { Color } from '../types';
 
 export const TEAMS_INFO = {
   ADD011: {

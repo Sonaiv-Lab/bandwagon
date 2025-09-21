@@ -2,7 +2,7 @@ import winston from 'winston';
 import { LoggingWinston } from '@google-cloud/logging-winston';
 import type { Options } from '@google-cloud/logging-winston';
 import env from '#shared/runtime/env';
-import { VERSION, NAME } from './config';
+import { VERSION, NAME } from '../../services/dugout/runtime/config';
 import {
   createConsoleTransport,
   createFileTransPort,
@@ -17,12 +17,26 @@ const gcpLoggingConfig: Options = {
   prefix: `${NAME}:${env.DEPLOY_ENV}:${env.NODE_ENV}`,
 };
 
-const logger = winston.createLogger({
-  transports: [
+const getTransports = () => {
+  const transports: winston.LoggerOptions['transports'] = [
     createConsoleTransport(),
     createFileTransPort('.log/logs'),
-    createGCPTransport(env, gcpLoggingConfig),
-  ],
+  ];
+
+  
+  transports.push(
+    createGCPTransport({
+      gcpLoggingConfig,
+      deployEnv: env.DEPLOY_ENV,
+      certPath: env.FIRESTORE_CERT_LOCAL,
+    })
+  );
+
+  return transports;
+};
+
+const logger = winston.createLogger({
+  transports: getTransports(),
 });
 
 const LOGGING_TRACE_KEY = LoggingWinston.LOGGING_TRACE_KEY;

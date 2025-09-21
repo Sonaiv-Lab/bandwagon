@@ -7,17 +7,15 @@ import {
   KindCodeValue,
   kindCodeSchema,
 } from '@bandwagon/shared/constants/kindCode';
-import { NormalizeGameDatas } from '#resources/normalization/normalizations/gameData';
-import type { DateYYYY_MM_DD } from '@bandwagon/shared/types/date';
+import { normalizeGameDatas } from '#resources/normalization/normalizations/gameData';
+import type { DateYYYY_MM_DD } from '#shared/utils/types';
 import { FieldOptsValue } from '@bandwagon/shared/constants/fieldOpts';
 import { fetchFromCpblRequest } from '#resources/fetcher/fetchers/fetchFromCpblRequest';
-import { PlanGameMutation } from '#resources/plan/plans/game';
+import { planGameMutation } from '#resources/plan/plans/game';
 
 import type { SchemaFromInterface } from '@bandwagon/shared/utils/zod';
 import z from 'zod';
 import { getFirestore } from "#shared/external/firestore";
-
-const { planGameMutation } = PlanGameMutation.use;
 
 type SchedulePageProp = {
   year: string;
@@ -60,34 +58,22 @@ const createJob = (prop: SchedulePageProp) => {
 const processor: CPBLRequestProcessor<Payload> = async (
   job
 ) => {
-  try {
-    const store = await getFirestore();
-  
-    const dataText = await fetchFromCpblRequest(job.data);
-    const gamesData = NormalizeGameDatas.use(dataText);
-  
-    const output = [...gamesData]
-  
-    const mutations = output.map(({ game, plays }) => {
-      return planGameMutation({ game, plays }, store);
-    });
-  
-    const executions = mutations.map((mut) =>
-      mut()
-        .then((res) => {
-          console.log('res', res);
-        })
-        .catch((err) => {
-          console.log('err', err);
-        })
-    );
-  
-    const res = await Promise.allSettled(executions);
+  const store = await getFirestore();
 
-    return res
-  } catch (err) {
-    throw err
-  }
+  const dataText = await fetchFromCpblRequest(job.data);
+  const gamesData = normalizeGameDatas(dataText);
+
+  const output = [...gamesData]
+
+  const mutations = output.map(({ game, plays }) => {
+    return planGameMutation({ game, plays }, store);
+  });
+
+  const executions = mutations.map((mut) =>
+    mut()
+  );
+
+  return await executions;
 };
 
 export { createJob, processor, scheduleJobName as name, propsSchema };

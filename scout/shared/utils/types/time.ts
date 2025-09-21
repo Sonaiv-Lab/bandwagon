@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { Branding } from '../types';
+import { FsTimestamp } from '#shared/external/firestore';
 import { DateTime, IANAZone } from 'luxon';
 
 // 這裡的 Datetime String 在進去 Firebase 的時候會被轉成 Firebase Timestamp
@@ -73,7 +74,7 @@ export const createDtStrFromDateTime = (input: DateTime, tz: string) => {
   };
 
   if (!input.isValid) {
-    throw new Error('invalid datatime')
+    throw new Error('invalid datatime');
   }
 
   const timezone = IANAZone.isValidZone(tz) ? tz : DateTime.local().zoneName;
@@ -81,9 +82,6 @@ export const createDtStrFromDateTime = (input: DateTime, tz: string) => {
   const datetimeIsoStr = input.setZone(timezone).toISO() as string;
 
   return brandDatetimeString(datetimeIsoStr);
-  
 };
-
-
 
 export const durationSecondsSchema = z.int().nonnegative();

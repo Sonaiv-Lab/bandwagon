@@ -35,13 +35,6 @@ export const GameResultMap = {
   '2': 'suspended',
 } as const;
 
-export enum GameResultEnum {
-  pending = '',
-  ended = '0',
-  postponed = '1',
-  suspended = '2',
-}
-
 export type GameResultValue = ValueOf<typeof GameResult>;
 
 export const gameResultValueSchema = z.enum([
@@ -51,7 +44,7 @@ export const gameResultValueSchema = z.enum([
   '2',
 ]) satisfies EnumSchemaFromConstRecord<typeof GameResult>;
 
-// export type GameResult = keyof typeof GameResult;
+export type GameResult = keyof typeof GameResult;
 
 export const gameResultSchema = z.enum([
   'pending',

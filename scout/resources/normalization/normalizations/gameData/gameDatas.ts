@@ -1,4 +1,4 @@
-import { GameSchema } from '#resources/schema/schemas/game';
+import { createGameInfo, createGamePlayInfo } from '#resources/schema/schemas/game';
 import { GameId, GamePlayId, assembleGameId } from '#shared/utils/types';
 import {
   GameResult,
@@ -12,9 +12,6 @@ import {
   createDateTimeFromStr,
 } from '#shared/utils/types';
 import { DateTime } from 'luxon';
-import { z } from 'zod';
-
-const { createGameInfo, createGamePlayInfo } = GameSchema.use;
 
 const transformPlayerRelatedValue = (input: string) => {
   return input === '' ? null : input;
@@ -50,7 +47,7 @@ const normalizeGamePlay = (game: GameData) => {
     ),
     durationSeconds: transformDuringTime(game.GameDuringTime),
     field: FIELD_OPTS[game.FieldAbbe],
-    result: game.GameResult,
+    result: GameResultMap[game.GameResult],
     homeScore: game.HomeScore,
     visitingScore: game.VisitingScore,
     reserveDate: createNullableDateTimeFromStr(
@@ -103,14 +100,15 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
     const kind = game.KindCode;
     const seriesNo = game.GameSno;
 
-    const gameInfo = normalizeGame(game);
-    const gamePlayInfo = normalizeGamePlay(game);
     const gameId = assembleGameId({
       year,
       level,
       kind,
       seriesno: seriesNo.toString(),
     });
+
+    const gameInfo = normalizeGame(game);
+    const gamePlayInfo = normalizeGamePlay(game);
 
     if (gameId in gameRecords) {
       const targetRecord = gameRecords[gameId];

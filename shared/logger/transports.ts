@@ -24,15 +24,21 @@ const createFileTransPort = (filename: string = '.log/logs') => {
   });
 };
 
-const createGCPTransport = (env: Env, gcpLoggingConfig: Options) => {
-  const deployEnv = env.DEPLOY_ENV;
-
+const createGCPTransport = ({
+  gcpLoggingConfig,
+  certPath,
+  deployEnv
+}: {
+  gcpLoggingConfig: Options;
+  certPath: Env['FIRESTORE_CERT_LOCAL'];
+  deployEnv: Env['DEPLOY_ENV'];
+}) => {
   if (deployEnv === 'local') {
-    if (!env.FIRESTORE_CERT_LOCAL) {
+    if (!certPath) {
       throw new Error('not local env or missing FIRESTORE_CERT_LOCAL env var');
     }
 
-    const cert = getLocalCert(env.FIRESTORE_CERT_LOCAL);
+    const cert = getLocalCert(certPath);
 
     gcpLoggingConfig.credentials = cert;
     gcpLoggingConfig.projectId = cert.project_id;

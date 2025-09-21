@@ -2,11 +2,9 @@ import { Hono } from 'hono';
 import { getFirestore } from '#shared/external/firestore';
 import { getGame } from '#resources/store/stores/games';
 
+const gamesV0 = new Hono();
 
-
-const gamesRoute = new Hono();
-
-gamesRoute.get('/:id', async (c) => {
+gamesV0.get('/:id', async (c) => {
   const id = c.req.param('id');
 
   const firestore = await getFirestore();
@@ -22,28 +20,29 @@ gamesRoute.get('/:id', async (c) => {
   return c.status(400);
 });
 
-const gamesV1Route = new Hono();
+const gamesV1 = new Hono();
 
-gamesV1Route.get('/:id', async (c) => {
+gamesV1.get('/:id', async (c) => {
   try {
     const id = c.req.param('id');
 
     const firestore = await getFirestore();
-    const game = getGame(firestore, id)
+    const game = await getGame(firestore, id);
 
-    if (game) {
-
-      return c.json(game);
+    if (!game) {
+      throw new Error(`game: ${id} not found`)
     }
 
-    // TODO error handling
-    c.status(400);
-    return c.text('error');
+    return c.json(game);
   } catch (err) {
-    console.error(err);
+    if (err instanceof Error) {
+      c.status(404);
+      return c.text(err.message);
+    }
 
+    c.status(400)
     return c.text('error');
   }
 });
 
-export { gamesRoute as games, gamesV1Route as gamesV1 };
+export { gamesV0 as gamesV0, gamesV1 as gamesV1 };

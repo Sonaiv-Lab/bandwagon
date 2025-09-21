@@ -1,4 +1,4 @@
-import { GamePlayInfo } from '../types';
+import { GamePlayInfo } from '#shared/model/game';
 import { GameResult } from '@bandwagon/shared/constants';
 import { DateTime } from 'luxon';
 
@@ -8,7 +8,7 @@ import { DateTime } from 'luxon';
  */
 export const checkPlayerRelatedFieldWithGameResult = [
   (game: GamePlayInfo) => {
-    if (game.result === GameResult.pending && !game.isPlayBall) {
+    if (game.result === 'pending' && !game.isPlayBall) {
       const isFieldsEmpty = [
         game.winningPitcherId,
         game.winningPitcherName,
@@ -52,7 +52,7 @@ export const datetimeOrder = [
 
 export const pendingEndDatetime = [
   ({ result, endDatetime }: GamePlayInfo) => {
-    if (result === GameResult.pending) {
+    if (result === 'pending') {
       return endDatetime === null
     } 
 
@@ -65,7 +65,7 @@ export const pendingEndDatetime = [
 
 export const pendingScore = [
   ({ result, homeScore, visitingScore, isPlayBall }: GamePlayInfo) => {
-    if (result === GameResult.pending && !isPlayBall) {
+    if (result === 'pending' && !isPlayBall) {
       return homeScore === 0 && visitingScore === 0;
     } 
 

@@ -66,6 +66,18 @@ export class UnstableQueue {
       console.log(`failed: ${job?.name} payload: ${job?.data}`);
       console.error(error);
     });
+
+    worker.on('error', (err) => {
+      console.error(err);
+    });
+    worker.on('completed', (job) => {
+      console.log(`${job.data.id}: compete`);
+      
+    });
+    worker.on('active', (job) => {
+      console.log(`${job.data.id}: active`);
+      
+    });
     return worker;
   }
 }

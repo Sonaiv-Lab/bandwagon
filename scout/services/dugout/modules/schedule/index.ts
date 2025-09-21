@@ -1,8 +1,12 @@
 import { Hono } from 'hono';
-import { tree } from './tree';
+import { treeV0, treeV1 } from './tree';
 
-const schedule = new Hono();
+const scheduleV0 = new Hono();
 
-schedule.route('/', tree);
+scheduleV0.route('/', treeV0);
 
-export { schedule as schedule };
+const scheduleV1 = new Hono()
+
+scheduleV1.route('/', treeV1);
+
+export { scheduleV0, scheduleV1 };

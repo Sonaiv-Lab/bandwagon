@@ -1,91 +1,104 @@
-import {
-  Firestore,
-  getServerTimestamp,
-  Timestamp,
-} from '#shared/external/firestore';
-import {
-  gameDataSchema,
-  GameStore,
-  gameDocSchema,
-  gameDocSchemaTransformed
-} from './schema';
-import resourceJson from './games.resource.json';
-import { createFsMapFromArr, DeepPartial, GameId } from '#shared/utils/types';
 
+import { Firestore, getServerTimestamp } from '#shared/external/firestore';
+import {
+  gameStoreSchema,
+  GameStore,
+  gameDocSchemaRaw,
+  toDomain,
+  toRaw,
+  GameDoc,
+  GameDocJson,
+} from './schema';
+import { metadata } from './games.resource';
+import { GameId } from '#shared/utils/types';
+import { merge } from '#resources/store/utils/merge';
+import { FsTimestamp, fsTimestampToDt } from '#shared/external/firestore';
 
 // plan 階段要排序，這個階段不保證資料正確性
-const COLLECTION_NAME = resourceJson.metadata.config.collectionName;
+const COLLECTION_NAME = metadata.config.collectionName;
 
-async function upsertGame(store: Firestore, gameDocument: GameStore) {
-  const validGameDocument = gameDataSchema.parse(gameDocument, {
-    reportInput: true,
-  });
+/**
+ * todo
+ *
+ */
 
-  const { id } = gameDocument;
-  const doc = store.collection(COLLECTION_NAME).doc(id);
-  
-  const prevGame = await getGame(store, id, { metaRaw: true });
+const mergeGame = (base: GameStore, incoming: GameStore): GameStore => {
+  return {
+    id: merge(base.id, incoming.id, 'BLOCK', 'WARN'),
+    year: merge(base.year, incoming.year, 'BLOCK', 'WARN'),
+    homeTeamCode: merge(
+      base.homeTeamCode,
+      incoming.homeTeamCode,
+      'BLOCK',
+      'WARN'
+    ),
+    visitingTeamCode: merge(
+      base.visitingTeamCode,
+      incoming.visitingTeamCode,
+      'BLOCK',
+      'WARN'
+    ),
+    kind: merge(base.kind, incoming.kind, 'BLOCK', 'WARN'),
+    season: merge(base.season, incoming.season, 'BLOCK', 'WARN'),
+    seriesNo: merge(base.seriesNo, incoming.seriesNo, 'BLOCK', 'WARN'),
+    level: merge(base.level, incoming.level, 'BLOCK', 'WARN'),
+    plays: merge(base.plays, incoming.plays, 'ALLOW'),
+  };
+};
 
-  if (!prevGame) {
-    const plays = validGameDocument.plays.map((play) => {
-      return {
-        ...play,
-        createdAt: getServerTimestamp(),
-        updatedAt: getServerTimestamp(),
-      };
+async function upsertGame(store: Firestore, gameStore: GameStore) {
+  try {
+    const validGameStore = gameStoreSchema.parse(gameStore, {
+      reportInput: true,
+      error: (issue) => {
+        return `${gameStore.id}: ${issue.message}`;
+      },
     });
 
-    const newDoc = {
-      ...validGameDocument,
-      plays: createFsMapFromArr(plays),
-      updatedAt: getServerTimestamp(),
-      createdAt: getServerTimestamp(),
-    };
+    const { id } = gameStore;
+    const doc = store.collection(COLLECTION_NAME).doc(id);
 
-    return await doc.set(newDoc);
+    const prevGameDoc = await getGame(store, id, { json: false });
+
+    const newDoc = !prevGameDoc
+      ? {
+          ...validGameStore,
+          updatedAt: getServerTimestamp(),
+          createdAt: getServerTimestamp(),
+        }
+      : {
+          ...mergeGame(prevGameDoc, validGameStore),
+          createdAt: prevGameDoc.createdAt,
+          updatedAt: getServerTimestamp(),
+        };
+
+    const newDocRaw = toRaw(newDoc);
+
+    return await doc.set(newDocRaw);
+  } catch (error) {
+    const errorInfo = { error, data: gameStore };
+
+    console.log(errorInfo);
+
+    return Promise.reject(errorInfo);
   }
-
-  // 這裡也要做 createdAt 的 merge
-  const plays = validGameDocument.plays.map((play) => {
-    const prevPlay = (prevGame?.plays ?? []).find(
-      (existedPlay) => play.id === existedPlay.id
-    );
-
-    // 這裡有問題
-    if (prevPlay) {
-      return {
-        ...prevPlay,
-        ...play,
-        updatedAt: getServerTimestamp(),
-      };
-    }
-
-    return {
-      ...play,
-      updatedAt: getServerTimestamp(),
-      createdAt: getServerTimestamp(),
-    };
-  });
-
-  const playsMap = createFsMapFromArr(plays);
-
-  const newDoc = {
-    ...prevGame,
-    ...validGameDocument,
-    plays: playsMap,
-    updatedAt: getServerTimestamp(),
-  };
-
-
-  const res = await doc.set(newDoc);
 }
 
 async function getGame(
   store: Firestore,
   id: GameId,
-  // metaData 不轉換格式，目前主要是 createAt, updatedAt 的 timestamp
-  options?: { metaRaw: boolean }
-) {
+  options?: { json: true },
+): Promise<GameDocJson | undefined>;
+async function getGame(
+  store: Firestore,
+  id: GameId,
+  options?: { json: false },
+): Promise<GameDoc | undefined>;
+async function getGame(
+  store: Firestore,
+  id: GameId,
+  options: { json: boolean } = { json: true },
+): Promise<GameDoc | GameDocJson | undefined> {
   const gameRef = store.collection(COLLECTION_NAME).doc(id);
   const doc = await gameRef.get();
 
@@ -93,13 +106,65 @@ async function getGame(
     return;
   }
 
-  const data = doc.data();
+  const gameDocRaw = gameDocSchemaRaw.parse(doc.data());
 
-  const validData = options?.metaRaw
-    ? gameDocSchema.parse(data)
-    : gameDocSchemaTransformed.parse(data);
+  const gameDoc = toDomain(gameDocRaw);
 
-  return validData;
+  if (options.json) {
+    const gameDocJson = {
+      ...gameDoc,
+      createdAt: fsTimestampToDt(gameDoc.createdAt),
+      updatedAt: fsTimestampToDt(gameDoc.updatedAt),
+    };
+
+    return gameDocJson;
+  }
+
+  return gameDoc;
 }
 
-export { upsertGame, getGame };
+
+async function getGames(
+  store: Firestore,
+  options?: { json: true },
+): Promise<GameDocJson[] | undefined>
+async function getGames(
+  store: Firestore,
+  options?: { json: false},
+): Promise<GameDoc[] | undefined>
+async function getGames(
+  store: Firestore,
+  options: { json: boolean } = { json: true }
+): Promise<GameDoc[] | GameDocJson[] | undefined> {
+  const res = await store.collection(COLLECTION_NAME).get();
+
+  if (options?.json) {
+    const docsJson = res.docs
+      .map((doc) => {
+        const gameDocRaw = gameDocSchemaRaw.parse(doc.data());
+        return toDomain(gameDocRaw);
+      })
+      .map((doc) => {
+        const docJson = {
+          ...doc,
+          createdAt: fsTimestampToDt(doc.createdAt),
+          updatedAt: fsTimestampToDt(doc.updatedAt),
+        };
+
+        return docJson;
+      });
+
+    return docsJson;
+  }
+
+  const docs = res.docs.map((doc) => {
+    const docRaw = gameDocSchemaRaw.parse(doc.data());
+    return toDomain(docRaw);
+  });
+
+  console.log(docs[0]);
+
+  return docs;
+}
+
+export { upsertGame, getGame, getGames };

@@ -1,8 +1,7 @@
 // resource.ts 就只留一些 resource 的 metadata
 
-import { FetcherMetadata, FetcherResource } from '../../fetcher';
-import { Resource, ResourceInfo } from '#shared/resource';
-import info from './fetchFromCpblRequest.resource.json';
+import { FetcherMetadata } from '../../fetcher';
+// import info from './fetchFromCpblRequest.resource.json';
 // @resource(entry) import
 // import entry from './fetchFromCpblRequest';
 
@@ -19,7 +18,4 @@ export const metadata: FetcherMetadata = {
   },
 };
 
-// export const FetchGetgamedatas = new FetcherResource(
-//   info as ResourceInfo<FetcherMetadata>,
-//   entry
-// );
+export * from './fetchFromCpblRequest';

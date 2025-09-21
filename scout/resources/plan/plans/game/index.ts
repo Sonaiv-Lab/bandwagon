@@ -1,1 +1,1 @@
-export * from './game.resource';
+export { planGameMutation } from './game';
