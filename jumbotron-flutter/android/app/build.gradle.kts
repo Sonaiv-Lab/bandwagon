@@ -34,7 +34,13 @@ android {
     }
     namespace = "com.bandwagon.jumbotron"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    
+    // use th newer ndk version for flutter_inappwebview_android plungin
+    // https://stackoverflow.com/questions/79600880/how-to-change-the-flutter-default-ndkversion
+
+    ndkVersion = "27.1.12297006"
+    // original setting
+    // ndkVersion = flutter.ndkVersion
 
     compileOptions {2
         sourceCompatibility = JavaVersion.VERSION_11
