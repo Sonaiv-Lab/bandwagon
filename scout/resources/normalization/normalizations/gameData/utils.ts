@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { DateTime, IANAZone } from 'luxon';
 
 export const transformDuringTime = (hhmmss: string) => {
   const match = hhmmss.match(/(?<h>\d{2})(?<m>\d{2})(?<s>\d{2})/);
@@ -14,16 +13,4 @@ export const transformDuringTime = (hhmmss: string) => {
   const seconds = numerate.parse(match.groups.s);
 
   return hours * 60 * 60 + minutes * 60 + seconds;
-};
-
-
-export const toISODatetimeWithZone = (
-  isoString: string,
-  tz: string
-): string | null => {
-  const timezone = IANAZone.isValidZone(tz) ? tz : DateTime.local().zoneName;
-
-  const datetime = DateTime.fromISO(isoString);
-
-  return datetime.isValid ? datetime.setZone(timezone).toISO() ?? null : null;
 };

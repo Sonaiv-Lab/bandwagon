@@ -1,6 +1,5 @@
 import { GamePlayInfo } from '#shared/model/game';
-import { GameResult } from '@bandwagon/shared/constants';
-import { DateTime } from 'luxon';
+import * as Time from "#shared/utils/time";
 
 /**
  * 與比賽狀態相關的選手欄位
@@ -41,8 +40,8 @@ export const datetimeOrder = [
       return true;
     }
 
-    const endDatetime = DateTime.fromISO(endDatetimeString);
-    const startDatetime = DateTime.fromISO(startDatetimeString);
+    const endDatetime = Time.fromISO(endDatetimeString);
+    const startDatetime = Time.fromISO(startDatetimeString);
     return endDatetime > startDatetime;
   },
   {

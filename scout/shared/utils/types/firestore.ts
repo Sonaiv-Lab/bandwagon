@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ServerTimestamp, FsTimestamp } from '#shared/external/firestore';
 import type { IsPlainObject, Branding } from './types';
-import { DatetimeString } from './time';
+import { DatetimeString } from './datetimeString';
 
 type FsMap<T> = Branding<Record<number, T>, 'firestore_map'>;
 

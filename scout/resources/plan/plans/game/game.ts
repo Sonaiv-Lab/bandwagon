@@ -9,7 +9,7 @@ import {
   assembleGameId,
   assembleGamePlayId,
 } from '#shared/utils/types';
-import { DateTime } from 'luxon';
+import * as Time from "#shared/utils/time";
 import { GameStore } from '#resources/store/stores/games/schema';
 
 /**
@@ -41,9 +41,7 @@ export const planGameMutation = (
 
   return () => {
     const gamePlaysRecords = plays.reduce((records, play) => {
-      const startDate = DateTime.fromISO(play.startDatetime, {
-        zone: 'Asia/Taipei',
-      });
+      const startDate = Time.fromISO(play.startDatetime);
       const playId = assembleGamePlayId({
         gameId,
         // 時區問題...

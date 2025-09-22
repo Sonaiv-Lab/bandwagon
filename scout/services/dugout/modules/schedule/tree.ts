@@ -1,7 +1,5 @@
 import { Hono } from 'hono';
-import { getFirestore } from '#shared/external/firestore';
 import { pipe } from 'fp-ts/function';
-import { DateTime } from 'luxon';
 import { request } from 'undici';
 import * as A from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
@@ -14,6 +12,7 @@ import { FieldOptsValue } from '@bandwagon/shared/constants/fieldOpts';
 import env from '#shared/runtime/env';
 import { getPlays } from '#resources/store/stores/plays';
 import * as Types from '#shared/utils/types';
+import * as Time from '#shared/utils/time';
 import { getGames } from '#resources/store/stores/games/games';
 import { Game, GamePlay } from '#shared/model/game';
 import { TEAMS_INFO } from '@bandwagon/shared/constants';
@@ -108,7 +107,7 @@ treeV0.get('/tree', async (c) => {
     ),
     A.filterMap((game) => {
       const { startDatetime } = game;
-      const date = DateTime.fromISO(startDatetime);
+      const date = Time.fromISO(startDatetime);
 
       if (!date.isValid) {
         return O.none;
@@ -238,7 +237,7 @@ treeV1.get('/tree', async (c) => {
     ),
     A.filterMap((play) => {
       const { startDatetime } = play;
-      const date = DateTime.fromISO(startDatetime);
+      const date = Time.fromISO(startDatetime);
 
       if (!date.isValid) {
         return O.none;

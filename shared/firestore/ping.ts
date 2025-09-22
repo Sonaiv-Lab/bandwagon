@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 
 
 export const ping = async (firestore: Firestore, project: string) => {
-  const timeStr = DateTime.now().setZone('Asia/Taipei').toISO()!
+  const timeStr = DateTime.now().setZone('utc').toISO()!
 
   await firestore
     .collection('meta')

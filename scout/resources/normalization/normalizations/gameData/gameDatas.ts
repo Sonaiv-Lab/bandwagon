@@ -1,17 +1,15 @@
-import { createGameInfo, createGamePlayInfo } from '#resources/schema/schemas/game';
-import { GameId, GamePlayId, assembleGameId } from '#shared/utils/types';
 import {
-  GameResult,
+  createGameInfo,
+  createGamePlayInfo,
+} from '#resources/schema/schemas/game';
+import {
   FIELD_OPTS,
   GameResultMap,
 } from '@bandwagon/shared/constants';
 import { transformDuringTime } from './utils';
-import { gamesDatasSchema, type GameData, validate } from './validation';
-import {
-  createNullableDateTimeFromStr,
-  createDateTimeFromStr,
-} from '#shared/utils/types';
-import { DateTime } from 'luxon';
+import { type GameData, validate } from './validation';
+import * as Types from '#shared/utils/types';
+import * as Time from '#shared/utils/time';
 
 const transformPlayerRelatedValue = (input: string) => {
   return input === '' ? null : input;
@@ -40,8 +38,8 @@ const normalizeGamePlay = (game: GameData) => {
     isGameStop: game.IsGameStop === '1' ? true : false,
     // 是不是正在比賽
     isPlayBall: game.IsPlayBall === 'Y' ? true : false,
-    startDatetime: createDateTimeFromStr(game.GameDateTimeS, 'Asia/Taipei'),
-    endDatetime: createNullableDateTimeFromStr(
+    startDatetime: Types.createDtStrFromIsoStr(game.GameDateTimeS, 'Asia/Taipei'),
+    endDatetime: Types.createNullableDtStrFromIsoStr(
       game.GameDateTimeE ?? '',
       'Asia/Taipei'
     ),
@@ -50,7 +48,7 @@ const normalizeGamePlay = (game: GameData) => {
     result: GameResultMap[game.GameResult],
     homeScore: game.HomeScore,
     visitingScore: game.VisitingScore,
-    reserveDate: createNullableDateTimeFromStr(
+    reserveDate: Types.createNullableDtStrFromIsoStr(
       game.ReserveDate ?? '',
       'Asia/Taipei'
     ),
@@ -87,7 +85,7 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
   // 在這裡就要整理出：一個 Game 下面有幾個 GamePlay 了
 
   const gameRecords: Record<
-    GameId,
+  Types.GameId,
     {
       game: ReturnType<typeof createGameInfo>;
       plays: ReturnType<typeof createGamePlayInfo>[];
@@ -100,7 +98,7 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
     const kind = game.KindCode;
     const seriesNo = game.GameSno;
 
-    const gameId = assembleGameId({
+    const gameId = Types.assembleGameId({
       year,
       level,
       kind,
@@ -119,8 +117,8 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
           { startDatetime: startDatetimeA },
           { startDatetime: startDatetimeB }
         ) => {
-          return DateTime.fromISO(startDatetimeA) >
-            DateTime.fromISO(startDatetimeB)
+          return Time.fromISO(startDatetimeA) >
+          Time.fromISO(startDatetimeB)
             ? 1
             : -1;
         }
