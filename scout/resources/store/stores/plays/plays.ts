@@ -202,19 +202,30 @@ async function getPlay(
   return playDoc;
 }
 
+type RefManipulate = (
+  ref: FirebaseFirestore.CollectionReference
+) => FirebaseFirestore.CollectionReference
+
+
+
 async function getPlays(
   store: Firestore,
-  options?: { json: true },
-): Promise<GamePlayDocJson[] | undefined>
+  options?: { json: true; refManipulate: RefManipulate }
+): Promise<GamePlayDocJson[] | undefined>;
 async function getPlays(
   store: Firestore,
-  options?: { json: false},
+  options?: { json: false, refManipulate: RefManipulate },
 ): Promise<GamePlayDoc[] | undefined>
 async function getPlays(
   store: Firestore,
-  options: { json: boolean } = { json: true }
+  options: { json?: boolean; refManipulate: RefManipulate } = {
+    json: true,
+    refManipulate: (ref) => ref,
+  }
 ): Promise<GamePlayDoc[] | GamePlayDocJson[] | undefined> {
-  const playsRes = await store.collection(COLLECTION_NAME).get();
+  const ref = store.collection(COLLECTION_NAME);
+
+  const playsRes = await options.refManipulate(ref).get();
 
   if (options?.json) {
     const playDocsJson = playsRes.docs
