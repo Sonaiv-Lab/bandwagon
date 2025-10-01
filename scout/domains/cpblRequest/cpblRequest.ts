@@ -3,39 +3,28 @@ import {
   type CpblRequestInfo,
   type CpblPayload,
 } from '#resources/fetcher/fetchers/fetchFromCpblRequest';
+import { stringifyRecord } from '#shared/utils/stringifyRecord';
 
-type BulkJob<T extends CpblPayload> = {
-  name: string;
-  data: CpblRequestInfo<T>;
-  opts: BulkJobOptions;
-};
-
-export type CPBLRequestProcessor<T extends CpblPayload> = Processor<
-  CpblRequestInfo<T>
->;
+export type CPBLRequestProcessor<
+  TDataKey extends string,
+  T extends CpblPayload
+> = Processor<CpblRequestInfo<TDataKey, T>>;
 
 export type { CpblRequestInfo };
 
-// 未來需要一個類似 react query 的建立 key 的機制
-const createIdFromInfo = (data: CpblRequestInfo<CpblPayload>): string => {
-  const bodyKeys = Object.keys(data.body).sort();
-  const stableBodyStringified = bodyKeys
-    .map((key) => {
-      const value = data.body[key];
-      return `${key}:${value}`;
-    })
-    .join(',');
+export const createCpblRequestJobName = (name: string) =>
+  `cpbl::${name}::endpoint`;
 
-  return `${data.method}${data.endpointPath}${stableBodyStringified}`;
-};
-
-export const createCpblRequestJobName = (name: string) => `cpbl::request::${name}`;
-
-export const createCpblRequestJob = <T extends CpblPayload>(
+export const createCpblRequestJob = <TDataKey extends string, T extends CpblPayload>(
   name: string,
-  data: CpblRequestInfo<T>
-): BulkJob<T> => {
-  const id = createIdFromInfo(data);
+  data: CpblRequestInfo<TDataKey, T>
+) => {
+  const id = `${name}::${stringifyRecord({
+    ...data.body,
+    method: data.method,
+    endpointPath: data.endpointPath,
+  })}`;
+
   return {
     name,
     data,
