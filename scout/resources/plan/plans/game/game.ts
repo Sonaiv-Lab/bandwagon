@@ -72,6 +72,6 @@ export const planGameMutation = (
 
     const promises = [upsertGame(store, gameStore), ...playsUpsert]
 
-    return Promise.allSettled(promises);
+    return promises;
   };
 };

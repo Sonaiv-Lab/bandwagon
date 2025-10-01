@@ -57,6 +57,7 @@ async function upsertGame(store: Firestore, gameStore: GameStore) {
 
     const { id } = gameStore;
     const doc = store.collection(COLLECTION_NAME).doc(id);
+    const target = `${COLLECTION_NAME}:${id}`
 
     const prevGameDoc = await getGame(store, id, { json: false });
 
@@ -74,7 +75,12 @@ async function upsertGame(store: Firestore, gameStore: GameStore) {
 
     const newDocRaw = toRaw(newDoc);
 
-    return await doc.set(newDocRaw);
+    const result = await doc.set(newDocRaw)
+
+    return {
+      result,
+      target,
+    };
   } catch (error) {
     const errorInfo = { error, data: gameStore };
 

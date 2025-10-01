@@ -123,8 +123,9 @@ async function upsertPlay(store: Firestore, playStore: GamePlayStore) {
     const validPlayStore = playStoreSchema.parse(playStore, {
       reportInput: true,
     });
-
+    
     const { id } = validPlayStore;
+    const target = `${COLLECTION_NAME}:${id}`
     const doc = store.collection(COLLECTION_NAME).doc(id);
 
     const prevPlayDoc = await getPlay(store, id, { json: false });
@@ -143,7 +144,12 @@ async function upsertPlay(store: Firestore, playStore: GamePlayStore) {
 
     const newDocRaw = toRaw(newDoc);
 
-    return await doc.set(newDocRaw);
+    const result = await doc.set(newDocRaw)
+
+    return {
+      result,
+      target,
+    };
   } catch (error) {
     const errorInfo = { error, data: playStore };
 
