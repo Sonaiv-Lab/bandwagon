@@ -35,5 +35,5 @@ elif [ $SERIAL_PORT == 1 ]; then
   gcloud compute get-serial-port-output $URI "$@"
 
 else
-  gcloud compute instance-groups managed list-instances spot-regional-mig --zone=asia-east1-a
+  gcloud compute instance-groups managed list-instances spot-regional-mig --zone=asia-east1-a "$@"
 fi
