@@ -1,22 +1,18 @@
-import { Hono } from "hono";
-import { getFirestore } from '#shared/external/firestore';
+import { Hono } from 'hono';
+import { getFirestore } from '#services/dugout/external/firestore';
 import { getPlay, getPlays } from '#resources/store/stores/plays';
-import { getGame } from "#resources/store/stores/games";
+import { getGame } from '#resources/store/stores/games';
 
 const playsV1 = new Hono();
 
 playsV1.get('/', async (c) => {
   try {
-    console.log('gat plays');
-    
     const firestore = await getFirestore();
     const plays = await getPlays(firestore);
 
-
-    return c.json(plays)
+    return c.json(plays);
   } catch (err) {
-    const errorMsg = err instanceof Error ? err.message : 'error'
-    
+    const errorMsg = err instanceof Error ? err.message : 'error';
     c.status(400);
     return c.text(errorMsg);
   }
@@ -30,27 +26,27 @@ playsV1.get('/:id', async (c) => {
     const play = await getPlay(firestore, playId);
 
     if (!play) {
-      throw new Error(`play: ${playId} not found`)
+      throw new Error(`play: ${playId} not found`);
     }
 
-    const gameId = play.gameId
+    const gameId = play.gameId;
 
     const game = await getGame(firestore, gameId);
 
-
     if (!game) {
-      throw new Error(`play: get game ${gameId} not found`)
+      throw new Error(`play: get game ${gameId} not found`);
     }
 
-    const currentPlayIndex = game.plays.indexOf(playId)
+    const currentPlayIndex = game.plays.indexOf(playId);
 
-    const nextPlayId = currentPlayIndex + 1 < game.plays.length ? currentPlayIndex + 1 : null
+    const nextPlayId =
+      currentPlayIndex + 1 < game.plays.length ? currentPlayIndex + 1 : null;
 
     const data = {
       ...play,
       game,
-      nextPlayId
-    }
+      nextPlayId,
+    };
 
     return c.json(data);
   } catch (err) {
@@ -59,7 +55,7 @@ playsV1.get('/:id', async (c) => {
       return c.text(err.message);
     }
 
-    c.status(400)
+    c.status(400);
     return c.text('error');
   }
 });

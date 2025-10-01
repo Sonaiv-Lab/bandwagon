@@ -15,7 +15,7 @@ import * as Types from '#shared/utils/types';
 import * as Time from '#shared/utils/time';
 import { getGames } from '#resources/store/stores/games/games';
 import { Game, GamePlay } from '#shared/model/game';
-import { TEAMS_INFO } from '@bandwagon/shared/constants';
+import { getFirestore } from '#services/dugout/external/firestore';
 
 /**
 TODO list
@@ -25,7 +25,7 @@ TODO list
 
 export type Calendar = Record<
   Types.Year,
-  Record<Types.MonthString, Types.DateYYYY_MM_DD[]>
+  Record<Types.YYYYMMStr, Types.DateYYYY_MM_DD[]>
 >;
 
 export type GameSummaryV0 = {
@@ -176,7 +176,6 @@ treeV1.post('/tree', async (c) => {
 
   return c.text('success');
 });
-
 
 treeV1.get('/tree', async (c) => {
   const firestore = await getFirestore();

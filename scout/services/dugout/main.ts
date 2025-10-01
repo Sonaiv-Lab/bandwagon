@@ -5,7 +5,8 @@ import { logger as honoLogger } from 'hono/logger';
 import { scheduleV0, gamesV0, gamesV1 } from './modules';
 import env from '#shared/runtime/env';
 import { request } from 'undici';
-import { v0Routes, v1Routes } from "./routes";
+import { v0Routes, v1Routes } from './routes';
+import { initFirestore } from './external/firestore';
 
 const app = new Hono();
 
@@ -29,16 +30,22 @@ app.route('/games', gamesV0);
 
 app.route('/games_v1', gamesV1);
 
-app.route('/v0', v0Routes)
-app.route('/v1', v1Routes)
+app.route('/v0', v0Routes);
+app.route('/v1', v1Routes);
 
-serve(
-  {
-    fetch: app.fetch,
-    port: env?.DUGOUT_PORT ?? 8080,
-    // port: env?.DUGOUT_PORT ?? 8080,
-  },
-  (info) => {
-    logger.info(`Server is running on http://localhost:${info.port}`);
-  }
-);
+const init = async () => {
+  await initFirestore();
+
+  serve(
+    {
+      fetch: app.fetch,
+      port: env?.DUGOUT_PORT ?? 8080,
+      // port: env?.DUGOUT_PORT ?? 8080,
+    },
+    (info) => {
+      logger.info(`Server is running on http://localhost:${info.port}`);
+    }
+  );
+};
+
+init();

@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { getFirestore } from '#shared/external/firestore';
+import { getFirestore } from '#services/dugout/external/firestore';
 import { getGame } from '#resources/store/stores/games';
 
 const gamesV0 = new Hono();
@@ -30,7 +30,7 @@ gamesV1.get('/:id', async (c) => {
     const game = await getGame(firestore, id);
 
     if (!game) {
-      throw new Error(`game: ${id} not found`)
+      throw new Error(`game: ${id} not found`);
     }
 
     return c.json(game);
@@ -40,7 +40,7 @@ gamesV1.get('/:id', async (c) => {
       return c.text(err.message);
     }
 
-    c.status(400)
+    c.status(400);
     return c.text('error');
   }
 });
