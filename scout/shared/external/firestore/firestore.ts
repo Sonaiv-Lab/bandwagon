@@ -1,36 +1,39 @@
 import { getApps } from 'firebase-admin/app';
-import { FieldValue, getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { FieldValue, getFirestore, Timestamp, Firestore } from 'firebase-admin/firestore';
 import env from '#shared/runtime/env';
 import { ping, initByEnv } from '@bandwagon/shared/firestore';
-import { DatetimeString } from '#shared/utils/types';
-import { DateTime } from 'luxon';
-import { createDtStrFromDateTime } from '#shared/utils/types';
+import * as Time from "#shared/utils/time";
+import * as Types from '#shared/utils/types';
 import z from 'zod';
 
-// import logger from '#/runtime/logger';
-
-const get = async () => {
-  const apps = getApps();
-
+const getStore = async () => {
   if (!getApps().length) {
     initByEnv(env);
   }
   const fireStore = getFirestore(env.FIRESTORE_ID);
 
-  await ping(fireStore, 'piggyback');
+  await ping(fireStore, 'service');
 
   return fireStore;
 };
 
-export const dtToFSTimestamp = (dt: DatetimeString): Timestamp => {
-  return Timestamp.fromDate(DateTime.fromISO(dt).toJSDate());
+export const createFirestore = async (serviceName: string) => {
+  if (!getApps().length) {
+    initByEnv(env);
+  }
+  const firestore = getFirestore(env.FIRESTORE_ID);
+
+  await ping(firestore, serviceName);
+
+  return firestore
+}
+
+export const dtToFSTimestamp = (dt: Types.DatetimeString): Timestamp => {
+  return Timestamp.fromDate(Time.fromISO(dt).toJSDate());
 };
 
 export const fsTimestampToDt = (timestamp: Timestamp) => {
-  return createDtStrFromDateTime(
-    DateTime.fromJSDate(timestamp.toDate()),
-    'Asia/Taipei'
-  );
+  return Types.createDtStrFromDt(Time.fromJSDate(timestamp.toDate()));
 };
 
 const getServerTimestamp = FieldValue.serverTimestamp;
@@ -46,7 +49,7 @@ const fsTimestampSchemaInput = z.instanceof(Timestamp).or(
 );
 
 export {
-  get as getFirestore,
+  getStore as getFirestore,
   getServerTimestamp,
   Timestamp as FsTimestamp,
   FieldValue,
