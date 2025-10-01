@@ -1,5 +1,5 @@
 import { intercept } from '#/utils/interceptNetworkFromPage';
-import { z, ZodError } from 'zod';
+import { z } from 'zod';
 import { kindCodeSchema as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
 import { DateTime, IANAZone } from 'luxon';
 import { request } from 'undici';
