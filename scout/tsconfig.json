@@ -19,6 +19,7 @@
       "#resources/*": ["./scout/resources/*"],
       "#domains/*": ["./scout/domains/*"],
       "#shared/*": ["./scout/shared/*"],
+      "#services/*": ["./scout/services/*"],
       "@bandwagon/shared/*": ["./shared/*"]
     }
   }
