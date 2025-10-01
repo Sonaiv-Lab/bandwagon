@@ -1,8 +1,10 @@
-import { getUnstableQueue } from "./utils";
+import { getUnstableQueue } from './external/unstableQueue';
 import { Hono } from 'hono';
-import { serve } from '@hono/node-server'
+import { serve } from '@hono/node-server';
 import env from '#shared/runtime/env';
-import * as schedule from "#domains/cpblRequest/resources/schedule";
+import * as schedule from '#domains/cpblRequest/resources/schedule';
+import * as box from '#domains/cpblRequest/resources/box';
+import { DEFAULT_TZ } from '#shared/utils/time';
 
 const unstableQueue = getUnstableQueue();
 
@@ -11,23 +13,32 @@ const app = new Hono();
 // 更新賽程的 API
 app.post('/schedule', async (c) => {
   const body = await c.req.json();
-  const validJobProps = schedule.propsSchema.parse(body);
+  const job = await schedule.addJob(unstableQueue.queue, body);
 
-  const job = schedule.createJob(validJobProps)
+  return c.json({
+    data: job.data,
+    id: job.id,
+    dedupId: job.opts.deduplication?.id,
+    name: job.name,
+  });
+});
 
-  await unstableQueue.queue.addBulk([job])
+app.post('/box', async (c) => {
+  const body = await c.req.json();
+  const job = await box.addJob(unstableQueue, body);
 
-  return c.json(job);
+  return c.json({
+    data: job.data,
+    dedupId: job.opts.deduplication?.id,
+    id: job.id,
+    name: job.name,
+  });
 });
 
 app.get('/ping', (c) => {
-  console.log('header: ')
   console.log(c.req.header());
-  
   return c.text('pong');
 });
-
-
 
 async function main() {
   try {
@@ -43,25 +54,25 @@ async function main() {
       }
     );
 
-    schedule.createJob({
+    const dailyJob = schedule.createJob({
       year: '2025',
       kindCode: 'A',
-    })
+    });
 
     await unstableQueue.queue.upsertJobScheduler(
       'daily-schedule',
       {
         pattern: '0 0,18,19,20,21,22,23,15,12 * * *',
-    },
-      schedule.createJob({
-        year: '2025',
-        kindCode: 'A',
-      })
+        tz: DEFAULT_TZ,
+      },
+      {
+        data: dailyJob.data,
+        name: dailyJob.name,
+      }
     );
   } catch (err) {
     console.error(err);
   }
 }
 
-main()
-
+main();
