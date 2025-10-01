@@ -18,6 +18,10 @@ export const fromJSDate = (jsDate: Date, zone = DEFAULT_TZ) => {
   return dt;
 };
 
+export const getNow = (zone = DEFAULT_TZ) => {
+  return DateTime.now().setZone(zone)
+}
+
 export const isValidZone = (zone: string) => {
   return IANAZone.isValidZone(zone);
 };
