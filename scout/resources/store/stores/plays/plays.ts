@@ -204,7 +204,7 @@ async function getPlay(
 
 type RefManipulate = (
   ref: FirebaseFirestore.CollectionReference
-) => FirebaseFirestore.CollectionReference
+) => FirebaseFirestore.Query | FirebaseFirestore.CollectionReference
 
 
 
