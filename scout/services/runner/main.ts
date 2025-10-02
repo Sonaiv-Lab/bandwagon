@@ -5,6 +5,7 @@ import {
 import * as schedule from '#domains/cpblRequest/resources/schedule';
 import * as boxPage from '#domains/cpblRequest/resources/box/boxPage';
 import * as getLive from '#domains/cpblRequest/resources/box/getLive';
+import * as getLiveWatcher from '#domains/cpblRequest/resources/box/getLiveWatcher';
 import logger from '#shared/external/logger';
 import process from 'node:process';
 import {
@@ -12,7 +13,7 @@ import {
   initFirestore,
 } from '#services/runner/external/firestore';
 
-import { container } from "./runtime/container";
+import { container } from './runtime/container';
 import { Job } from 'bullmq';
 
 process.on('rejectionHandled', (code) => {
@@ -25,18 +26,18 @@ const boxPageProcessor = boxPage.createProcessor({
   getUnstableQueue: getUnstableQueue,
 });
 
-const getliveProcessor = getLive.createProcessor({
-  getStore: getFirestore,
-  getUnstableQueue: getUnstableQueue,
-});
-
 const processor = async (job: Job) => {
   // Will print { foo: 'bar'} for the first job
   // and { qux: 'baz' } for the second.
   console.log('job.name', job.name);
   try {
     switch (job.name) {
-      
+      case getLiveWatcher.watcher.name:
+        return await container.apply(getLiveWatcher.watcher.processor)(job);
+
+      case getLiveWatcher.start.name:
+        return await container.apply(getLiveWatcher.watcher.processor)(job);
+
       case schedule.name:
         return await scheduleProcessor(job);
 
@@ -47,7 +48,7 @@ const processor = async (job: Job) => {
         break;
 
       case getLive.name:
-        return await getliveProcessor(job);
+        return await container.apply(getLive.processor)(job) 
         break;
 
       default:
@@ -64,7 +65,7 @@ const processor = async (job: Job) => {
 
 const init = async () => {
   container.init();
-  initFirestore()
+  initFirestore();
   const worker = createUnstableQueueWorker(processor);
 };
 
