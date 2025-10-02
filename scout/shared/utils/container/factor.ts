@@ -1,6 +1,6 @@
 type Context = Record<string, any>;
 
-type Apply<TC extends Context> = <TProps extends unknown[], TReturn>(
+type Apply<TC extends Context = Context> = <TProps extends unknown[], TReturn>(
   impl: (context: TC, ...props: TProps) => TReturn
 ) => (...props: TProps) => TReturn;
 

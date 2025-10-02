@@ -5,3 +5,8 @@ export type RegisteredContext = {
   firestore: Firestore;
   unstableQueue: UnstableQueue;
 };
+
+export type Applicable<TCall extends (...props: any[]) => any> = (
+  context: RegisteredContext,
+  ...props: Parameters<TCall>
+) => ReturnType<TCall>;
