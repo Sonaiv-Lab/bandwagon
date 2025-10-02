@@ -4,7 +4,9 @@ import { serve } from '@hono/node-server';
 import env from '#shared/runtime/env';
 import * as schedule from '#domains/cpblRequest/resources/schedule';
 import * as box from '#domains/cpblRequest/resources/box';
+import * as getLiveWatcher from '#domains/cpblRequest/resources/box/getLiveWatcher';
 import { DEFAULT_TZ } from '#shared/utils/time';
+import { container } from './runtime/container';
 
 const unstableQueue = getUnstableQueue();
 
@@ -13,13 +15,26 @@ const app = new Hono();
 // 更新賽程的 API
 app.post('/schedule', async (c) => {
   const body = await c.req.json();
-  const job = await schedule.addJob(unstableQueue.queue, body);
+  const job = await schedule.addJob(
+    container.context?.unstableQueue.queue!,
+    body
+  );
 
   return c.json({
     data: job.data,
     id: job.id,
     dedupId: job.opts.deduplication?.id,
     name: job.name,
+  });
+});
+
+app.post('/getLiveWatcher', async (c) => {
+  console.log('123123213');
+
+  const targets = await container.apply(getLiveWatcher.planGetliveWatcher)();
+
+  return c.json({
+    targets,
   });
 });
 
@@ -42,6 +57,8 @@ app.get('/ping', (c) => {
 
 async function main() {
   try {
+    container.init();
+
     serve(
       {
         fetch: app.fetch,
