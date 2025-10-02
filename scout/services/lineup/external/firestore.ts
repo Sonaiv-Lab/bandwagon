@@ -5,7 +5,11 @@ import { PROJECT_NAME } from '../runtime/config';
 let firestore: Firestore;
 
 export const initFirestore = async () => {
-  firestore = await createFirestore(PROJECT_NAME);
+  if (!firestore) {
+    firestore = await createFirestore(PROJECT_NAME);
+  }
+
+  return firestore;
 };
 
 export const getFirestore = () => {
