@@ -40,11 +40,11 @@ export class UnstableQueue {
       connection: this.#connection,
     });
     queueEvents.on('added', ({ jobId, name }) => {
-      this.#logger.log(`job add: ${name} - ${jobId}`);
+      this.#logger.log(`[queue]job add: ${name} - ${jobId}`);
     });
 
     queueEvents.on('completed', ({ jobId, returnvalue }) => {
-      this.#logger.log(`job complete: ${returnvalue} - ${jobId}`);
+      this.#logger.log(`[queue] job complete: ${returnvalue} - ${jobId}`);
     });
 
     return queueEvents;
@@ -71,11 +71,11 @@ export class UnstableQueue {
       console.error(err);
     });
     worker.on('completed', (job) => {
-      console.log(`${job.data.id}: compete`);
+      console.log(`[worker]${job.name}: compete`);
       
     });
     worker.on('active', (job) => {
-      console.log(`${job.data.id}: active`);
+      console.log(`[worker]${job.name}: active`);
       
     });
     return worker;
