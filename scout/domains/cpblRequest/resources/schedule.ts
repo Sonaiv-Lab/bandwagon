@@ -17,6 +17,7 @@ import type { SchemaFromInterface } from '@bandwagon/shared/utils/zod';
 import z from 'zod';
 import { Firestore } from '#shared/external/firestore';
 import { Queue } from 'bullmq';
+import { Applicable } from '#shared/utils/container';
 
 type SchedulePageParams = {
   year: string;
@@ -103,4 +104,36 @@ const createProcessor: (
     return JSON.stringify(output);
   };
 
-export { createJob, createProcessor, scheduleJobName as name };
+const processor: Applicable<
+  CPBLRequestProcessor<'GameDatas', GetgamedatasPayload>
+> = async (ctx, job) => {
+  const store = ctx.firestore;
+
+  const requestData = await fetchFromCpblRequest(job.data);
+  const gamesData = normalizeGameDatas(requestData.GameDatas);
+
+  const data = [...gamesData];
+
+  const mutations = data.flatMap(({ game, plays }) => {
+    return planGameMutation({ game, plays }, store)();
+  });
+
+  const executions = await Promise.allSettled(mutations);
+
+  const output = executions.reduce(
+    (accum, promise) => {
+      if (promise.status === 'fulfilled') {
+        accum.success.push(promise.value.target);
+      }
+      if (promise.status === 'rejected') {
+        accum.errors.push(promise.reason);
+      }
+
+      return accum;
+    },
+    { success: [], errors: [] } as { success: string[]; errors: any[] }
+  );
+  return JSON.stringify(output);
+};
+
+export { createJob, createProcessor, scheduleJobName as name, processor };
