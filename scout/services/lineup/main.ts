@@ -7,6 +7,7 @@ import * as box from '#domains/cpblRequest/resources/box';
 import * as getLiveWatcher from '#domains/cpblRequest/resources/box/getLiveWatcher';
 import { DEFAULT_TZ } from '#shared/utils/time';
 import { container } from './runtime/container';
+import { RegisteredContext } from '#shared/utils/container';
 
 const unstableQueue = getUnstableQueue();
 
@@ -55,9 +56,23 @@ app.get('/ping', (c) => {
   return c.text('pong');
 });
 
+
+const cleanupScheduler = async (ctx: RegisteredContext) => {
+  const schedulers = await ctx.unstableQueue.queue.getJobSchedulers(0, 9, true);
+
+  for (const s of schedulers) {
+    const res =  await ctx.unstableQueue.queue.removeJobScheduler(s.key);
+
+    console.log(`close scheudler: ${s.key}: ${res}`);
+  }
+
+}
+
 async function main() {
   try {
-    container.init();
+    await container.init();
+
+    await container.apply(cleanupScheduler)()
 
     serve(
       {
