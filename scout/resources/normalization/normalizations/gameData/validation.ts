@@ -1,14 +1,11 @@
 import { z } from 'zod';
 import { kindCodeSchema as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
-import {
-  fieldOptsSchema,
-  FieldScheme,
-} from '@bandwagon/shared/constants/fieldOpts';
+import { FieldScheme } from '@bandwagon/shared/constants/fieldOpts';
 import {
   teamCodeSchema,
   teamFullNamesSchema,
 } from '@bandwagon/shared/constants/teams';
-
+import * as Types from '#shared/utils/types';
 
 const PlayerId = z
   .string()
@@ -41,8 +38,8 @@ const gameDataSchema = z.object({
   GameSno: z.number(),
   GameDate: Date,
   // 2024-05-21T18:35:00
-  GameResult: z.enum(['', '0', '1', '2']),
-  
+  GameResult: Types.gameResultSchema,
+
   PreExeDate: Date,
   // 不知道什麼意思，目前都跟 GameDate 一樣
   VisitingTeamCode: teamCodeSchema,
@@ -78,9 +75,12 @@ export const validate = (input: unknown) => {
   return gamesDatasSchema.parse(input, {
     reportInput: true,
     error: (issue) => {
-      return { ...issue, message: `normalize::validating: ${issue.message}` };
-    }
-  })
-}
+      return {
+        ...issue,
+        message: `normalize:gameData:validating: ${issue.message}`,
+      };
+    },
+  });
+};
 
-export type GameData = z.infer<typeof gameDataSchema>
+export type GameData = z.infer<typeof gameDataSchema>;

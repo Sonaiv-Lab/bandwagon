@@ -2,11 +2,7 @@ import {
   createGameInfo,
   createGamePlayInfo,
 } from '#resources/schema/schemas/game';
-import {
-  FIELD_OPTS,
-  GameResultMap,
-} from '@bandwagon/shared/constants';
-import { transformDuringTime } from './utils';
+import { FIELD_OPTS, GameResultMap } from '@bandwagon/shared/constants';
 import { type GameData, validate } from './validation';
 import * as Types from '#shared/utils/types';
 import * as Time from '#shared/utils/time';
@@ -33,17 +29,24 @@ const normalizeGame = (game: GameData) => {
   });
 };
 
-const normalizeGamePlay = (game: GameData) => {
+const normalizeGamePlay = ({
+  game,
+  playId,
+  gameId,
+}: {
+  game: GameData;
+  playId: Types.GamePlayId;
+  gameId: Types.GameId;
+}) => {
   return createGamePlayInfo({
+    gameId,
+    id: playId,
     isGameStop: game.IsGameStop === '1' ? true : false,
     // 是不是正在比賽
     isPlayBall: game.IsPlayBall === 'Y' ? true : false,
-    startDatetime: Types.createDtStrFromIsoStr(game.GameDateTimeS, 'Asia/Taipei'),
-    endDatetime: Types.createNullableDtStrFromIsoStr(
-      game.GameDateTimeE ?? '',
-      'Asia/Taipei'
-    ),
-    durationSeconds: transformDuringTime(game.GameDuringTime),
+    startDatetime: Types.createDtStrFromIsoStr(game.GameDateTimeS),
+    endDatetime: Types.createNullableDtStrFromIsoStr(game.GameDateTimeE ?? ''),
+    durationSeconds: Types.transDuringTimeToMS(game.GameDuringTime),
     field: FIELD_OPTS[game.FieldAbbe],
     result: GameResultMap[game.GameResult],
     homeScore: game.HomeScore,
@@ -80,19 +83,19 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
   // parse
   const gameDatas = JSON.parse(input);
 
-  const checkedGameDatas = validate(gameDatas);
+  const validGameDatas = validate(gameDatas);
 
   // 在這裡就要整理出：一個 Game 下面有幾個 GamePlay 了
 
   const gameRecords: Record<
-  Types.GameId,
+    Types.GameId,
     {
       game: ReturnType<typeof createGameInfo>;
       plays: ReturnType<typeof createGamePlayInfo>[];
     }
   > = {};
 
-  for (const game of checkedGameDatas) {
+  for (const game of validGameDatas) {
     const year = game.Year;
     const level = 'cpbl';
     const kind = game.KindCode;
@@ -105,8 +108,12 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
       seriesno: seriesNo.toString(),
     });
 
+    const startDt = Time.fromISO(game.GameDateTimeS);
+
+    const playId = Types.assembleGamePlayId({ gameId, datetime: startDt });
+
     const gameInfo = normalizeGame(game);
-    const gamePlayInfo = normalizeGamePlay(game);
+    const gamePlayInfo = normalizeGamePlay({ game, gameId, playId });
 
     if (gameId in gameRecords) {
       const targetRecord = gameRecords[gameId];
@@ -117,10 +124,15 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
           { startDatetime: startDatetimeA },
           { startDatetime: startDatetimeB }
         ) => {
-          return Time.fromISO(startDatetimeA) >
-          Time.fromISO(startDatetimeB)
-            ? 1
-            : -1;
+          const milsA = startDatetimeA
+            ? Time.fromISO(startDatetimeA).toMillis()
+            : 0;
+
+          const milsB = startDatetimeB
+            ? Time.fromISO(startDatetimeB).toMillis()
+            : 0;
+
+          return milsA - milsB;
         }
       );
     } else {
