@@ -17,23 +17,29 @@ const loggers: Record<Exclude<Severity, 'NONE'>, LeveledLogMethod> = {
 
 export const merge = <T>(
   base: T,
-  income: T,
+  income: T | undefined,
   policy: Policy | ((a: T, b: T) => T),
   severity: Severity = 'NONE',
   props?: {
     path?: string;
     reason?: string;
   }
-) => {
+): T => {
   const { path, reason } = props ?? {};
 
   const logger = severity === 'NONE' ? undefined : loggers[severity];
 
   const next = (() => {
+    if (income === undefined) {
+      return base;
+    }
+
     if (typeof policy === 'function') {
       // 好像要調整，return 原值是不是不應該去理他
-      return policy(base, income);
+      policy(base, income);
     }
+
+
     if (policy === 'BLOCK') {
       return base;
     } else {
