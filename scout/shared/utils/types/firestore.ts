@@ -17,6 +17,7 @@ export const createFsMapFromArr = <T>(arr: Array<T>) => {
 
 type RecordedArray<TElement extends Record<string, unknown>> = Array<TElement>;
 
+// 這個給存入用的
 export type ToFirestoreDoc<T> = {
   // firestore 的 element Array 有限制，全部存成 Map (JS 的 object with numeric key )
   [K in keyof T]: T[K] extends RecordedArray<infer U>
@@ -27,6 +28,19 @@ export type ToFirestoreDoc<T> = {
 } & {
   createdAt: FsTimestamp | ServerTimestamp;
   updatedAt: FsTimestamp | ServerTimestamp;
+};
+
+// 這個給 Output 用的
+export type ToFirestoreDocOutput<T> = {
+  // firestore 的 element Array 有限制，全部存成 Map (JS 的 object with numeric key )
+  [K in keyof T]: T[K] extends RecordedArray<infer U>
+    ? FsMap<ToFirestoreDoc<U>>
+    : IsPlainObject<T[K]> extends true
+    ? ToFirestoreDoc<T[K]>
+    : T[K];
+} & {
+  createdAt: FsTimestamp;
+  updatedAt: FsTimestamp;
 };
 
 export type ToFirestoreDocJson<T> = {

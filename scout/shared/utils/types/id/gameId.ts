@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import type { SchemaFromInterface } from '@bandwagon/shared/utils/zod';
 
+export type GameId = string;
+
 /**
  * @example valid: 2025-cpbl-A-00001, 1995-milb-A-00354
  * @example invalid: 1995-mlb-A+-00354 (only alphabets)
@@ -30,34 +32,37 @@ export const gameIdSchema = z.string().regex(gameIdRule);
  *  - backend, frontend
  *  - js, flutter, swift, kotlin, java...
 */
-export type gameIdParts = {
+export type GameIdUnits = {
   year: string;
   level: string;
   kind: string;
   seriesno: string;
 };
 
-export const gameIdPartsSchema =  z
-.object({
-  year: z.string(),
-  level: z.string(),
-  kind: z.string(),
-  seriesno: z.string().transform((value) => value.replace(/^0+/, '')),
-})
-.required() satisfies SchemaFromInterface<gameIdParts>;
+export const gameIdUnitsSchema = z
+  .object({
+    year: z.string(),
+    level: z.string(),
+    kind: z.string(),
+    seriesno: z.string().transform((value) => value.replace(/^0+/, '')),
+  })
+  .required() satisfies SchemaFromInterface<GameIdUnits>;
 
-export const disassembleGameId = (id: string): undefined | gameIdParts => {
+export const disassembleGameId = (id: string): undefined | GameIdUnits => {
   const match = gameIdRule.exec(id);
 
   if (!match) return;
 
-  const validation = gameIdPartsSchema.safeParse(match.groups);
+  const validation = gameIdUnitsSchema.safeParse(match.groups);
 
   return validation.success ? validation.data : undefined;
 };
 
-export const assembleGameId = ({ year, level, kind, seriesno }: gameIdParts) => {
+export const assembleGameId = ({
+  year,
+  level,
+  kind,
+  seriesno,
+}: GameIdUnits) => {
   return `${year}-${level}-${kind}-${seriesno.padStart(5, '0')}`;
 };
-
-
