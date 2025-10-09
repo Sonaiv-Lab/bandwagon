@@ -6,11 +6,11 @@ import {
   teamCodeSchema,
   levelSchema,
 } from '@bandwagon/shared/constants';
-import { z } from 'zod';
+import { z, ZodOptional } from 'zod';
 import { type SchemaFromInterface } from '@bandwagon/shared/utils/zod';
 import * as Types from '#shared/utils/types';
 import * as rules from './rules';
-import type { GameInfo, GamePlayInfo } from '#shared/model/game';
+import type { GameInfo, GamePlaySubset } from '#shared/model/game';
 
 /**
 要在 schema 這邊檢查「欄位之間的邏輯」典型例子：
@@ -20,41 +20,60 @@ import type { GameInfo, GamePlayInfo } from '#shared/model/game';
 - 複合驗證
 */
 
-
 const dtStrSchema = Types.datetimeStringSchema;
 
-const gamePlaySchema = z
-  .object({
-    isGameStop: z.boolean(),
-    // 是不是正在比賽
-    isPlayBall: z.boolean(),
-    startDatetime: dtStrSchema,
-    endDatetime: dtStrSchema.nullable(),
-    durationSeconds: Types.durationSecondsSchema,
-    field: fieldOptsSchema,
-    result: gameResultSchema,
-    homeScore: Types.scoreSchema,
-    visitingScore: Types.scoreSchema,
-    reserveDate: dtStrSchema.nullable(),
-    visitingPitcherId: Types.cpblPlayerIdSchema.nullable(),
-    visitingPitcherName: Types.cpblPlayerNameSchema.nullable(),
-    homePitcherId: Types.cpblPlayerIdSchema.nullable(),
-    homePitcherName:Types.cpblPlayerNameSchema.nullable(),
-    winningPitcherId: Types.cpblPlayerIdSchema.nullable(),
-    winningPitcherName:Types.cpblPlayerNameSchema.nullable(),
-    loserPitcherId: Types.cpblPlayerIdSchema.nullable(),
-    loserPitcherName:Types.cpblPlayerNameSchema.nullable(),
-    closerId: Types.cpblPlayerIdSchema.nullable(),
-    closerName:Types.cpblPlayerNameSchema.nullable(),
-    mvpPlayerId: Types.cpblPlayerIdSchema.nullable(),
-    mvpPlayerName:Types.cpblPlayerNameSchema.nullable(),
-    mvpCount: z.int().nullable(),
-  })
-  .required() satisfies SchemaFromInterface<GamePlayInfo>;
+const gamePlaySchema = z.object({
+  gameId: Types.gameIdSchema,
+  id: Types.gamePlayIdSchema,
+  isGameStop: z.boolean().catch(false),
+  // 是不是正在比賽
+  isPlayBall: z.boolean().catch(false),
+  startDatetime: dtStrSchema,
+  endDatetime: dtStrSchema.nullish(),
+  durationSeconds: Types.durationSecondsSchema,
+  field: fieldOptsSchema.optional(),
+  result: gameResultSchema.optional(),
+  homeScore: Types.scoreSchema.catch(0),
+  visitingScore: Types.scoreSchema.catch(0),
+  reserveDate: dtStrSchema.nullish(),
+  visitingPitcherId: Types.cpblPlayerIdSchema.nullish(),
+  visitingPitcherName: Types.nameSchema.nullish(),
+  homePitcherId: Types.cpblPlayerIdSchema.nullish(),
+  homePitcherName: Types.nameSchema.nullish(),
+  winningPitcherId: Types.cpblPlayerIdSchema.nullish(),
+  winningPitcherName: Types.nameSchema.nullish(),
+  loserPitcherId: Types.cpblPlayerIdSchema.nullish(),
+  loserPitcherName: Types.nameSchema.nullish(),
+  closerId: Types.cpblPlayerIdSchema.nullish(),
+  closerName: Types.nameSchema.nullish(),
+  mvpPlayerId: Types.cpblPlayerIdSchema.nullish(),
+  mvpPlayerName: Types.nameSchema.nullish(),
+  mvpCount: Types.countNumSchema.nullish(),
+  winningRbiHitterId: Types.cpblPlayerIdSchema.nullish(),
+  mvpAbCount: Types.countNumSchema.nullish(),
+  mvpRbiCount: Types.countNumSchema.nullish(),
+  mvpRunCount: Types.countNumSchema.nullish(),
+  mvpHomeRunCount: Types.countNumSchema.nullish(),
+  mvpHitCount: Types.countNumSchema.nullish(),
+  // 投手三振次數
+  mvpKCount: Types.countNumSchema.nullish(),
+  mvpRaCount: Types.countNumSchema.nullish(),
+  mvpOutsPitchedCount: Types.countNumSchema.nullish(),
+  mvpIsVisitingTeam: z.boolean().nullish(),
+  umpireHP: Types.nameSchema.nullish(),
+  umpire1B: Types.nameSchema.nullish(),
+  umpire2B: Types.nameSchema.nullish(),
+  umpire3B: Types.nameSchema.nullish(),
+  umpireLF: Types.nameSchema.nullish(),
+  umpireRF: Types.nameSchema.nullish(),
+
+  // 還沒統計會是 null
+  audienceCount: Types.countNumSchema.nullish(),
+}) satisfies SchemaFromInterface<GamePlaySubset>;
 
 export const createGamePlayInfo = (
-  gamePlayInput: GamePlayInfo
-): GamePlayInfo => {
+  gamePlayInput: GamePlaySubset
+): GamePlaySubset => {
   const validGamePlayInput = gamePlaySchema
     .refine(...rules.datetimeOrder)
     .refine(...rules.pendingEndDatetime)
@@ -65,7 +84,7 @@ export const createGamePlayInfo = (
       error: (issue) => {
         return {
           ...issue,
-          message: `schema::createGamePlayInfo: ${issue.message}`,
+          message: `schema::gamePlaySchema: ${issue.message}`,
         };
       },
     });
