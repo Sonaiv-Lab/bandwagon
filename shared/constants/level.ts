@@ -9,7 +9,7 @@ const LevelsInfo = {
   },
   cpblm: {
     value: 'cpblm',
-    label: '中華職棒大聯盟軍二軍',
+    label: '中華職棒大聯盟二軍',
   },
 } as const;
 
