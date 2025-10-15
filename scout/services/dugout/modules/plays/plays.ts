@@ -1,14 +1,14 @@
 import { Hono } from 'hono';
 import { getFirestore } from '#services/dugout/external/firestore';
-import { getPlay, getPlays } from '#resources/store/stores/plays';
-import { getGame } from '#resources/store/stores/games';
+import { loadPlays, loadPlayById } from '#resources/store/stores/plays';
+import { loadGameById } from '#resources/store/stores/games';
 
 const playsV1 = new Hono();
 
 playsV1.get('/', async (c) => {
   try {
     const firestore = await getFirestore();
-    const plays = await getPlays(firestore);
+    const plays = await loadPlays(firestore);
 
     return c.json(plays);
   } catch (err) {
@@ -23,7 +23,7 @@ playsV1.get('/:id', async (c) => {
     const playId = c.req.param('id');
 
     const firestore = await getFirestore();
-    const play = await getPlay(firestore, playId);
+    const play = await loadPlayById(firestore, playId);
 
     if (!play) {
       throw new Error(`play: ${playId} not found`);
@@ -31,7 +31,7 @@ playsV1.get('/:id', async (c) => {
 
     const gameId = play.gameId;
 
-    const game = await getGame(firestore, gameId);
+    const game = await loadGameById(firestore, gameId);
 
     if (!game) {
       throw new Error(`play: get game ${gameId} not found`);

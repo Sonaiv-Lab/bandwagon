@@ -1,53 +1,34 @@
-import {
-  Firestore,
-} from '#shared/external/firestore';
+import { Firestore } from '#shared/external/firestore';
 import { upsertGame } from '#resources/store/stores/games';
 import { GamePlayStore, upsertPlay } from '#resources/store/stores/plays';
-import { GameInfo, GamePlayInfo } from '#shared/model/game';
-import * as Types from "#shared/utils/types";
-import {
-  assembleGameId,
-  assembleGamePlayId,
-} from '#shared/utils/types';
-import * as Time from "#shared/utils/time";
+import { GameWithoutPlays, GamePlay } from '#shared/model/game';
+
+import * as Types from '#shared/utils/types';
 import { GameStore } from '#resources/store/stores/games/schema';
 
 /**
-  - plan 要排序
-  - 建立 ID
-  - 組合成 GameDocument
-  - 各種資料，要怎麼 merge 進去？依靠 firestore 好像不太好啊...
-  - 看一下 schema 那邊是什麼？
+  * plan 是 domain model(Game) 轉換成 db entity (GameStore) 的過程（注意，不是 GameDoc）
+  * 現在會很不明顯，但未來可能會有一個 model 轉換成多個 data entity 的可能性，甚至是多對多
+  * （其實目前的 planGame 就是多對多？）
 */
-
 
 export const planGameMutation = (
   {
     game,
     plays,
   }: {
-    game: GameInfo;
-    plays: GamePlayInfo[];
+    game: GameWithoutPlays;
+    // 這裡進來的本來就應該會有缺的資料，需要在這裡補 null 或者什麼的
+    plays: GamePlay[];
   },
   // 不要這裡拿，去外面用 store 拿，之後可能要拿更窩更複雜的東西
   store: Firestore
 ) => {
-  const gameId = assembleGameId({
-    year: game.year,
-    level: game.level,
-    kind: game.kind,
-    seriesno: game.seriesNo.toString(),
-  });
+  const gameId = game.id;
 
   return () => {
     const gamePlaysRecords = plays.reduce((records, play) => {
-      const startDate = Time.fromISO(play.startDatetime);
-      const playId = assembleGamePlayId({
-        gameId,
-        // 時區問題...
-        mm: startDate.toFormat('MM'),
-        dd: startDate.toFormat('dd'),
-      });
+      const playId = play.id;
 
       const gamePlayStore: GamePlayStore = {
         ...play,
@@ -70,7 +51,7 @@ export const planGameMutation = (
       return upsertPlay(store, play);
     });
 
-    const promises = [upsertGame(store, gameStore), ...playsUpsert]
+    const promises = [upsertGame(store, gameStore), ...playsUpsert];
 
     return promises;
   };

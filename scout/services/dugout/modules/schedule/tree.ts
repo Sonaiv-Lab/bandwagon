@@ -10,10 +10,10 @@ import {
 } from '@bandwagon/shared/modules/game';
 import { FieldOptsValue } from '@bandwagon/shared/constants/fieldOpts';
 import env from '#shared/runtime/env';
-import { getPlays } from '#resources/store/stores/plays';
+import { loadPlays } from '#resources/store/stores/plays';
 import * as Types from '#shared/utils/types';
 import * as Time from '#shared/utils/time';
-import { getGames } from '#resources/store/stores/games/games';
+import { loadGames } from '#resources/store/stores/games/games';
 import { Game, GamePlay } from '#shared/model/game';
 import { getFirestore } from '#services/dugout/external/firestore';
 
@@ -179,19 +179,19 @@ treeV1.post('/tree', async (c) => {
 
 treeV1.get('/tree', async (c) => {
   const firestore = await getFirestore();
-  const playsDoc = await getPlays(firestore, { json: true });
+  const playsDoc = await loadPlays(firestore);
 
-  const gamesDoc = await getGames(firestore, { json: true });
+  const games = await loadGames(firestore);
 
   if (!playsDoc) {
     throw new Error('plays not found');
   }
 
-  if (!gamesDoc) {
+  if (!games) {
     throw new Error('games not found');
   }
 
-  const gamesRecord = gamesDoc.reduce((records, game) => {
+  const gamesRecord = games.reduce((records, game) => {
     records[game.id] = game;
     return records;
   }, {} as Record<Types.GameId, Game>);

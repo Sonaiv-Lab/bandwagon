@@ -1,7 +1,7 @@
-import { GamePlayInfo } from '#shared/model/game';
+import { GamePlaySubset } from '#shared/model/game';
 import * as Time from "#shared/utils/time";
 
-type GamePlayInfoCheck = (game: Partial<GamePlayInfo>) => boolean
+type GamePlayInfoCheck = (game: GamePlaySubset) => boolean;
 
 type Rule = [GamePlayInfoCheck, { error: string }];
 

@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { getFirestore } from '#services/dugout/external/firestore';
-import { getGame } from '#resources/store/stores/games';
+import { loadGameById } from '#resources/store/stores/games';
 
 const gamesV0 = new Hono();
 
@@ -27,7 +27,7 @@ gamesV1.get('/:id', async (c) => {
     const id = c.req.param('id');
 
     const firestore = await getFirestore();
-    const game = await getGame(firestore, id);
+    const game = await loadGameById(firestore, id);
 
     if (!game) {
       throw new Error(`game: ${id} not found`);

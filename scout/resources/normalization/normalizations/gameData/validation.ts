@@ -17,6 +17,8 @@ const ImagePath = z.string();
 const Date = z.iso.datetime({ local: true });
 const NullableDate = Date.nullable();
 
+
+
 const gameDataSchema = z.object({
   PresentStatus: z.literal(1).or(z.literal(0)),
   IsGameStop: z.enum(['0', '1']),

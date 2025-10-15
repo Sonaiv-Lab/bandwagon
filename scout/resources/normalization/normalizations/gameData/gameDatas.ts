@@ -1,7 +1,4 @@
-import {
-  createGameInfo,
-  createGamePlayInfo,
-} from '#resources/schema/schemas/game';
+import { createGame, createGamePlayInfo } from '#resources/schema/schemas/game';
 import { FIELD_OPTS, GameResultMap } from '@bandwagon/shared/constants';
 import { type GameData, validate } from './validation';
 import * as Types from '#shared/utils/types';
@@ -12,13 +9,14 @@ const transformPlayerRelatedValue = (input: string) => {
 };
 
 // ID 不再 normalize 階段改，而在 plan 階段出來
-const normalizeGame = (game: GameData) => {
+const normalizeGame = (gameId: string, game: GameData) => {
   const year = game.Year;
   const level = 'cpbl';
   const kind = game.KindCode;
   const seriesNo = game.GameSno;
 
-  return createGameInfo({
+  return createGame({
+    id: gameId,
     year,
     seriesNo,
     homeTeamCode: game.HomeTeamCode,
@@ -72,7 +70,7 @@ const normalizeGamePlay = ({
 };
 
 type NormalizeOutput = {
-  game: ReturnType<typeof createGameInfo>;
+  game: ReturnType<typeof createGame>;
   plays: ReturnType<typeof createGamePlayInfo>[];
 };
 
@@ -83,23 +81,33 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
   // parse
   const gameDatas = JSON.parse(input);
 
-  const validGameDatas = validate(gameDatas);
 
-  // 在這裡就要整理出：一個 Game 下面有幾個 GamePlay 了
+  /**
+   * 紀錄一下，不然連自己都忘記
+   * 這裡的 validate 只單純檢查「資料」，而不檢查 schema，基本上反序列化外部資料的過程
+   * 功能放在「檢查外部資料」
+   * 
+   * => 資料容忍度可能沒那麼高，另外可能會蠻常錯的
+   */
+  const validGameDatas = validate(gameDatas);
 
   const gameRecords: Record<
     Types.GameId,
     {
-      game: ReturnType<typeof createGameInfo>;
+      game: ReturnType<typeof createGame>;
       plays: ReturnType<typeof createGamePlayInfo>[];
     }
   > = {};
 
-  for (const game of validGameDatas) {
-    const year = game.Year;
+
+  /**
+   * 這裡才是真正的建立「資料」，需要 schema 的介入，schema 基本上代表著 model 的實現
+   */
+  for (const gameSubsetData of validGameDatas) {
+    const year = gameSubsetData.Year;
     const level = 'cpbl';
-    const kind = game.KindCode;
-    const seriesNo = game.GameSno;
+    const kind = gameSubsetData.KindCode;
+    const seriesNo = gameSubsetData.GameSno;
 
     const gameId = Types.assembleGameId({
       year,
@@ -108,18 +116,18 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
       seriesno: seriesNo.toString(),
     });
 
-    const startDt = Time.fromISO(game.GameDateTimeS);
+    const startDt = Time.fromISO(gameSubsetData.GameDateTimeS);
 
     const playId = Types.assembleGamePlayId({ gameId, datetime: startDt });
 
-    const gameInfo = normalizeGame(game);
-    const gamePlayInfo = normalizeGamePlay({ game, gameId, playId });
+    const game = normalizeGame(gameId, gameSubsetData);
+    const gamePlay = normalizeGamePlay({ game: gameSubsetData, gameId, playId });
 
     if (gameId in gameRecords) {
       const targetRecord = gameRecords[gameId];
-      targetRecord.game = gameInfo;
+      targetRecord.game = game;
       // 有多場同 Id 的比賽
-      targetRecord.plays = [...targetRecord.plays, gamePlayInfo].sort(
+      targetRecord.plays = [...targetRecord.plays, gamePlay].sort(
         (
           { startDatetime: startDatetimeA },
           { startDatetime: startDatetimeB }
@@ -137,8 +145,8 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
       );
     } else {
       gameRecords[gameId] = {
-        game: gameInfo,
-        plays: [gamePlayInfo],
+        game: game,
+        plays: [gamePlay],
       };
     }
   }

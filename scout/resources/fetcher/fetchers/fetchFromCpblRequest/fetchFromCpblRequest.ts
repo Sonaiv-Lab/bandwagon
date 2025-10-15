@@ -34,11 +34,6 @@ const fetchFromCpblRequest = async <
   const siteUrl = `${ORIGIN}${path}`;
   const endpoint = `${ORIGIN}${endpointPath}`;
 
-  console.log('fetchFromCpblRequest', {
-    siteUrl,
-    endpoint,
-  });
-
   const interceptedData = await intercept(siteUrl, [endpoint]);
   const req = interceptedData[endpoint]?.request;
 

@@ -1,1 +1,1 @@
-export * from './game.resource';
+export * from './game';

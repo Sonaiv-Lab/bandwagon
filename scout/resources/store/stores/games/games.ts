@@ -1,28 +1,25 @@
-
-import { Firestore, getServerTimestamp } from '#shared/external/firestore';
+import {
+  Firestore,
+  getServerTimestamp,
+} from '#shared/external/firestore';
 import {
   gameStoreSchema,
   GameStore,
-  gameDocSchemaRaw,
-  toDomain,
-  toRaw,
-  GameDoc,
-  GameDocJson,
+  toStore,
+  toDoc,
+  gameDocOutputSchema,
 } from './schema';
-import { metadata } from './games.resource';
 import { GameId } from '#shared/utils/types';
 import { merge } from '#resources/store/utils/merge';
-import { FsTimestamp, fsTimestampToDt } from '#shared/external/firestore';
+import { Game } from '#shared/model/game';
 
 // plan 階段要排序，這個階段不保證資料正確性
-const COLLECTION_NAME = metadata.config.collectionName;
+const FS_GAMES_COLLECTION_NAME = 'games_v1';
 
-/**
- * todo
- *
- */
-
-const mergeGame = (base: GameStore, incoming: GameStore): GameStore => {
+const mergeGame = (
+  base: Omit<GameStore, 'createdAt' | 'updatedAt'>,
+  incoming: Omit<GameStore, 'createdAt' | 'updatedAt'>
+): Omit<GameStore, 'createdAt' | 'updatedAt'> => {
   return {
     id: merge(base.id, incoming.id, 'BLOCK', 'WARN'),
     year: merge(base.year, incoming.year, 'BLOCK', 'WARN'),
@@ -43,6 +40,7 @@ const mergeGame = (base: GameStore, incoming: GameStore): GameStore => {
     seriesNo: merge(base.seriesNo, incoming.seriesNo, 'BLOCK', 'WARN'),
     level: merge(base.level, incoming.level, 'BLOCK', 'WARN'),
     plays: merge(base.plays, incoming.plays, 'ALLOW'),
+    source: merge(base.source, incoming.source, (a, b) => ({ ...a, ...b })),
   };
 };
 
@@ -55,27 +53,36 @@ async function upsertGame(store: Firestore, gameStore: GameStore) {
       },
     });
 
-    const { id } = gameStore;
-    const doc = store.collection(COLLECTION_NAME).doc(id);
-    const target = `${COLLECTION_NAME}:${id}`
+    const { id } = validGameStore;
+    const doc = store.collection(FS_GAMES_COLLECTION_NAME).doc(id);
+    const target = `${FS_GAMES_COLLECTION_NAME}:${id}`;
 
-    const prevGameDoc = await getGame(store, id, { json: false });
+    const prevGameDoc = await readGameDoc(store, id);
 
-    const newDoc = !prevGameDoc
-      ? {
-          ...validGameStore,
-          updatedAt: getServerTimestamp(),
-          createdAt: getServerTimestamp(),
-        }
-      : {
-          ...mergeGame(prevGameDoc, validGameStore),
-          createdAt: prevGameDoc.createdAt,
-          updatedAt: getServerTimestamp(),
-        };
+    if (!prevGameDoc) {
+      const newGameDoc = toDoc(validGameStore, {
+        updatedAt: getServerTimestamp(),
+        createdAt: getServerTimestamp(),
+      });
 
-    const newDocRaw = toRaw(newDoc);
+      const result = await doc.set(newGameDoc);
 
-    const result = await doc.set(newDocRaw)
+      return {
+        result,
+        target,
+      };
+    }
+
+    const prevGameStore = toStore(prevGameDoc);
+
+    const mergedStore = mergeGame(prevGameStore, validGameStore);
+
+    const mergedGameDoc = toDoc(mergedStore, {
+      createdAt: prevGameDoc.created_at,
+      updatedAt: getServerTimestamp(),
+    });
+
+    const result = await doc.set(mergedGameDoc);
 
     return {
       result,
@@ -90,87 +97,45 @@ async function upsertGame(store: Firestore, gameStore: GameStore) {
   }
 }
 
-async function getGame(
-  store: Firestore,
-  id: GameId,
-  options?: { json: true },
-): Promise<GameDocJson | undefined>;
-async function getGame(
-  store: Firestore,
-  id: GameId,
-  options?: { json: false },
-): Promise<GameDoc | undefined>;
-async function getGame(
-  store: Firestore,
-  id: GameId,
-  options: { json: boolean } = { json: true },
-): Promise<GameDoc | GameDocJson | undefined> {
-  const gameRef = store.collection(COLLECTION_NAME).doc(id);
+const readGameDoc = async (store: Firestore, id: GameId) => {
+  const gameRef = store.collection(FS_GAMES_COLLECTION_NAME).doc(id);
   const doc = await gameRef.get();
 
   if (!doc.exists) {
     return;
   }
 
-  const gameDocRaw = gameDocSchemaRaw.parse(doc.data());
+  const validDoc = gameDocOutputSchema.parse(doc.data());
 
-  const gameDoc = toDomain(gameDocRaw);
+  return validDoc;
+};
 
-  if (options.json) {
-    const gameDocJson = {
-      ...gameDoc,
-      createdAt: fsTimestampToDt(gameDoc.createdAt),
-      updatedAt: fsTimestampToDt(gameDoc.updatedAt),
-    };
+const assembleGameModel = (gameStore: GameStore): Game => {
+  return gameStore;
+};
 
-    return gameDocJson;
-  }
+const loadGameById = async (store: Firestore, id: GameId) => {
+  const gameDoc = await readGameDoc(store, id);
 
-  return gameDoc;
+  if (!gameDoc) return;
+
+  const gameStore = toStore(gameDoc);
+
+  return assembleGameModel(gameStore);
+};
+
+const loadGames = async  (store: Firestore ) => {
+  const gameCollection = await store.collection(FS_GAMES_COLLECTION_NAME).get();
+  const games = gameCollection.docs
+    .map((doc) => {
+      const validDoc = gameDocOutputSchema.parse(doc.data());
+      return toStore(validDoc);
+    })
+    .map(assembleGameModel);
+
+  return games;
 }
 
 
-async function getGames(
-  store: Firestore,
-  options?: { json: true },
-): Promise<GameDocJson[] | undefined>
-async function getGames(
-  store: Firestore,
-  options?: { json: false},
-): Promise<GameDoc[] | undefined>
-async function getGames(
-  store: Firestore,
-  options: { json: boolean } = { json: true }
-): Promise<GameDoc[] | GameDocJson[] | undefined> {
-  const res = await store.collection(COLLECTION_NAME).get();
 
-  if (options?.json) {
-    const docsJson = res.docs
-      .map((doc) => {
-        const gameDocRaw = gameDocSchemaRaw.parse(doc.data());
-        return toDomain(gameDocRaw);
-      })
-      .map((doc) => {
-        const docJson = {
-          ...doc,
-          createdAt: fsTimestampToDt(doc.createdAt),
-          updatedAt: fsTimestampToDt(doc.updatedAt),
-        };
-
-        return docJson;
-      });
-
-    return docsJson;
-  }
-
-  const docs = res.docs.map((doc) => {
-    const docRaw = gameDocSchemaRaw.parse(doc.data());
-    return toDomain(docRaw);
-  });
-
-  console.log(docs[0]);
-
-  return docs;
-}
-
-export { upsertGame, getGame, getGames };
+export { upsertGame, loadGames, loadGameById };
