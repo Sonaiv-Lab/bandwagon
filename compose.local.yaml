@@ -41,3 +41,10 @@ services:
     volumes:
       - ./.temp/data:/data
       # docker 會管理名為 redis-data 的 volume，會跟 container 的 /data 作掛勾
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: BullMQ_with_opentelemetry_jaeger
+    ports:
+      - '4318:4318'
+      - '16686:16686'
+    profiles: ['lineup', 'jaeger']

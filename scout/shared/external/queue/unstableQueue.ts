@@ -2,6 +2,7 @@ import { Worker, Queue } from 'bullmq';
 import { Job, Processor, QueueEvents } from 'bullmq';
 import env from '#shared/runtime/env';
 import IORedis from 'ioredis';
+import { BullMQOtel } from 'bullmq-otel';
 
 // 這個東西應該要可以再抽出來有個 base class 才對，但目前現這樣
 
@@ -30,6 +31,7 @@ export class UnstableQueue {
 
     this.#queue = new Queue(UnstableQueue.name, {
       connection: this.#connection,
+      telemetry: new BullMQOtel(UnstableQueue.name)
     });
 
     this.#queueEvents = this.#initQueueEvents();
@@ -60,7 +62,11 @@ export class UnstableQueue {
       maxRetriesPerRequest: null,
       host: env.REDIS_HOST,
     });
-    const worker = new Worker(UnstableQueue.name, processor, { connection });
+    const worker = new Worker(UnstableQueue.name, processor, {
+      name: 'unstable_queue:worker',
+      connection,
+      telemetry: new BullMQOtel(UnstableQueue.name)
+    });
 
     worker.on('failed', (job: Job | undefined, error) => {
       console.log(`failed: ${job?.name} payload: ${job?.data}`);

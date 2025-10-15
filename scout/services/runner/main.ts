@@ -3,15 +3,12 @@ import * as schedule from '#domains/cpblRequest/resources/schedule';
 import * as boxPage from '#domains/cpblRequest/resources/box/boxPage';
 import * as getLive from '#domains/cpblRequest/resources/box/getLive';
 import * as getLiveWatcher from '#domains/cpblRequest/resources/box/getLiveWatcher';
-import logger from '#shared/external/logger';
-import process from 'node:process';
-import {
-  initFirestore,
-} from '#services/runner/external/firestore';
-
-import { container } from './runtime/container';
 import { Job } from 'bullmq';
+import process from 'node:process';
+import { container } from './runtime/container';
+import { initOtlp } from './external/otlp';
 import { Applicable } from '#shared/utils/container';
+import logger from '#shared/external/logger';
 
 process.on('rejectionHandled', (code) => {
   console.log('Process exit event with code: ', code);
@@ -40,7 +37,6 @@ const processor = async (job: Job) => {
     default:
       console.error('unknown job');
   }
-
   try {
     if (processors.length === 1) {
       const [p] = processors;
@@ -61,13 +57,11 @@ const processor = async (job: Job) => {
   }
 };
 
-
-
-
 const init = async () => {
   try {
     await container.init();
-    initFirestore();
+    initOtlp();
+
     const worker = createUnstableQueueWorker(processor);
   } catch (err) {
     logger.warn(err);
