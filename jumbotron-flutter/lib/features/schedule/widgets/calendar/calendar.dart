@@ -69,10 +69,6 @@ class Calendar extends HookConsumerWidget {
         isLastRow: weekIndex + 1 >= datesIndex.length,
         children: weekIndexes.map((int dayIndex) {
           final (_, dataV1, errorV1) = scheduleTreeV1;
-
-          print('errorV1');
-          print(errorV1);
-
           if (dataV1 == null) {
             return Container();
           }

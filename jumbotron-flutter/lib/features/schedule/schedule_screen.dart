@@ -10,12 +10,12 @@ import 'package:jiffy/jiffy.dart';
 import './widgets/calendar/calendar.dart';
 import 'widgets/schedule_app_bar.dart';
 
-class SuccessSchedule2 extends StatefulWidget {
+class SuccessSchedule extends StatefulWidget {
   final List<String> monthsList;
   final String yearMonth;
   final Future<void> Function() onRefresh;
 
-  const SuccessSchedule2({
+  const SuccessSchedule({
     super.key,
     required this.monthsList,
     required this.yearMonth,
@@ -23,40 +23,49 @@ class SuccessSchedule2 extends StatefulWidget {
   });
 
   @override
-  State<SuccessSchedule2> createState() => _SuccessSchedule2State();
+  State<SuccessSchedule> createState() => _SuccessScheduleState();
 }
 
-class _SuccessSchedule2State extends State<SuccessSchedule2> {
+class _SuccessScheduleState extends State<SuccessSchedule> {
   late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(
+      keepPage: true,
       initialPage: widget.monthsList.indexOf(widget.yearMonth),
     );
   }
 
   @override
+  void didUpdateWidget(covariant SuccessSchedule oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final isIdle = !_pageController.position.isScrollingNotifier.value;
+
+    if (widget.yearMonth != oldWidget.yearMonth && isIdle) {
+      _pageController.jumpToPage(
+        widget.monthsList.indexOf(widget.yearMonth),
+      );
+    } 
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification notification) {
-        if (notification is ScrollEndNotification) {
+    return PopScope(
+      canPop: false,
+      child: PageView.builder(
+        onPageChanged: (index) {
           final router = GoRouter.of(context);
-
-          final index = _pageController.page?.toInt() ?? 0;
           final want = '/schedule/${widget.monthsList[index]}';
-
           if (router.state.uri.toString() != want) {
             GoRouter.of(
               context,
             ).replace('/schedule/${widget.monthsList[index]}');
           }
-        }
-
-        return false;
-      },
-      child: PageView.builder(
+        },
+        clipBehavior: Clip.none,
         controller: _pageController,
         itemCount: widget.monthsList.length,
         itemBuilder: (BuildContext context, int index) {
@@ -68,7 +77,6 @@ class _SuccessSchedule2State extends State<SuccessSchedule2> {
           final endOfMonth = Jiffy.parseFromDateTime(
             currentYearMonth.datetime,
           ).endOf(Unit.month).dateTime;
-
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return CustomRefreshWrapper(
@@ -98,11 +106,11 @@ class Schedule extends HookConsumerWidget {
       ref.watch(scheduleTreeProvider),
     );
 
-    print(error);
 
     return switch (status) {
       QueryStatus.success => (() {
         data!.monthsList;
+
         if (!data.monthsList.contains(yearMonth)) {
           // TODO, go to the month with games;
           return Center(
@@ -121,8 +129,7 @@ class Schedule extends HookConsumerWidget {
           );
         }
 
-
-        return SuccessSchedule2(
+        return SuccessSchedule(
           yearMonth: yearMonth,
           monthsList: data.monthsList,
           onRefresh: () async {
@@ -146,8 +153,13 @@ class ScheduleScreen extends StatelessWidget {
 
   final String yearMonth;
 
+  
+
   @override
   Widget build(BuildContext context) {
+
+    print('ScheduleScreen: $yearMonth');
+
     return Scaffold(
       appBar: ScheduleAppBar(yearMonth: yearMonth),
       body: Schedule(yearMonth: yearMonth),
