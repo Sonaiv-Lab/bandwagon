@@ -6,7 +6,7 @@ type IsBrand<T> = [T] extends [{ __brand: infer _ }] ? true : false;
 
 type Unbrand<T> = T extends infer U & { __brand: any } ? U : T;
 
-type HasNumericIndex<T> = number extends keyof T ? true : false
+type HasNumericIndex<T> = number extends keyof T ? true : false;
 
 export type IsPlainObject<T> = [Unbrand<T>] extends [object]
   ? [Unbrand<T>] extends [Function]
@@ -58,15 +58,4 @@ export type DeepPartial<T> = [T] extends [
     }
   : T;
 
-export type JSONlike = Record<string | number, unknown>
-
-export type CamelToSnakeCase<S extends string> =
-  S extends `${infer T}${infer U}`
-    ? `${T extends Capitalize<T>
-        ? '_'
-        : ''}${Lowercase<T>}${CamelToSnakeCase<U>}`
-    : S;
-
-  export type KeysToSnakeCase<T> = {
-    [K in keyof T as CamelToSnakeCase<string & K>]: T[K];
-  };
+export type JSONlike = Record<string | number, unknown>;
