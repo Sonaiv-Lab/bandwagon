@@ -25,7 +25,7 @@ const createBoxPageJob = (params: BoxPageParams) => {
   };
 };
 
-const addBoxPageJob = (unstableQueue: UnstableQueue, props: unknown) => {
+export const addBoxPageJob: Applicable = (ctx, props: unknown) => {
   const result = boxPageParamsSchema.safeParse(props, { reportInput: true });
   if (!result.success) {
     const pretty = z.prettifyError(result.error);
@@ -37,7 +37,7 @@ const addBoxPageJob = (unstableQueue: UnstableQueue, props: unknown) => {
   const job = createBoxPageJob(validParams);
   const { name, data, opts } = job;
 
-  return unstableQueue.queue.add(name, data, opts);
+  return ctx.unstableQueue.queue.add(name, data, opts);
 };
 
 // 這個 processor 的目的是為了建立另外一個 job

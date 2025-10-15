@@ -3,11 +3,12 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import env from '#shared/runtime/env';
 import * as schedule from '#domains/cpblRequest/resources/schedule';
-import * as box from '#domains/cpblRequest/resources/box';
+import * as box from '#domains/cpblRequest/resources/box/boxPage';
 import * as getLiveWatcher from '#domains/cpblRequest/resources/box/getLiveWatcher';
 import { DEFAULT_TZ } from '#shared/utils/time';
 import { container } from './runtime/container';
 import { RegisteredContext } from '#shared/utils/container';
+import { initOtlp } from './external/otlp';
 
 const unstableQueue = getUnstableQueue();
 
@@ -16,11 +17,8 @@ const app = new Hono();
 // 更新賽程的 API
 app.post('/schedule', async (c) => {
   const body = await c.req.json();
-  const job = await schedule.addJob(
-    container.context?.unstableQueue.queue!,
-    body
-  );
-
+  const job = await container.apply(schedule.addJob)(body)
+  
   return c.json({
     data: job.data,
     id: job.id,
@@ -30,8 +28,6 @@ app.post('/schedule', async (c) => {
 });
 
 app.post('/getLiveWatcher', async (c) => {
-  console.log('123123213');
-
   const targets = await container.apply(getLiveWatcher.planGetliveWatcher)();
 
   return c.json({
@@ -41,7 +37,7 @@ app.post('/getLiveWatcher', async (c) => {
 
 app.post('/box', async (c) => {
   const body = await c.req.json();
-  const job = await box.addJob(unstableQueue, body);
+  const job =  await container.apply(box.addBoxPageJob)(body);
 
   return c.json({
     data: job.data,
@@ -52,7 +48,6 @@ app.post('/box', async (c) => {
 });
 
 app.get('/ping', (c) => {
-  console.log(c.req.header());
   return c.text('pong');
 });
 
@@ -71,6 +66,8 @@ const cleanupScheduler = async (ctx: RegisteredContext) => {
 async function main() {
   try {
     await container.init();
+    
+    initOtlp();
 
     await container.apply(cleanupScheduler)()
 
