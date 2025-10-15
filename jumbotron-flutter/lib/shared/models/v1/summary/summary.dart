@@ -49,8 +49,6 @@ class Summary {
 
   factory Summary.fromJson(Map<String, dynamic> json) {
     try {
-      print('json');
-      print(json);
       return _$SummaryFromJson(json);
     } catch (e) {
       print(e);
