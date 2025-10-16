@@ -18,6 +18,7 @@
     "start:builded:lineup": "node ./dist/lineup/main.mjs",
     "start:builded:runner": "node ./dist/runner/main.mjs",
     "start:builded:dugout": "node ./dist/dugout/main.mjs",
+    "test": "vitest",
     "pre-playwright": "pnpm exec playwright install-deps chromium && pnpm exec playwright install chromium",
     "start:docker:lineup": "pnpm scripts:secret && pnpm start:builded:lineup",
     "start:docker:dugout": "pnpm scripts:secret && pnpm start:builded:dugout",
@@ -67,6 +68,8 @@
     "@types/node": "^24.1.0",
     "esbuild": "^0.25.8",
     "tsup": "^8.4.0",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   }
 }

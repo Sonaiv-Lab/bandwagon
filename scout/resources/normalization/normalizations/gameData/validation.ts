@@ -1,74 +1,54 @@
 import { z } from 'zod';
-import { kindCodeSchema as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
 import { FieldScheme } from '@bandwagon/shared/constants/fieldOpts';
-import {
-  teamCodeSchema,
-  teamFullNamesSchema,
-} from '@bandwagon/shared/constants/teams';
-import * as Types from '#shared/utils/types';
+import { teamFullNamesSchema } from '@bandwagon/shared/constants/teams';
+import * as Schemas from '../../schemas';
 
-const PlayerId = z
-  .string()
-  .regex(/\d{10}/)
-  .or(z.literal(''));
-
-const PlayerName = z.string().or(z.literal(''));
-const ImagePath = z.string();
-const Date = z.iso.datetime({ local: true });
-const NullableDate = Date.nullable();
-
-
-
-const gameDataSchema = z.object({
+export const gameDataSchema = z.object({
   PresentStatus: z.literal(1).or(z.literal(0)),
-  IsGameStop: z.enum(['0', '1']),
-  GameDateTimeS: Date,
-  GameDateTimeE: NullableDate,
-  GameDuringTime: z
-    .string()
-    .regex(/[\d+\s]/)
-    .length(6)
-    .or(z.literal('')),
+  IsGameStop: Schemas.boolFieldSchema,
+  GameDateTimeS: Schemas.dateFieldSchema,
+  GameDateTimeE: Schemas.dateFieldSchemaNullable,
+  GameDuringTime: Schemas.gameDuringTimeFieldSchema,
   // HHMMSS
   MultyGame: z.enum(['N', '']),
   // 不知道什麼意思
-  Year: z.string().regex(/\d+/).length(4),
+  Year: Schemas.yearFieldSchema,
   // YYYY
-  KindCode: KindCodeScheme,
-  GameSeasonCode: z.enum(['1', '2']),
+  KindCode: Schemas.kindCodefieldSchema,
+  GameSeasonCode: Schemas.gameSeasonFieldSchema,
   // '1' 或者 '2'， '1' 代表上半季，'2' 代表下半季
-  GameSno: z.number(),
-  GameDate: Date,
+  GameSno: Schemas.seriesNoFieldSchema,
+  GameDate: Schemas.dateFieldSchema,
   // 2024-05-21T18:35:00
-  GameResult: Types.gameResultSchema,
+  GameResult: Schemas.gameResultFieldSchema,
 
-  PreExeDate: Date,
+  PreExeDate: Schemas.dateFieldSchema,
   // 不知道什麼意思，目前都跟 GameDate 一樣
-  VisitingTeamCode: teamCodeSchema,
+  VisitingTeamCode: Schemas.teamCodeSchema,
   VisitingTeamName: teamFullNamesSchema,
-  HomeTeamCode: teamCodeSchema,
+  HomeTeamCode: Schemas.teamCodeSchema,
   HomeTeamName: teamFullNamesSchema,
   FieldAbbe: FieldScheme,
-  VisitingScore: z.number(),
-  HomeScore: z.number(),
-  MvpAcnt: PlayerId,
-  MvpCount: z.number().gt(0).nullable(),
-  VisitingPitcherAcnt: PlayerId,
-  HomePitcherAcnt: PlayerId,
-  WinningPitcherAcnt: PlayerId,
-  LoserPitcherAcnt: PlayerId,
-  CloserAcnt: PlayerId,
-  VisitingClubSmallImgPath: ImagePath,
-  HomeClubSmallImgPath: ImagePath,
-  WinningPitcherName: PlayerName,
-  LoserPitcherName: PlayerName,
-  CloserName: PlayerName,
-  MvpName: PlayerName,
-  VisitingPitcherName: PlayerName,
-  HomePitcherName: PlayerName,
+  VisitingScore: Schemas.scoreSchema,
+  HomeScore: Schemas.scoreSchema,
+  MvpAcnt: Schemas.playerIdFieldSchemaNullable,
+  MvpCount: Schemas.countFieldSchema,
+  VisitingPitcherAcnt: Schemas.playerIdFieldSchemaNullable,
+  HomePitcherAcnt: Schemas.playerIdFieldSchemaNullable,
+  WinningPitcherAcnt: Schemas.playerIdFieldSchemaNullable,
+  LoserPitcherAcnt: Schemas.playerIdFieldSchemaNullable,
+  CloserAcnt: Schemas.playerIdFieldSchemaNullable,
+  VisitingClubSmallImgPath: Schemas.urlPathSchema,
+  HomeClubSmallImgPath: Schemas.urlPathSchema,
+  WinningPitcherName: Schemas.nameFieldSchemaNullable,
+  LoserPitcherName: Schemas.nameFieldSchemaNullable,
+  CloserName: Schemas.nameFieldSchemaNullable,
+  MvpName: Schemas.nameFieldSchemaNullable,
+  VisitingPitcherName: Schemas.nameFieldSchemaNullable,
+  HomePitcherName: Schemas.nameFieldSchemaNullable,
   // 是不是正在進行
-  IsPlayBall: z.literal('N').or(z.literal('Y')),
-  ReserveDate: NullableDate,
+  IsPlayBall: z.enum(['N', 'Y']),
+  ReserveDate: Schemas.dateFieldSchemaNullable,
 });
 
 export const gamesDatasSchema = z.array(gameDataSchema);

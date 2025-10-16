@@ -1,86 +1,83 @@
 import { z } from 'zod';
-import { kindCodeSchema as KindCodeScheme } from '@bandwagon/shared/constants/kindCode';
-import { fieldOptsSchema } from '@bandwagon/shared/constants/fieldOpts';
-import { teamCodeSchema } from '@bandwagon/shared/constants/teams';
-import * as Types from '#shared/utils/types';
+import * as Schemas from '../../schemas';
 
-const curtGameDetailJsonSchema = z.object({
+export const curtGameDetailJsonSchema = z.object({
   // === MVP 資訊 ===
-  MvpAcnt: Types.playerIdFieldSchema,
-  MvpVisitingHomeType: Types.visitingHomeFieldSchema,
+  MvpAcnt: Schemas.playerIdFieldSchemaNullable,
+  MvpVisitingHomeType: Schemas.visitingHomeFieldSchema,
   // 當年 MVP 的次數
-  MvpCnt: Types.nullableCountNumSchema,
+  MvpCnt: Schemas.countFieldSchemaNullable,
 
   // MVP 為打者的資訊
-  HitterAcnt: Types.playerIdFieldSchema,
+  HitterAcnt: Schemas.playerIdFieldSchemaNullable,
   // 打數
-  HitCnt: Types.nullableCountNumSchema,
+  HitCnt: Schemas.countFieldSchemaNullable,
   // 打點 RBI
-  RunBattedInCnt: Types.nullableCountNumSchema,
+  RunBattedInCnt: Schemas.countFieldSchemaNullable,
   // 得分
-  ScoreCnt: Types.nullableCountNumSchema,
+  ScoreCnt: Schemas.countFieldSchemaNullable,
   // 安打
-  HittingCnt: Types.nullableCountNumSchema,
+  HittingCnt: Schemas.countFieldSchemaNullable,
   // 全壘打
-  HomeRunCnt: Types.nullableCountNumSchema,
+  HomeRunCnt: Schemas.countFieldSchemaNullable,
 
   // MVP 為投手的資訊
-  PitcherAcnt: Types.playerIdFieldSchema,
+  PitcherAcnt: Schemas.playerIdFieldSchemaNullable,
   // 投幾局
-  InningPitchedCnt: Types.nullableCountNumSchema,
+  InningPitchedCnt: Schemas.countFieldSchemaNullable,
   // 投 .幾個人次
-  InningPitchedDiv3Cnt: Types.nullableCountNumSchema,
+  InningPitchedDiv3Cnt: Schemas.countFieldSchemaNullable,
   // 三振次數
-  StrikeOutCnt: Types.nullableCountNumSchema,
+  StrikeOutCnt: Schemas.countFieldSchemaNullable,
   // 失分數
-  RunCnt: Types.nullableCountNumSchema,
+  RunCnt: Schemas.countFieldSchemaNullable,
 
   // === 比賽資訊 ===
-  FieldNo: fieldOptsSchema,
-  GameDateTimeS: Types.gameDateFieldSchema,
-  GameDateTimeE: Types.nullableGameDateFieldSchema,
-  GameDate: Types.gameDateFieldSchema,
-  GameDuringTime: Types.gameDuringTimeFieldSchema,
-  IsGameStop: z.enum(['0', '1']),
-  Year: Types.yearStrSchema,
-  KindCode: KindCodeScheme,
-  GameSeasonCode: Types.gameSeasonSchema,
-  GameSno: z.number(),
-  GameResult: Types.gameResultSchema,
-  VisitingTeamCode: teamCodeSchema,
-  HomeTeamCode: teamCodeSchema,
+  FieldNo: Schemas.fieldNoFieldSchema,
+  GameDateTimeS: Schemas.dateFieldSchema,
+  GameDateTimeE: Schemas.dateFieldSchemaNullable,
+  GameDate: Schemas.dateFieldSchema,
+  GameDuringTime: Schemas.gameDuringTimeFieldSchema,
+  IsGameStop: Schemas.boolFieldSchema,
+  Year: Schemas.yearFieldSchema,
+  KindCode: Schemas.kindCodefieldSchema,
+  GameSeasonCode: Schemas.gameSeasonFieldSchema,
+  GameSno: Schemas.seriesNoFieldSchema,
+  GameResult: Schemas.gameResultFieldSchema,
+  VisitingTeamCode: Schemas.teamCodeSchema,
+  HomeTeamCode: Schemas.teamCodeSchema,
   // 觀眾數量
-  AudienceCnt: z.number(),
+  AudienceCnt: Schemas.countFieldSchema,
   // 好像是...有沒有滿場？
-  IsFull: z.enum(['1', '0']),
+  IsFull: Schemas.boolFieldSchema,
 
   // === 勝負資訊 ===
-  VisitingTotalScore: Types.scoreSchema,
-  HomeTotalScore: Types.scoreSchema,
+  VisitingTotalScore: Schemas.scoreSchema,
+  HomeTotalScore: Schemas.scoreSchema,
   // 勝負投手資訊
-  WinningPitcherAcnt: Types.playerIdFieldSchema,
-  LosePitcherAcnt: Types.playerIdFieldSchema,
-  CloserPitcherAcnt: Types.playerIdFieldSchema,
+  WinningPitcherAcnt: Schemas.playerIdFieldSchemaNullable,
+  LosePitcherAcnt: Schemas.playerIdFieldSchemaNullable,
+  CloserPitcherAcnt: Schemas.playerIdFieldSchemaNullable,
   // 獲勝隊伍
-  WinningType: Types.visitingHomeFieldSchema,
+  WinningType: Schemas.visitingHomeFieldSchema,
   // 勝利打點
-  GameWinningRbiAcnt: Types.playerIdFieldSchema,
+  GameWinningRbiAcnt: Schemas.playerIdFieldSchemaNullable,
 
   // === 隊伍資訊 ===
-  VisitingGameResultWCnt: Types.nullableCountNumSchema,
-  VisitingGameResultLCnt: Types.nullableCountNumSchema,
-  VisitingGameResultTCnt: Types.nullableCountNumSchema,
-  HomeGameResultWCnt: Types.nullableCountNumSchema,
-  HomeGameResultLCnt: Types.nullableCountNumSchema,
-  HomeGameResultTCnt: Types.nullableCountNumSchema,
+  VisitingGameResultWCnt: Schemas.countFieldSchemaNullable,
+  VisitingGameResultLCnt: Schemas.countFieldSchemaNullable,
+  VisitingGameResultTCnt: Schemas.countFieldSchemaNullable,
+  HomeGameResultWCnt: Schemas.countFieldSchemaNullable,
+  HomeGameResultLCnt: Schemas.countFieldSchemaNullable,
+  HomeGameResultTCnt: Schemas.countFieldSchemaNullable,
 
   // === 裁判群 ===
-  HeadUmpire: Types.nameFieldSchema,
-  OneBaseReferee: Types.nameFieldSchema,
-  TwoBaseReferee: Types.nameFieldSchema,
-  TrheeBaseReferee: Types.nameFieldSchema,
-  LeftFieldReferee: Types.nameFieldSchema,
-  RightFieldReferee: Types.nameFieldSchema,
+  HeadUmpire: Schemas.nameFieldSchemaNullable,
+  OneBaseReferee: Schemas.nameFieldSchemaNullable,
+  TwoBaseReferee: Schemas.nameFieldSchemaNullable,
+  TrheeBaseReferee: Schemas.nameFieldSchemaNullable,
+  LeftFieldReferee: Schemas.nameFieldSchemaNullable,
+  RightFieldReferee: Schemas.nameFieldSchemaNullable,
 
   // 會有一些手打的紀錄、技術室人員等，會師ˋ html 格式
   Briefing: z.string(),
