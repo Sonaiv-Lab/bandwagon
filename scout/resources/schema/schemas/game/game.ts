@@ -14,6 +14,7 @@ import type {
   GamePlaySubset,
   GamePlay,
   HalfInning,
+  HalfInningSubset,
   GameSubset,
   GameWithoutPlays,
   Game,
@@ -203,6 +204,22 @@ export const createGamePlay = (gamePlayInput: GamePlaySubset): GamePlay => {
   return validGamePlayInput;
 };
 
+export const createHalfInning = (
+  halfInningInfo: HalfInningSubset
+): HalfInning => {
+  const validHalfInning = inningSchemaWithDefault.parse(halfInningInfo, {
+    reportInput: true,
+    error: (issue) => {
+      return {
+        ...issue,
+        message: `schema::inningSchemaWithDefault: ${issue.message}`,
+      };
+    },
+  });
+
+  return validHalfInning;
+};
+
 export const gameSchema = z
   .object({
     id: Types.gameIdSchema,
@@ -232,8 +249,6 @@ export const gameSchemaWithDefault = z
     source: gameSchema.shape.source.default({}),
   })
   .required() satisfies SchemaFromInterface<Game>;
-
-
 
 export const createGame = (gameInfo: GameSubset): GameWithoutPlays => {
   const validGameInfo = gameSchemaWithDefault.parse(gameInfo, {
