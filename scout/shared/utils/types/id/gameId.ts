@@ -7,9 +7,9 @@ export type GameId = string;
  * @example valid: 2025-cpbl-A-00001, 1995-milb-A-00354
  * @example invalid: 1995-mlb-A+-00354 (only alphabets)
  */
-export const gameIdRule = new RegExp(
-  /(?<year>^\d{4})-(?<level>[A-Za-z:]+)-(?<kind>[a-zA-Z]+)-(?<seriesno>\d+)$/
-);
+export const gameIdRuleStr = '(?<year>^\\d{4})-(?<level>[A-Za-z:]+)-(?<kind>[a-zA-Z]+)-(?<seriesno>\\d+)'
+
+export const gameIdRule = new RegExp(`${gameIdRuleStr}$`);
 
 export const gameIdSchema = z.string().regex(gameIdRule);
 

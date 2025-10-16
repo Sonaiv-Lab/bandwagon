@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { SchemaFromInterface } from '@bandwagon/shared/utils/zod';
-import { GameId, gameIdSchema, gameIdUnitsSchema, GameIdUnits } from './gameId';
+import { GameId, gameIdSchema, gameIdUnitsSchema, GameIdUnits, gameIdRuleStr } from './gameId';
 import { DateTime } from 'luxon';
 
 export type GamePlayId = string;
@@ -8,9 +8,8 @@ export type GamePlayId = string;
 /**
  * @example valid: 2025-cpbl-A-00001__0421, 1995-milb-A-00354__0422
  */
-export const gamePlayIdRule = new RegExp(
-  /(?<year>^\d{4})-(?<level>[A-Za-z:]+)-(?<kind>[a-zA-Z]+)-(?<seriesno>\d+)__(?<mm>\d{2})(?<dd>\d{2})$/
-);
+export const gamePlayIdRuleStr = gameIdRuleStr + '__(?<mm>\\d{2})(?<dd>\\d{2})'
+export const gamePlayIdRule = new RegExp(`${gamePlayIdRuleStr}$`);
 
 export const gamePlayIdSchema = z.string().regex(gamePlayIdRule);
 
@@ -32,10 +31,7 @@ export type GamePlayIdUnits = Omit<GamePlayIdParts, 'gameId'> & GameIdUnits;
 
 export const gamePlayIdUnitsSchema = z
   .object({
-    year: gameIdUnitsSchema.shape.year,
-    level: gameIdUnitsSchema.shape.level,
-    kind: gameIdUnitsSchema.shape.kind,
-    seriesno: gameIdUnitsSchema.shape.seriesno,
+    ...gameIdUnitsSchema.shape,
     mm: z.string().length(2),
     dd: z.string().length(2),
   })
