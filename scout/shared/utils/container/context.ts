@@ -6,7 +6,8 @@ export type RegisteredContext = {
   unstableQueue: UnstableQueue;
 };
 
-export type Applicable<TCall extends (...props: any[]) => any = (...props: any[]) => any> = (
+export type Applicable
+  <TCall extends (...props: any[]) => any = (...props: any[]) => any> = (
   context: RegisteredContext,
   ...props: Parameters<TCall>
 ) => ReturnType<TCall>;
