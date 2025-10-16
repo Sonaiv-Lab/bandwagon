@@ -184,9 +184,7 @@ const gamePlaySchemaWithDefault = z.object({
   source: gamePlaySchema.shape.source.default({}),
 }) satisfies SchemaFromInterface<GamePlay>;
 
-export const createGamePlayInfo = (
-  gamePlayInput: GamePlaySubset
-): GamePlay => {
+export const createGamePlay = (gamePlayInput: GamePlaySubset): GamePlay => {
   const validGamePlayInput = gamePlaySchemaWithDefault
     .refine(...rules.datetimeOrder)
     .refine(...rules.pendingEndDatetime)

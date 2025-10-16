@@ -1,4 +1,4 @@
-import { createGame, createGamePlayInfo } from '#resources/schema/schemas/game';
+import { createGame, createGamePlay } from '#resources/schema/schemas/game';
 import { FIELD_OPTS, GameResultMap } from '@bandwagon/shared/constants';
 import { type GameData, validate } from './validation';
 import * as Types from '#shared/utils/types';
@@ -36,7 +36,7 @@ const normalizeGamePlay = ({
   playId: Types.GamePlayId;
   gameId: Types.GameId;
 }) => {
-  return createGamePlayInfo({
+  return createGamePlay({
     gameId,
     id: playId,
     isGameStop: game.IsGameStop === '1' ? true : false,
@@ -71,7 +71,7 @@ const normalizeGamePlay = ({
 
 type NormalizeOutput = {
   game: ReturnType<typeof createGame>;
-  plays: ReturnType<typeof createGamePlayInfo>[];
+  plays: ReturnType<typeof createGamePlay>[];
 };
 
 /**
@@ -81,12 +81,11 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
   // parse
   const gameDatas = JSON.parse(input);
 
-
   /**
    * 紀錄一下，不然連自己都忘記
    * 這裡的 validate 只單純檢查「資料」，而不檢查 schema，基本上反序列化外部資料的過程
    * 功能放在「檢查外部資料」
-   * 
+   *
    * => 資料容忍度可能沒那麼高，另外可能會蠻常錯的
    */
   const validGameDatas = validate(gameDatas);
@@ -95,10 +94,9 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
     Types.GameId,
     {
       game: ReturnType<typeof createGame>;
-      plays: ReturnType<typeof createGamePlayInfo>[];
+      plays: ReturnType<typeof createGamePlay>[];
     }
   > = {};
-
 
   /**
    * 這裡才是真正的建立「資料」，需要 schema 的介入，schema 基本上代表著 model 的實現
@@ -121,7 +119,11 @@ export const normalizeGameDatas = (input: string): NormalizeOutput[] => {
     const playId = Types.assembleGamePlayId({ gameId, datetime: startDt });
 
     const game = normalizeGame(gameId, gameSubsetData);
-    const gamePlay = normalizeGamePlay({ game: gameSubsetData, gameId, playId });
+    const gamePlay = normalizeGamePlay({
+      game: gameSubsetData,
+      gameId,
+      playId,
+    });
 
     if (gameId in gameRecords) {
       const targetRecord = gameRecords[gameId];

@@ -1,15 +1,14 @@
-import { createGamePlayInfo } from '#resources/schema/schemas/game';
+import { createGamePlay, createGame } from '#resources/schema/schemas/game';
 import { GameResultMap } from '@bandwagon/shared/constants';
 import { validate } from './validation';
 import * as Types from '#shared/utils/types';
 import * as Time from '#shared/utils/time';
-import type { GamePlaySubset } from '#shared/model/game';
 
 const transformNameValue = (input: string) => {
   return input === '' ? null : input;
 };
 
-export const normalizeCurtGameDetailJson = (input: string): GamePlaySubset => {
+export const normalizeCurtGameDetailJson = (input: string) => {
   // parse
   const curtGameDetail = JSON.parse(input);
 
@@ -32,7 +31,7 @@ export const normalizeCurtGameDetailJson = (input: string): GamePlaySubset => {
     (validCurtGameDetail.InningPitchedCnt ?? 0) * 3 +
     (validCurtGameDetail.InningPitchedDiv3Cnt ?? 0);
   // 全部都要轉過來，但是之後要不要用給外面決定
-  const gamePlayInfo = createGamePlayInfo({
+  const gamePlayInfo = createGamePlay({
     id: gamePlayId,
     gameId,
     isGameStop: validCurtGameDetail.IsGameStop === '1' ? true : false,
@@ -72,21 +71,29 @@ export const normalizeCurtGameDetailJson = (input: string): GamePlaySubset => {
     mvpOutsPitchedCount,
     mvpIsVisitingTeam: validCurtGameDetail.MvpVisitingHomeType === '1',
 
-    umpireHp: validCurtGameDetail.HeadUmpire,
-    umpire1b: validCurtGameDetail.OneBaseReferee,
-    umpire2b: validCurtGameDetail.TwoBaseReferee,
-    umpire3b: validCurtGameDetail.TrheeBaseReferee,
-    umpireLf: validCurtGameDetail.LeftFieldReferee,
-    umpireRf: validCurtGameDetail.RightFieldReferee,
+    umpireHp: transformNameValue(validCurtGameDetail.HeadUmpire),
+    umpire1b: transformNameValue(validCurtGameDetail.OneBaseReferee),
+    umpire2b: transformNameValue(validCurtGameDetail.TwoBaseReferee),
+    umpire3b: transformNameValue(validCurtGameDetail.TrheeBaseReferee),
+    umpireLf: transformNameValue(validCurtGameDetail.LeftFieldReferee),
+    umpireRf: transformNameValue(validCurtGameDetail.RightFieldReferee),
+  });
+
+  const gameInfo = createGame({
+    id: gameId,
+    year: validCurtGameDetail.Year,
+    kind: validCurtGameDetail.KindCode,
+    season: validCurtGameDetail.GameSeasonCode,
+    seriesNo: validCurtGameDetail.GameSno,
+    level: 'cpbl',
+    visitingTeamCode: validCurtGameDetail.VisitingTeamCode,
+    homeTeamCode: validCurtGameDetail.HomeTeamCode,
   });
 
   return {
-    ...gamePlayInfo,
-    id: gamePlayId,
-    gameId,
+    gamePlayInfo,
+    gameInfo,
   };
-
-  // return Object.values(gameRecords);
 };
 
 export default normalizeCurtGameDetailJson;
