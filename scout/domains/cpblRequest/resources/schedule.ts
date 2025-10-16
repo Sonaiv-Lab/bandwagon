@@ -16,8 +16,7 @@ import { planGameMutation } from '#resources/plan/plans/game';
 import type { SchemaFromInterface } from '@bandwagon/shared/utils/zod';
 import z from 'zod';
 import { Firestore } from '#shared/external/firestore';
-import { Queue } from 'bullmq';
-import { Applicable } from '#shared/utils/container';
+import { Applicable, RegisteredContext } from '#shared/utils/container';
 
 type SchedulePageParams = {
   year: string;
@@ -64,11 +63,11 @@ const createJob = (params: unknown) => {
   }
 };
 
-export const addJob = (queue: Queue, props: unknown) => {
+export const addJob = (ctx: RegisteredContext, props: unknown) => {
   const job = createJob(props);
   const { name, data, opts } = job;
 
-  return queue.add(name, data, opts);
+  return ctx.unstableQueue.queue.add(name, data, opts);
 };
 
 const createProcessor: (
@@ -113,6 +112,7 @@ const processor: Applicable<
   const gamesData = normalizeGameDatas(requestData.GameDatas);
 
   const data = [...gamesData];
+  // const data = [gamesData[0]];
 
   const mutations = data.flatMap(({ game, plays }) => {
     return planGameMutation({ game, plays }, store)();
