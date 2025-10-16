@@ -71,5 +71,9 @@ describe('scoreboard normalization', () => {
     expect(() =>
       scoreboardSchema.parse(input, { reportInput: true })
     ).not.toThrow();
+
+    expect(
+      scoreboardSchema.parse(input, { reportInput: true })
+    ).toMatchSnapshot();
   });
 });

@@ -56,5 +56,9 @@ describe('curtGameDetail normalization', () => {
       gameDataSchema.parse(input, { reportInput: true })
     }
     ).not.toThrow();
+
+    expect(
+      gameDataSchema.parse(input, { reportInput: true })
+    ).toMatchSnapshot();
   });
 });

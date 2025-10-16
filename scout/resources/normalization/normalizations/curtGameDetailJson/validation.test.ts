@@ -137,5 +137,9 @@ describe('curtGameDetail normalization', () => {
       curtGameDetailJsonSchema.parse(input, { reportInput: true });
     }
     ).not.toThrow();
+
+    expect(
+      curtGameDetailJsonSchema.parse(input, { reportInput: true })
+    ).toMatchSnapshot();
   });
 });

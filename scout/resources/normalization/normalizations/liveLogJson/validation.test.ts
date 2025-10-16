@@ -60,5 +60,7 @@ describe('liveLog normalization', () => {
     expect(() =>
       liveLogSchema.parse(input, { reportInput: true })
     ).not.toThrow();
+
+    expect(liveLogSchema.parse(input, { reportInput: true })).toMatchSnapshot();
   });
 });

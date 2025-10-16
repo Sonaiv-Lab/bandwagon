@@ -1,0 +1,39 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`scoreboard normalization > 'common inning' 1`] = `
+{
+  "ErrorCnt": 0,
+  "GameSeasonCode": "2",
+  "GameSno": 358,
+  "HittingCnt": 1,
+  "InningSeq": 9,
+  "KindCode": "A",
+  "MainEventNoE": "0910018000",
+  "MainEventNoS": "0910001000",
+  "ScoreCnt": 0,
+  "SubEventNoE": "0000000001",
+  "SubEventNoS": "0000000001",
+  "TeamNo": "ADD011",
+  "VisitingHomeType": "1",
+  "Year": "2025",
+}
+`;
+
+exports[`scoreboard normalization > 'latest inning' 1`] = `
+{
+  "ErrorCnt": 0,
+  "GameSeasonCode": "2",
+  "GameSno": 358,
+  "HittingCnt": 0,
+  "InningSeq": 9,
+  "KindCode": "A",
+  "MainEventNoE": "",
+  "MainEventNoS": "",
+  "ScoreCnt": 0,
+  "SubEventNoE": "",
+  "SubEventNoS": "",
+  "TeamNo": "AKP011",
+  "VisitingHomeType": "2",
+  "Year": "2025",
+}
+`;
