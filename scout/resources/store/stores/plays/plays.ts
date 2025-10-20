@@ -12,13 +12,36 @@ import {
 import { GamePlayId } from '#shared/utils/types';
 import { merge } from '#resources/store/utils/merge';
 import { GamePlay } from '#shared/model/game';
+import { sortHInnings } from '#shared/utils/types/innings';
 
 // plan 階段要排序，這個階段不保證資料正確性CC
 const FS_PLAYS_COLLECTION_NAME = 'plays_v1';
 
 type OmitMeta = Omit<GamePlayStore, 'createdAt' | 'updatedAt'>
 
-const mergePlay = (base: OmitMeta, incoming: OmitMeta): OmitMeta => {
+// TODO
+export const mergeInning = (
+  base: OmitMeta['halfInnings'],
+  incoming: OmitMeta['halfInnings']
+): OmitMeta['halfInnings'] => {
+  const nextInnings = structuredClone(base);
+
+  for (const i of incoming) {
+    const targetIndex = nextInnings.findIndex((t) => t.id === i.id);
+
+    if (targetIndex >= 0) {
+      nextInnings[targetIndex] = { ...nextInnings[targetIndex], ...i };
+    } else {
+      nextInnings.push(i);
+    }
+  }
+
+  const sorted = nextInnings.sort(sortHInnings);
+
+  return sorted;
+};
+
+export const mergePlay = (base: OmitMeta, incoming: OmitMeta): OmitMeta => {
   return {
     // 基本資訊
     id: merge(base.id, incoming.id, 'BLOCK', 'WARN'),
@@ -153,7 +176,8 @@ const mergePlay = (base: OmitMeta, incoming: OmitMeta): OmitMeta => {
     umpireLf: merge(base.umpireLf, incoming.umpireLf, 'ALLOW'),
     umpireRf: merge(base.umpireRf, incoming.umpireRf, 'ALLOW'),
 
-    halfInnings: merge(base.halfInnings, incoming.halfInnings, 'ALLOW'),
+    // 這裡不能直接 merge，要把各局資料並起來，然後重新 sort
+    halfInnings: merge(base.halfInnings, incoming.halfInnings, mergeInning),
     source: merge(base.source, incoming.source, (a, b) => ({ ...a, ...b })),
   };
 };
