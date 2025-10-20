@@ -22,7 +22,7 @@ export const checkPlayerRelatedFieldWithGameResult: Rule = [
         game?.mvpPlayerId,
         game?.mvpPlayerName,
         game?.mvpCount,
-      ].every((val) => val === null || val === undefined);
+      ].every((val) => val === null || val === undefined || val === '');
 
       return isFieldsEmpty;
     }
