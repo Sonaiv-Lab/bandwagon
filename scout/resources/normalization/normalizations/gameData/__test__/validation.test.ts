@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { gameDataSchema } from './validation';
+import { gameDataSchema } from '../validation';
 
 // scout/.log/getlive/2025_cpbl_A_00358-getlive.json
 const CASES = [
@@ -49,13 +49,11 @@ const CASES = [
   },
 ];
 
-
 describe('curtGameDetail normalization', () => {
   test.for(CASES)('$name', ({ name, input }) => {
     expect(() => {
-      gameDataSchema.parse(input, { reportInput: true })
-    }
-    ).not.toThrow();
+      gameDataSchema.parse(input, { reportInput: true });
+    }).not.toThrow();
 
     expect(
       gameDataSchema.parse(input, { reportInput: true })
