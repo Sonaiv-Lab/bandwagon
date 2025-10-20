@@ -72,10 +72,10 @@ export const playDocInputSchema = z.object({
   umpire_rf: playStoreSchema.shape['umpireRf'],
 
   half_innings: z.record(
-    z.number(),
+    z.string(),
     z.object({
       id: inningSchema.shape.id,
-      inning: inningSchema.shape.inning,
+      inning_no: inningSchema.shape.inningNo,
       half_inning: inningSchema.shape.halfInning,
       offense_team_code: inningSchema.shape.offenseTeamCode,
       defense_team_code: inningSchema.shape.defenseTeamCode,
@@ -158,7 +158,7 @@ export const playDocOutputSchema = z.object({
   umpire_lf: playDocInputSchema.shape['umpire_lf'].default(null),
   umpire_rf: playDocInputSchema.shape['umpire_rf'].default(null),
 
-  half_innings: playDocInputSchema.shape['half_innings'].default([]),
+  half_innings: playDocInputSchema.shape['half_innings'].default({}),
   created_at: fsTimestampSchemaOutput,
   updated_at: fsTimestampSchemaOutput,
 
@@ -179,7 +179,7 @@ export const toDoc = (
     gamePlayStore.halfInnings.map((i) => {
       return {
         id: i.id,
-        inning: i.inning,
+        inning_no: i.inningNo,
         half_inning: i.halfInning,
         // 以上為必填欄位，下面都可以是選填
         offense_team_code: i.offenseTeamCode,
@@ -189,11 +189,16 @@ export const toDoc = (
         error_count: i.errorCount,
         start_pitch_id: i.startPitchId,
         end_pitch_id: i.endPitchId,
-      };
+        source: i.source,
+      } satisfies GamePlayDocInput['half_innings'][number];
     })
-  )
+  );
 
-  return playDocInputSchema.parse({
+  console.log('half_innings', half_innings);
+
+  // return
+
+  const inputDoc: GamePlayDocInput = {
     id: gamePlayStore.id,
     game_id: gamePlayStore.gameId,
     field: gamePlayStore.field,
@@ -250,11 +255,14 @@ export const toDoc = (
 
     created_at: createdAt,
     updated_at: updatedAt,
-  }, {reportInput: true});
+  };
+  
+
+  return playDocInputSchema.parse(inputDoc, { reportInput: true });
 };
 
 export const toStore = (gamePlayDoc: GamePlayDocOutput): GamePlayStore => {
-  const store = {
+  const store: GamePlayStore = {
     // 基本資訊
     gameId: gamePlayDoc.game_id,
     id: gamePlayDoc.id,
@@ -310,28 +318,27 @@ export const toStore = (gamePlayDoc: GamePlayDocOutput): GamePlayStore => {
     umpireRf: gamePlayDoc.umpire_rf,
 
     // 局數顯示，用在 scoreboard
-    halfInnings: Object.entries(gamePlayDoc.half_innings).sort(
-      ([keyA], [keyB]) => +keyA - +keyB
-    ).map(([, value] ) => {
-      return {
-        id: value.id,
-        inning: value.inning,
-        halfInning: value.half_inning,
-        offenseTeamCode: value.offense_team_code,
-        defenseTeamCode: value.defense_team_code,
-        scoreCount: value.score_count,
-        hitCount: value.hit_count,
-        errorCount: value.error_count,
-        startPitchId: value.start_pitch_id,
-        endPitchId: value.end_pitch_id,
-        source: value.source,
-      };
-    }),
-
+    halfInnings: Object.entries(gamePlayDoc.half_innings)
+      .sort(([keyA], [keyB]) => +keyA - +keyB)
+      .map(([, value]) => {
+        return {
+          id: value.id,
+          inningNo: value.inning_no,
+          halfInning: value.half_inning,
+          offenseTeamCode: value.offense_team_code,
+          defenseTeamCode: value.defense_team_code,
+          scoreCount: value.score_count,
+          hitCount: value.hit_count,
+          errorCount: value.error_count,
+          startPitchId: value.start_pitch_id,
+          endPitchId: value.end_pitch_id,
+          source: value.source,
+        };
+      }),
     source: gamePlayDoc.source,
   };
 
   const validStore = playStoreSchema.parse(store, { reportInput: true });
 
-  return validStore
+  return validStore;
 };

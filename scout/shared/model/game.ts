@@ -13,7 +13,8 @@ type PitchId = string;
 
 export type HalfInning = {
   id: Types.InningId;
-  inning: number;
+  inningNo: number;
+  // 上半局 / 下半局
   halfInning: 't' | 'b';
   // 以上為必填欄位，下面都可以是選填
 
@@ -35,6 +36,9 @@ export type HalfInning = {
     SubEventNoE: string;
   */
 };
+
+export type HalfInningSubset = Partial<HalfInning> &
+  Pick<HalfInning, 'id' | 'inningNo' | 'halfInning'>;
 
 // nullish 表示「還沒開始」的資料，能夠填寫 null 值的都代表會有另一個 pending 的狀態
 

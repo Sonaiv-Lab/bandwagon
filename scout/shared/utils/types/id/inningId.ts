@@ -4,7 +4,7 @@ import {
   GamePlayId,
   gamePlayIdUnitsSchema,
   gamePlayIdSchema,
-  gamePlayIdRuleStr
+  gamePlayIdRuleStr,
 } from './gamePlayId';
 import type { SchemaFromInterface } from '@bandwagon/shared/utils/zod';
 import type { HalfInning } from '#shared/model/game';
@@ -24,17 +24,16 @@ export type InningId = string;
  */
 export type InningIdParts = {
   halfInning: HalfInning['halfInning'];
-  inning: HalfInning['inning'];
+  inningNo: HalfInning['inningNo'];
   playId: GamePlayId;
 };
 
 export type InningIdUnits = Omit<InningIdParts, 'playId'> & GamePlayIdUnits;
 
-
 export const inningIdUnitsSchema = z
   .object({
     ...gamePlayIdUnitsSchema.shape,
-    inning: z
+    inningNo: z
       .string()
       .regex(/\d\d/)
       .transform((inningStr) => Number(inningStr)),
@@ -50,7 +49,7 @@ export const inningIdUnitsSchema = z
   .required() satisfies SchemaFromInterface<InningIdUnits>;
 
 export const inningIdRuleStr =
-  gamePlayIdRuleStr + '__(?<inning>\\d{2})-(?<halfInning>[01])';
+  gamePlayIdRuleStr + '__(?<inningNo>\\d{2})-(?<halfInning>[01])';
 
 export const inningIdRule = new RegExp(`${inningIdRuleStr}$`);
 
@@ -68,11 +67,11 @@ export const getInningUnitsFromId = (id: string): undefined | InningIdUnits => {
 
 export const assembleInningId = ({
   playId,
-  inning,
+  inningNo,
   halfInning,
 }: InningIdParts) => {
   const validPlayId = gamePlayIdSchema.parse(playId);
-  const inningStr = String(inning).padStart(2, '0');
+  const inningStr = String(inningNo).padStart(2, '0');
   const halfInningSymbol = {
     t: '0',
     b: '1',

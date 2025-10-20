@@ -32,7 +32,7 @@ import type {
 
 export const inningSchema = z.object({
   id: Types.inningIdSchema,
-  inning: z.number(),
+  inningNo: z.number(),
   halfInning: z.enum(['t', 'b']),
   // 以上為必填欄位，下面都可以是選填
   offenseTeamCode: teamCodeSchema.nullable(),
@@ -49,7 +49,7 @@ export const inningSchema = z.object({
 
 const inningSchemaWithDefault = z.object({
   id: inningSchema.shape.id,
-  inning: inningSchema.shape.inning,
+  inningNo: inningSchema.shape.inningNo,
   halfInning: inningSchema.shape.halfInning,
   offenseTeamCode: inningSchema.shape.offenseTeamCode.default(null),
   defenseTeamCode: inningSchema.shape.defenseTeamCode.default(null),
