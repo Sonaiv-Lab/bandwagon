@@ -4,7 +4,7 @@ import * as Schemas from '../../schemas';
 export const curtGameDetailJsonSchema = z.object({
   // === MVP 資訊 ===
   MvpAcnt: Schemas.playerIdFieldSchemaNullable,
-  MvpVisitingHomeType: Schemas.visitingHomeFieldSchema,
+  MvpVisitingHomeType: Schemas.visitingHomeFieldSchemaNullable,
   // 當年 MVP 的次數
   MvpCnt: Schemas.countFieldSchemaNullable,
 
@@ -47,7 +47,7 @@ export const curtGameDetailJsonSchema = z.object({
   VisitingTeamCode: Schemas.teamCodeSchema,
   HomeTeamCode: Schemas.teamCodeSchema,
   // 觀眾數量
-  AudienceCnt: Schemas.countFieldSchema,
+  AudienceCnt: Schemas.countFieldSchema.nullable(),
   // 好像是...有沒有滿場？
   IsFull: Schemas.boolFieldSchema,
 
@@ -59,7 +59,7 @@ export const curtGameDetailJsonSchema = z.object({
   LosePitcherAcnt: Schemas.playerIdFieldSchemaNullable,
   CloserPitcherAcnt: Schemas.playerIdFieldSchemaNullable,
   // 獲勝隊伍
-  WinningType: Schemas.visitingHomeFieldSchema,
+  WinningType: Schemas.visitingHomeFieldSchemaNullable,
   // 勝利打點
   GameWinningRbiAcnt: Schemas.playerIdFieldSchemaNullable,
 
