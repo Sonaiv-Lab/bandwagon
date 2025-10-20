@@ -13,6 +13,7 @@
     "target": "ESNext",
     "outDir": "dist",
     "paths": {
+      "#scout/package.json": ["./scout/package.json"],
       "#scout/dugout/package.json": ["./scout/services/dugout/package.json"],
       "#scout/lineup/package.json": ["./scout/services/lineup/package.json"],
       "#scout/runner/package.json": ["./scout/services/runner/package.json"],
