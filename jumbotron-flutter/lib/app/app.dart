@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:bandwagon/features/schedule/route.dart';
 import 'package:bandwagon/features/game/route.dart';
 import 'package:bandwagon/features/home/home.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bandwagon/features/schedule/utils.dart';
-
+import 'package:bandwagon/generated/l10n.dart';
 
 
 pageBuilderFactory({required child, LocalKey? key}) {
@@ -28,7 +29,14 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Flutter Demo',
+      onGenerateTitle: (context) => 'flutter Demo',
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -56,10 +64,10 @@ class App extends StatelessWidget {
           ShellRoute(
             builder: (context, state, child) {
               final currentIndex = switch (state.uri.path) {
-                    var p when p.startsWith('/schedule') => 1,
-                    var p when p.startsWith('/') => 0,
-                    _ => 0,
-                  };
+                var p when p.startsWith('/schedule') => 1,
+                var p when p.startsWith('/') => 0,
+                _ => 0,
+              };
 
               return Scaffold(
                 body: child,
@@ -76,10 +84,10 @@ class App extends StatelessWidget {
 
                     context.go(path);
                   },
-                  items: const [
+                  items: [
                     BottomNavigationBarItem(
                       icon: Icon(Icons.home),
-                      label: 'Home',
+                      label: S.of(context).NavBarLabelHome,
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.calendar_month_outlined),
@@ -101,7 +109,7 @@ class App extends StatelessWidget {
                 // builder: (context, state) => const Home(title: 'Home'),
               ),
               scheduleRoute,
-              gameRoute
+              gameRoute,
             ],
           ),
         ],
