@@ -1,19 +1,18 @@
 meta {
-  name: box
+  name: schedule
   type: http
-  seq: 1
+  seq: 3
 }
 
 post {
-  url: {{baseURL}}/box
+  url: {{baseURL}}/schedule
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "gameSno": "354",
-    "kindCode": "A",
+    "kindCode": "C",
     "year": "2025"
   }
 }
