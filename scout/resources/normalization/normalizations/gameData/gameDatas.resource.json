@@ -1,0 +1,28 @@
+{
+  "id": "normalization::gameDatas@0.0.1",
+  "metadata": {
+    "type": "normalization",
+    "name": "gameDatas",
+    "version": "0.0.1",
+    "deps": [
+      "schema::game@0.0.1"
+    ],
+    "config": {
+      "from": "",
+      "to": ""
+    },
+    "info": {
+      "tags": [
+        "cpbl",
+        "gameDatas"
+      ],
+      "description": "處理來自 getgamedatas 的資料: gameDatas"
+    }
+  },
+  "gitHash": "f2392dbc73d2fbc8bcfa1e32aaa01f4abcbb077f",
+  "bundledHash": "SImpn5C80EQ",
+  "fingerPrint": "sha1:8ce572fc",
+  "resourcePath": "scout/resources/normalization/normalizations/gameData/gameDatas.resource.ts",
+  "entryPath": "scout/resources/normalization/normalizations/gameData/gameDatas.ts",
+  "buildAt": "2026-02-25T17:35:00.894+08:00"
+}

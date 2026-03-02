@@ -1,10 +1,8 @@
-// resource.ts 就只留一些 resource 的 metadata
-
+import { ResourceInfo } from '#shared/resource';
 import { SchemaMetadata, SchemaResource } from '../../schema';
-import { Resource, ResourceInfo } from '#shared/resource';
 import info from './game.resource.json';
-// @resource: entry import
-// import * as entry from './game';
+// @resource(entry)
+import entry from './game';
 
 
 // metadata 不能有任何 external reference
@@ -21,10 +19,10 @@ export const metadata: SchemaMetadata = {
 };
 
 // 必須要有這個
-// export const GameSchema = new SchemaResource(
-//   info as ResourceInfo<SchemaMetadata>,
-//   entry
-// );
+export const GameSchema = new SchemaResource(
+  info as ResourceInfo<SchemaMetadata>,
+  entry,
+);
 
 
 export * from './game';

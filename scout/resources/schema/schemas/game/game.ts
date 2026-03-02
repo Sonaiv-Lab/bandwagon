@@ -260,3 +260,5 @@ export const createGame = (gameInfo: GameSubset): GameWithoutPlays => {
 
   return validGameInfo;
 };
+
+export default gameSchema
